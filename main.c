@@ -2,8 +2,9 @@
 
 #include <cairo.h>
 #include <cairo-pdf.h>
-#include <cairo-ps.h>
+//#include <cairo-ps.h>
 #include <cairo-svg.h>
+#include <svg-cairo.h>
 #include <math.h>
 #include <string.h>
 
@@ -206,25 +207,69 @@ travel_path (cairo_t *cr)
 
 }
 
+static void drawsvg (cairo_t *cr, char *svgfilename, unsigned int width, unsigned int height)
+{
+    FILE *svgfile;
+    svg_cairo_t *svgc;
+    unsigned int svg_width, svg_height;
+    double scaleX, scaleY;
 
+    svgfile=fopen (svgfilename, "r");//打开文件
+    svg_cairo_create (&svgc);//创建svgc对象
+    if ( svg_cairo_parse_file (svgc, svgfile) )//读取文件
+    {
+        fprintf (stderr, "无法读取SVG\n");
+        svg_cairo_destroy(svgc);//释放
+        fclose (svgfile);//关闭
+        return;
+    }
 
+    cairo_save(cr);//保存画笔
 
-/* Apply our path to the surface specified */
-static void
-draw (cairo_surface_t *surface)
+    //设置画笔
+    svg_cairo_get_size (svgc, &svg_width, &svg_height);//取得svg大小
+    printf("svg size: %d, %d\n",svg_width, svg_height);
+    printf("svg to size: %d, %d\n",width, height);
+    scaleX=(double)width/(double)svg_width;
+    scaleY=(double)height/(double)svg_height;
+
+    printf("scaleXY: %f, %f\n",scaleX, scaleY);
+
+    //cairo_translate (cr, 100, 100);
+    cairo_scale (cr, scaleX, scaleY);
+    //cairo_set_source_rgb (cr, 1, 1, 1);
+
+    svg_cairo_render (svgc, cr);//绘制
+
+    svg_cairo_destroy(svgc);//释放
+    fclose (svgfile);//关闭
+    cairo_restore(cr);//还原画笔
+}
+
+static void drawtext (cairo_t *cr,char *text)
+{
+    cairo_save(cr);//保存画笔
+    cairo_move_to (cr, 40, 40); /* Bottom left of text at point */
+    cairo_set_source_rgba (cr, 0, 0, 0, 1);
+    cairo_select_font_face (cr, "Sans", CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_BOLD);
+    cairo_set_font_size (cr, 40);
+    cairo_show_text (cr, text);
+    cairo_restore(cr);//还原画笔
+}
+
+static void draw (cairo_surface_t *surface)
 {
     cairo_t *cr;
     cr = cairo_create (surface);//创建画笔
 
-    travel_path (cr);
-    cairo_show_page(cr);//换页
+    //travel_path (cr);//IBM
+    //cairo_show_page(cr);//换页
     //cairo_rotate (cr, -M_PI / 4);//旋转画笔
     //cairo_scale (cr, 2, 1.0);//缩放画笔
-
-    travel_path (cr);
-
+    //travel_path (cr);//IBM
+    drawsvg(cr,"test.svg", MM2PT(A4_WIDTH), MM2PT(A4_HEIGHT));
+    drawtext(cr,"YJBeetle");
     cairo_destroy (cr);//回收
-
 }
 
 
@@ -240,10 +285,11 @@ int main(int argc, char *argv[])
     cairo_surface_destroy (surface);//回收
 
     /* Scalable Vector Graphics Backend */
-//    surface = cairo_svg_surface_create ("IBM.svg", WIDTH, HEIGHT);
-//    draw (surface);
-//    cairo_surface_destroy (surface);
-
+/*
+    surface = cairo_svg_surface_create ("IBM.svg", A4_WIDTH, A4_HEIGHT);
+    draw (surface);
+    cairo_surface_destroy (surface);
+*/
 
     printf("over!\n");
     return 0;
