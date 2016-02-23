@@ -277,20 +277,20 @@ void draw_rectangle(cairo_t *cr, double x, double y, double width, double height
     cairo_restore(cr);//还原画笔
 }
 
-void draw (char *outfile,int8_t type)
+void draw (char *outfile)
 {
     cairo_surface_t *surface;//介质
     cairo_t *cr;//画笔
 
-    switch (type) {
+    switch (surface_type) {
     case 1://PDF
-        surface = cairo_pdf_surface_create (outfile, MM2PT(A4_WIDTH), MM2PT(A4_HEIGHT));//创建介质
+        surface = cairo_pdf_surface_create (outfile, MM2PT(page_width), MM2PT(page_height));//创建介质
         //cairo_surface_set_fallback_resolution(surface,300,300);//设置分辨率
         cr = cairo_create (surface);//创建画笔
         cairo_scale (cr, MM2PT(1), MM2PT(1));//缩放画笔，因PDF用mm作为最终单位故需缩放画笔
         break;
     case 2://SVG
-        surface = cairo_svg_surface_create (outfile, A4_WIDTH, A4_HEIGHT);
+        surface = cairo_svg_surface_create (outfile, page_width, page_height);
         cr = cairo_create (surface);//创建画笔
         break;
     default:
@@ -298,7 +298,6 @@ void draw (char *outfile,int8_t type)
         return;
         break;
     }
-
 
     //travel_path (cr);//IBM
     //cairo_show_page(cr);//换页

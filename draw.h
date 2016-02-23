@@ -24,10 +24,11 @@ struct color
     double alpha;
 };
 
-//页面大小全局变量
+//全局变量
 double page_width, page_height;
+int8_t surface_type;
 
 //函数声明
-void draw (char *outfile,int8_t type);
+void draw (char *outfile);
 
 #endif // DRAW_H

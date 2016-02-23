@@ -13,9 +13,9 @@ int main(int argc, char *argv[])
 {
     page_width=A4_HEIGHT;
     page_height=A4_WIDTH;
+    surface_type=1;
 
-    draw("out.pdf",1);
-    draw("out.svg",2);
+    draw("out.pdf");
 
     printf("over!\n");
     return 0;
