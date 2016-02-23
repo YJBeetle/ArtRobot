@@ -6,13 +6,28 @@
 #define A4_WIDTH  210
 #define A4_HEIGHT 297
 
+typedef signed char     int8_t;
+typedef short int       int16_t;
+typedef int             int32_t;
+# if __WORDSIZE == 64
+typedef long int        int64_t;
+# else
+__extension__
+typedef long long int   int64_t;
+#endif
 
-void drawsvg (cairo_t *cr, char *svgfilename, unsigned int width, unsigned int height);
+struct color
+{
+    double red;
+    double green;
+    double blue;
+    double alpha;
+};
 
-void drawtext (cairo_t *cr,char *text);
+//页面大小全局变量
+double page_width, page_height;
 
-void draw (cairo_surface_t *surface);
-
-void travel_path (cairo_t *cr);
+//函数声明
+void draw (char *outfile,int8_t type);
 
 #endif // DRAW_H

@@ -254,19 +254,63 @@ void drawtext (cairo_t *cr,char *text)
     cairo_restore(cr);//还原画笔
 }
 
-void draw (cairo_surface_t *surface)
+struct color color_code2rgba(int code)
 {
-    cairo_t *cr;
-    cr = cairo_create (surface);//创建画笔
+    struct color argb;
+    if(code<=0xffffff)
+        argb.alpha=(double)1;
+    else
+        argb.alpha=(double)((code&0xff000000)>>6)/(double)0xff;
+    argb.red=(double)((code&0xff0000)>>4)/(double)0xff;
+    argb.green=(double)((code&0xff00)>>2)/(double)0xff;
+    argb.blue=(double)(code&0xff)/(double)0xff;
+    return argb;
+}
+
+void draw_rectangle(cairo_t *cr, double x, double y, double width, double height,int color_code)
+{
+    cairo_save(cr);//保存画笔
+    struct color argb=color_code2rgba(color_code);
+    cairo_set_source_rgba (cr, argb.red, argb.green, argb.blue, argb.alpha);
+    cairo_rectangle(cr, x, y, width, height);
+    cairo_fill(cr);
+    cairo_restore(cr);//还原画笔
+}
+
+void draw (char *outfile,int8_t type)
+{
+    cairo_surface_t *surface;//介质
+    cairo_t *cr;//画笔
+
+    switch (type) {
+    case 1://PDF
+        surface = cairo_pdf_surface_create (outfile, MM2PT(A4_WIDTH), MM2PT(A4_HEIGHT));//创建介质
+        //cairo_surface_set_fallback_resolution(surface,300,300);//设置分辨率
+        cr = cairo_create (surface);//创建画笔
+        cairo_scale (cr, MM2PT(1), MM2PT(1));//缩放画笔，因PDF用mm作为最终单位故需缩放画笔
+        break;
+    case 2://SVG
+        surface = cairo_svg_surface_create (outfile, A4_WIDTH, A4_HEIGHT);
+        cr = cairo_create (surface);//创建画笔
+        break;
+    default:
+        fprintf (stderr, "未知的输出类型\n");
+        return;
+        break;
+    }
+
 
     //travel_path (cr);//IBM
     //cairo_show_page(cr);//换页
     //cairo_rotate (cr, -M_PI / 4);//旋转画笔
     //cairo_scale (cr, 2, 1.0);//缩放画笔
     //travel_path (cr);//IBM
-    drawsvg(cr,"test.svg", MM2PT(A4_WIDTH), MM2PT(A4_HEIGHT));
+    draw_rectangle(cr, 0, 0, A4_WIDTH, A4_HEIGHT,0xFCF7E8);
+    drawsvg(cr,"test.svg", A4_WIDTH, A4_HEIGHT);
     drawtext(cr,"YJBeetle");
-    cairo_destroy (cr);//回收
+
+    cairo_destroy (cr);//回收画笔
+    cairo_surface_destroy (surface);//回收介质
 }
 
 
