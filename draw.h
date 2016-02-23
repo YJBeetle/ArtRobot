@@ -6,6 +6,9 @@
 #define A4_WIDTH  210
 #define A4_HEIGHT 297
 
+#define A3_WIDTH  297
+#define A3_HEIGHT 420
+
 typedef signed char     int8_t;
 typedef short int       int16_t;
 typedef int             int32_t;
