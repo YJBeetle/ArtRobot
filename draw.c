@@ -23,12 +23,10 @@ struct color color_code2rgba(int32_t code)
     return argb;
 }
 
-void drawsvg (cairo_t *cr, char *svgfilename, double x, double y, double width, double height)
+void draw_fromsvg (cairo_t *cr, char *svgfilename, double x, double y, double width, double height)
 {
     FILE *svgfile;
     svg_cairo_t *svgc;
-    unsigned int svg_width, svg_height;
-    double scaleX, scaleY;
 
     svgfile=fopen (svgfilename, "r");//打开文件
     svg_cairo_create (&svgc);//创建svgc对象
@@ -44,10 +42,15 @@ void drawsvg (cairo_t *cr, char *svgfilename, double x, double y, double width, 
 
     //设置绘画位置大小
     cairo_translate (cr, x, y);
-    svg_cairo_get_size (svgc, &svg_width, &svg_height);//取得svg大小
-    scaleX=width/(double)svg_width;
-    scaleY=height/(double)svg_height;
-    cairo_scale (cr, scaleX, scaleY);
+    if(width||height)
+    {
+        unsigned int svg_width, svg_height;
+        double scaleX, scaleY;
+        svg_cairo_get_size (svgc, &svg_width, &svg_height);//取得svg大小
+        scaleX=width/(double)svg_width;
+        scaleY=height/(double)svg_height;
+        cairo_scale (cr, scaleX, scaleY);
+    }
 
     //cairo_set_source_rgb (cr, 1, 1, 1);
     svg_cairo_render (svgc, cr);//绘制
@@ -57,7 +60,32 @@ void drawsvg (cairo_t *cr, char *svgfilename, double x, double y, double width, 
     cairo_restore(cr);//还原画笔
 }
 
-void drawtext (cairo_t *cr,char *text, char *family, double font_size, int32_t color_code, double x, double y)
+void draw_frompng (cairo_t *cr, char *pngfilename, double x, double y, double width, double height)
+{
+    cairo_surface_t *img;
+    img=cairo_image_surface_create_from_png(pngfilename);
+
+    cairo_save(cr);//保存画笔
+
+    cairo_translate (cr, x, y);
+    if(width||height)
+    {
+        unsigned int png_width, png_height;
+        double scaleX, scaleY;
+        png_width=cairo_image_surface_get_width(img);
+        png_height=cairo_image_surface_get_height(img);
+        scaleX=width/(double)png_width;
+        scaleY=height/(double)png_height;
+        cairo_scale (cr, scaleX, scaleY);
+    }
+    cairo_set_source_surface(cr,img,0,0);
+    cairo_paint(cr);
+
+    cairo_surface_destroy (img);//回收PNG介质
+    cairo_restore(cr);//还原画笔
+}
+
+void draw_text (cairo_t *cr,char *text, char *family, double font_size, char alignment, int32_t color_code, double x, double y)
 {
     cairo_save(cr);//保存画笔
     struct color argb=color_code2rgba(color_code);
@@ -65,9 +93,16 @@ void drawtext (cairo_t *cr,char *text, char *family, double font_size, int32_t c
     cairo_select_font_face (cr, family, CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_NORMAL);
     cairo_set_font_size (cr, font_size);
 
-    cairo_text_extents_t extents;
-    cairo_text_extents(cr,text,&extents);
-    cairo_move_to (cr, x-extents.width/2, y);
+    if (alignment)
+    {
+        cairo_text_extents_t extents;
+        cairo_text_extents(cr,text,&extents);
+        cairo_move_to (cr, x-extents.width/2, y);
+    }
+    else
+    {
+        cairo_move_to (cr, x, y);
+    }
 
     //cairo_show_text (cr, text);
     cairo_text_path (cr, text);
@@ -111,15 +146,35 @@ void draw (char *outfile)
     //cairo_show_page(cr);//换页
     //cairo_rotate (cr, -M_PI / 4);//旋转画笔
     //cairo_scale (cr, 2, 1.0);//缩放画笔
+
+
+
+
+
+
+
+
+
+
+
     draw_rectangle(cr, 0xFCF7E8, 0, 0, page_width, page_height);
-    drawsvg(cr,"bg-veins.svg", 0, 0, page_width, page_height);
+    draw_fromsvg(cr,"bg-veins.svg", 0, 0, page_width, page_height);
+    draw_frompng(cr,"1.png",100,100,100,100);
+    draw_fromsvg(cr,"logo.svg", (page_width-50)/2, 30, 50, 37.544);
     draw_rectangle(cr, 0x686767, 0, 0, page_width, 16);
     draw_rectangle(cr, 0x686767, 0, page_height-16, page_width, 16);
-    drawsvg(cr,"logo.svg", (page_width-50)/2, 30, 50, 37.544);
-    drawtext(cr,"Add:No.9 West Section of the South 2nd Ring.LianHu District.Xi'an", "Lantinghei SC Demibold", 5, 0xffffff, page_width/2, 10);
-    drawtext(cr,"Add:No.9 West Section of the South 2nd Ring.LianHu District.Xi'an", "Lantinghei SC Demibold", 5, 0xffffff, page_width/2, page_height-6);
-    drawtext(cr,"YJBeetle", "Yuanti SC", 20, 0x686767, page_width/2, 100);
-    drawtext(cr,"A测试中文", "Lantinghei SC Extralight", 20, 0x686767, page_width/2, 120);
+    draw_text(cr,"Add:No.9 West Section of the South 2nd Ring.LianHu District.Xi'an", "Lantinghei SC Demibold", 5, 1, 0xffffff, page_width/2, 10);
+    draw_text(cr,"Add:No.9 West Section of the South 2nd Ring.LianHu District.Xi'an", "Lantinghei SC Demibold", 5, 1, 0xffffff, page_width/2, page_height-6);
+    draw_text(cr,"YJBeetle", "Yuanti SC", 20, 1, 0x686767, page_width/2, 100);
+    draw_text(cr,"A测试中文", "Lantinghei SC Extralight", 20, 1, 0x686767, page_width/2, 120);
+
+
+
+
+
+
+
+
 
     cairo_destroy (cr);//回收画笔
     cairo_surface_destroy (surface);//回收介质

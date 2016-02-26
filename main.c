@@ -9,16 +9,38 @@
 
 #include "draw.h"
 
+#include <sys/time.h>
+
 int main(int argc, char *argv[])
 {
     page_width=A3_HEIGHT;
     page_height=A3_WIDTH;
+
+
+
+    struct timeval tpstart,tpend;
+    float timeuse;
+    gettimeofday(&tpstart,NULL);
+
+
 
     surface_type=1;
     draw("out.pdf");
 
     surface_type=2;
     draw("out.svg");
+
+
+
+
+
+    gettimeofday(&tpend,NULL);
+    timeuse=1000000*(tpend.tv_sec-tpstart.tv_sec)+
+    tpend.tv_usec-tpstart.tv_usec;
+    timeuse/=1000000;
+    printf("Used Time:%f\n",timeuse);
+
+
 
     printf("over!\n");
     return 0;
