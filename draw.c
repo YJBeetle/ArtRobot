@@ -159,7 +159,7 @@ void draw (char *outfile)
 
     draw_rectangle(cr, 0xFCF7E8, 0, 0, page_width, page_height);
     draw_fromsvg(cr,"bg-veins.svg", 0, 0, page_width, page_height);
-    draw_frompng(cr,"1.png",100,100,100,100);
+    //draw_frompng(cr,"1.png",100,100,100,100);
     draw_fromsvg(cr,"logo.svg", (page_width-50)/2, 30, 50, 37.544);
     draw_rectangle(cr, 0x686767, 0, 0, page_width, 16);
     draw_rectangle(cr, 0x686767, 0, page_height-16, page_width, 16);

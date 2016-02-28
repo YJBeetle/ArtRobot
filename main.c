@@ -24,11 +24,19 @@ int main(int argc, char *argv[])
 
 
 
+
+
+
+
     surface_type=1;
     draw("out.pdf");
 
     surface_type=2;
     draw("out.svg");
+
+
+
+    //char *json='[{"type":"rectangle","color_code":"FCF7E8"},{"type":"svg","filename":"bg-veins.svg"},{"type":"png","filename":"1.png"},{"type":"text","text":"YJBeetle"}]';
 
 
 
