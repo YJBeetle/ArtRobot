@@ -1,9 +1,11 @@
 #include <stdio.h>
 #include <cairo.h>
 #include <cairo-pdf.h>
-//#include <cairo-ps.h>
+//#include <cairo/cairo-ps.h>
 #include <cairo-svg.h>
-#include <svg-cairo.h>
+//#include <svg-cairo.h>
+#include <librsvg/rsvg.h>
+#include <librsvg/rsvg-cairo.h>
 #include <math.h>
 #include <string.h>
 
@@ -25,6 +27,7 @@ struct color color_code2rgba(int32_t code)
 
 void draw_fromsvg (cairo_t *cr, char *svgfilename, double x, double y, double width, double height)
 {
+/*
     FILE *svgfile;
     svg_cairo_t *svgc;
 
@@ -57,6 +60,29 @@ void draw_fromsvg (cairo_t *cr, char *svgfilename, double x, double y, double wi
 
     svg_cairo_destroy(svgc);//释放
     fclose (svgfile);//关闭
+    cairo_restore(cr);//还原画笔
+*/
+    RsvgHandle *handle;
+    handle = rsvg_handle_new_from_file(svgfilename,NULL);
+
+    cairo_save(cr);//保存画笔
+
+    cairo_translate (cr, x, y);
+    if(width||height)
+    {
+        unsigned int svg_width, svg_height;
+        double scaleX, scaleY;
+        RsvgDimensionData dimension_data;
+        rsvg_handle_get_dimensions(handle,&dimension_data);
+printf("w:%dh:%d\n",dimension_data.width,dimension_data.height);
+        svg_width=dimension_data.width;
+        svg_height=dimension_data.height;
+        scaleX=width/(double)svg_width;
+        scaleY=height/(double)svg_height;
+        cairo_scale (cr, scaleX, scaleY);
+    }
+    rsvg_handle_render_cairo(handle, cr);
+
     cairo_restore(cr);//还原画笔
 }
 

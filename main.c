@@ -1,9 +1,11 @@
 #include <stdio.h>
 #include <cairo.h>
 #include <cairo-pdf.h>
-//#include <cairo-ps.h>
+//#include <cairo/cairo-ps.h>
 #include <cairo-svg.h>
-#include <svg-cairo.h>
+//#include <svg-cairo.h>
+#include <librsvg/rsvg.h>
+#include <librsvg/rsvg-cairo.h>
 #include <math.h>
 #include <string.h>
 
