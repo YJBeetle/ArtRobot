@@ -7,7 +7,7 @@
 #include <cairo-pdf.h>
 //#include <cairo-ps.h>
 #include <cairo-svg.h>
-#include <svg-cairo.h>
+#include <librsvg/rsvg.h>
 
 #include "default.h"
 #include "color.h"
@@ -137,38 +137,27 @@ void draw::draw_png (char *pngfilename, double x, double y, double width, double
 
 void draw::draw_svg (char *svgfilename, double x, double y, double width, double height)
 {
-    FILE *svgfile;
-    svg_cairo_t *svgc;
-
-    svgfile=fopen (svgfilename, "r");//打开文件
-    svg_cairo_create (&svgc);//创建svgc对象
-    if ( svg_cairo_parse_file (svgc, svgfile) )//读取文件
-    {
-        fprintf (stderr, "无法读取SVG\n");
-        svg_cairo_destroy(svgc);//释放
-        fclose (svgfile);//关闭
-        return;
-    }
+    RsvgHandle *svg;
+    svg = rsvg_handle_new_from_file(svgfilename,NULL);
 
     cairo_save(cr);//保存画笔
 
-    //设置绘画位置大小
     cairo_translate (cr, x, y);
     if(width||height)
     {
         unsigned int svg_width, svg_height;
         double scaleX, scaleY;
-        svg_cairo_get_size (svgc, &svg_width, &svg_height);//取得svg大小
+        RsvgDimensionData dimension_data;
+        rsvg_handle_get_dimensions(svg,&dimension_data);
+        svg_width=dimension_data.width;
+        svg_height=dimension_data.height;
         scaleX=width/(double)svg_width;
         scaleY=height/(double)svg_height;
         cairo_scale (cr, scaleX, scaleY);
     }
+    rsvg_handle_render_cairo(svg, cr);
 
-    //cairo_set_source_rgb (cr, 1, 1, 1);
-    svg_cairo_render (svgc, cr);//绘制
-
-    svg_cairo_destroy(svgc);//释放
-    fclose (svgfile);//关闭
+    //svg_handle_free(svg);//释放handle
     cairo_restore(cr);//还原画笔
 }
 
