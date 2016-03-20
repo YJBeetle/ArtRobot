@@ -18,18 +18,17 @@ draw::draw()
     this->initrd=0;
 }
 
-void draw::init(char *filename,_surface_type type,double width,double height)
+void draw::init(char *filename,surface_type type,double width,double height)
 {
-    if(!this->initrd)
-        return;
+    if(this->initrd)return;
     this->initrd=1;
 
     this->outfile=filename;
-    this->surface_type=type;
+    this->out_type=type;
     this->page_width=width;
     this->page_height=height;
 
-    switch (surface_type) {
+    switch (type) {
     case PDF://PDF
         surface = cairo_pdf_surface_create (outfile, MM2PT(page_width), MM2PT(page_height));//创建介质
         //cairo_surface_set_fallback_resolution(surface,300,300);//设置分辨率
@@ -61,7 +60,7 @@ int8_t draw::make()
 
     draw_rectangle(0xFCF7E8, 0, 0, page_width, page_height);
     draw_svg("bg-veins.svg", 0, 0, page_width, page_height);
-    draw_png("1.png",100,100,100,100);
+    //draw_png("1.png",100,100,100,100);
     draw_svg("logo.svg", (page_width-50)/2, 30, 50, 37.544);
     draw_rectangle( 0x686767, 0, 0, page_width, 16);
     draw_rectangle( 0x686767, 0, page_height-16, page_width, 16);
@@ -77,6 +76,7 @@ int8_t draw::make()
 
 void draw::draw_rectangle(int32_t color_code, double x, double y, double width, double height)
 {
+    if(!this->initrd)return;
     cairo_save(cr);//保存画笔
     color argb(color_code);
     cairo_set_source_rgba (cr, argb.red_double(), argb.green_double(), argb.blue_double(), argb.alpha_double());
@@ -157,7 +157,7 @@ void draw::draw_svg (char *svgfilename, double x, double y, double width, double
     }
     rsvg_handle_render_cairo(svg, cr);
 
-    //svg_handle_free(svg);//释放handle
+    rsvg_handle_free(svg);//释放handle
     cairo_restore(cr);//还原画笔
 }
 

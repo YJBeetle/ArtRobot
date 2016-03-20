@@ -1,6 +1,13 @@
 #ifndef DRAW_H
 #define DRAW_H
 
+enum _surface_type{
+    PDF,
+    SVG
+};
+
+typedef enum _surface_type surface_type;
+
 class draw
 {
 private:
@@ -9,12 +16,12 @@ private:
     char *outfile;
     double page_width;
     double page_height;
-    enum _surface_type{PDF,SVG}surface_type;
+    surface_type out_type;
 
     cairo_surface_t *surface;//介质
     cairo_t *cr;//画笔
 
-    void init(char *filename,_surface_type type,double width,double height);
+    void init(char *filename,surface_type type,double width,double height);
 
     void draw_svg(char *svgfilename, double x, double y, double width, double height);
     void draw_png(char *pngfilename, double x, double y, double width, double height);
