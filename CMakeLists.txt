@@ -18,10 +18,8 @@ include_directories(c:/opt/msys64/mingw32/include/glib-2.0)
 include_directories(c:/opt/msys64/mingw32/lib/glib-2.0/include)
 include_directories(c:/opt/msys64/mingw32/include/gdk-pixbuf-2.0)
 #link_directories(c:/opt/msys64/mingw32/lib/)
-#link_directories(c:/opt/msys64/mingw32/local/lib/)
 
 add_executable(${PROJECT_NAME} ${SRC_LIST})
 
 target_link_libraries(Art_robot cairo)
-#target_link_libraries(Art_robot svg-cairo)
 target_link_libraries(Art_robot rsvg-2)

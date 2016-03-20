@@ -3,7 +3,6 @@
 #include <cairo-pdf.h>
 //#include <cairo/cairo-ps.h>
 #include <cairo-svg.h>
-//#include <svg-cairo.h>
 #include <librsvg/rsvg.h>
 #include <math.h>
 #include <string.h>
@@ -26,41 +25,6 @@ struct color color_code2rgba(int32_t code)
 
 void draw_fromsvg (cairo_t *cr, char *svgfilename, double x, double y, double width, double height)
 {
-/*
-    FILE *svgfile;
-    svg_cairo_t *svgc;
-
-    svgfile=fopen (svgfilename, "r");//打开文件
-    svg_cairo_create (&svgc);//创建svgc对象
-    if ( svg_cairo_parse_file (svgc, svgfile) )//读取文件
-    {
-        fprintf (stderr, "无法读取SVG\n");
-        svg_cairo_destroy(svgc);//释放
-        fclose (svgfile);//关闭
-        return;
-    }
-
-    cairo_save(cr);//保存画笔
-
-    //设置绘画位置大小
-    cairo_translate (cr, x, y);
-    if(width||height)
-    {
-        unsigned int svg_width, svg_height;
-        double scaleX, scaleY;
-        svg_cairo_get_size (svgc, &svg_width, &svg_height);//取得svg大小
-        scaleX=width/(double)svg_width;
-        scaleY=height/(double)svg_height;
-        cairo_scale (cr, scaleX, scaleY);
-    }
-
-    //cairo_set_source_rgb (cr, 1, 1, 1);
-    svg_cairo_render (svgc, cr);//绘制
-
-    svg_cairo_destroy(svgc);//释放
-    fclose (svgfile);//关闭
-    cairo_restore(cr);//还原画笔
-*/
     RsvgHandle *handle;
     handle = rsvg_handle_new_from_file(svgfilename,NULL);
 
