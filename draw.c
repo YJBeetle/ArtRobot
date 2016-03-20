@@ -25,8 +25,8 @@ struct color color_code2rgba(int32_t code)
 
 void draw_fromsvg (cairo_t *cr, char *svgfilename, double x, double y, double width, double height)
 {
-    RsvgHandle *handle;
-    handle = rsvg_handle_new_from_file(svgfilename,NULL);
+    RsvgHandle *svg;
+    svg = rsvg_handle_new_from_file(svgfilename,NULL);
 
     cairo_save(cr);//保存画笔
 
@@ -43,8 +43,9 @@ void draw_fromsvg (cairo_t *cr, char *svgfilename, double x, double y, double wi
         scaleY=height/(double)svg_height;
         cairo_scale (cr, scaleX, scaleY);
     }
-    rsvg_handle_render_cairo(handle, cr);
+    rsvg_handle_render_cairo(svg, cr);
 
+    svg_handle_free(svg);//释放handle
     cairo_restore(cr);//还原画笔
 }
 
@@ -69,7 +70,7 @@ void draw_frompng (cairo_t *cr, char *pngfilename, double x, double y, double wi
     cairo_set_source_surface(cr,img,0,0);
     cairo_paint(cr);
 
-    cairo_surface_destroy (img);//回收PNG介质
+    cairo_surface_destroy(img);//回收PNG介质
     cairo_restore(cr);//还原画笔
 }
 
