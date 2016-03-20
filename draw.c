@@ -5,7 +5,6 @@
 #include <cairo-svg.h>
 //#include <svg-cairo.h>
 #include <librsvg/rsvg.h>
-#include <librsvg/rsvg-cairo.h>
 #include <math.h>
 #include <string.h>
 
@@ -74,7 +73,6 @@ void draw_fromsvg (cairo_t *cr, char *svgfilename, double x, double y, double wi
         double scaleX, scaleY;
         RsvgDimensionData dimension_data;
         rsvg_handle_get_dimensions(handle,&dimension_data);
-printf("w:%dh:%d\n",dimension_data.width,dimension_data.height);
         svg_width=dimension_data.width;
         svg_height=dimension_data.height;
         scaleX=width/(double)svg_width;

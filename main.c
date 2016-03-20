@@ -5,7 +5,6 @@
 #include <cairo-svg.h>
 //#include <svg-cairo.h>
 #include <librsvg/rsvg.h>
-#include <librsvg/rsvg-cairo.h>
 #include <math.h>
 #include <string.h>
 
