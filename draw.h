@@ -1,37 +1,38 @@
 #ifndef DRAW_H
 #define DRAW_H
 
-#define MM2PT(mm) (mm*(1/25.4)*72)
-
-#define A4_WIDTH  210
-#define A4_HEIGHT 297
-
-#define A3_WIDTH  297
-#define A3_HEIGHT 420
-
-typedef signed char     int8_t;
-typedef short int       int16_t;
-typedef int             int32_t;
-# if __WORDSIZE == 64
-typedef long int        int64_t;
-# else
-__extension__
-typedef long long int   int64_t;
-#endif
-
-struct color
-{
-    double red;
-    double green;
-    double blue;
-    double alpha;
+enum _surface_type{
+    PDF,
+    SVG
 };
 
-//全局变量
-double page_width, page_height;
-int8_t surface_type;
+typedef enum _surface_type surface_type;
 
-//函数声明
-void draw (char *outfile);
+class draw
+{
+private:
+    int8_t initrd;
+
+    char *outfile;
+    double page_width;
+    double page_height;
+    surface_type out_type;
+
+    cairo_surface_t *surface;//介质
+    cairo_t *cr;//画笔
+
+    void init(char *filename,surface_type type,double width,double height);
+
+    void draw_svg(char *svgfilename, double x, double y, double width, double height);
+    void draw_png(char *pngfilename, double x, double y, double width, double height);
+    void draw_text(char *text, char *family, double font_size, char alignment, int32_t color_code, double x, double y);
+    void draw_rectangle(int32_t color_code, double x, double y, double width, double height);
+
+
+public:
+    draw();
+    int8_t make();
+
+};
 
 #endif // DRAW_H
