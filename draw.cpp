@@ -55,7 +55,7 @@ int8_t draw::make()
 
     draw_rectangle(0xFCF7E8, 0, 0, page_width, page_height);
     draw_svg("bg-veins.svg", 0, 0, page_width, page_height);
-    //draw_png("1.png",100,100,100,100);
+    draw_png("1.png",100,100,100,100);
     draw_svg("logo.svg", (page_width-50)/2, 30, 50, 37.544);
     draw_rectangle( 0x686767, 0, 0, page_width, 16);
     draw_rectangle( 0x686767, 0, page_height-16, page_width, 16);
@@ -117,8 +117,9 @@ int8_t draw::draw_text(const char *text, const char *family, double font_size, c
 int8_t draw::draw_png (const char *pngfilename, double x, double y, double width, double height)
 {
     if(!this->initrd)return 1;
+    if(!this->filecheck(pngfilename))return 2;
 
-    cairo_surface_t *img;
+    cairo_surface_t *img=NULL;
     img=cairo_image_surface_create_from_png(pngfilename);
 
     cairo_save(cr);//保存画笔
@@ -146,6 +147,7 @@ int8_t draw::draw_png (const char *pngfilename, double x, double y, double width
 int8_t draw::draw_svg (const char *svgfilename, double x, double y, double width, double height)
 {
     if(!this->initrd)return 1;
+    if(!this->filecheck(svgfilename))return 2;
 
     RsvgHandle *svg;
     svg = rsvg_handle_new_from_file(svgfilename,NULL);
@@ -171,4 +173,19 @@ int8_t draw::draw_svg (const char *svgfilename, double x, double y, double width
     cairo_restore(cr);//还原画笔
 
     return 0;
+}
+
+int8_t draw::filecheck (const char *filename)
+{
+    FILE* file;
+    file=fopen (filename, "rb");
+    if(file)
+    {
+        fclose(file);
+        return true;
+    }
+    else
+    {
+        return false;
+    }
 }

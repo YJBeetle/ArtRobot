@@ -28,6 +28,7 @@ private:
     int8_t draw_text(const char *text, const char *family, double font_size, char alignment, int32_t color_code, double x, double y);
     int8_t draw_rectangle(int32_t color_code, double x, double y, double width, double height);
 
+    int8_t filecheck(const char *filename);
 
 public:
     draw();
