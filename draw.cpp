@@ -18,33 +18,35 @@ draw::draw()
     this->initrd=0;
 }
 
-void draw::init(char *filename,surface_type type,double width,double height)
+int8_t draw::init(const char *filename,surface_type type,double width,double height)
 {
-    if(this->initrd)return;
+    if(this->initrd)return 1;
     this->initrd=1;
 
-    this->outfile=filename;
+    //this->outfile=filename;
     this->out_type=type;
     this->page_width=width;
     this->page_height=height;
 
     switch (type) {
     case PDF://PDF
-        surface = cairo_pdf_surface_create (outfile, MM2PT(page_width), MM2PT(page_height));//创建介质
+        surface = cairo_pdf_surface_create (filename, MM2PT(page_width), MM2PT(page_height));//创建介质
         //cairo_surface_set_fallback_resolution(surface,300,300);//设置分辨率
         cr = cairo_create (surface);//创建画笔
         cairo_scale (cr, MM2PT(1), MM2PT(1));//缩放画笔，因PDF用mm作为最终单位故需缩放画笔
         break;
     case SVG://SVG
-        surface = cairo_svg_surface_create (outfile, page_width, page_height);
+        surface = cairo_svg_surface_create (filename, page_width, page_height);
         cr = cairo_create (surface);//创建画笔
         break;
     default:
         fprintf (stderr, "未知的输出类型\n");
         this->initrd=0;
-        return;
+        return 2;
         break;
     }
+
+    return 0;
 }
 
 int8_t draw::make()
@@ -65,21 +67,28 @@ int8_t draw::make()
 
     cairo_destroy (cr);//回收画笔
     cairo_surface_destroy (surface);//回收介质
+
+    return 0;
 }
 
-void draw::draw_rectangle(int32_t color_code, double x, double y, double width, double height)
+int8_t draw::draw_rectangle(int32_t color_code, double x, double y, double width, double height)
 {
-    if(!this->initrd)return;
+    if(!this->initrd)return 1;
+
     cairo_save(cr);//保存画笔
     color argb(color_code);
     cairo_set_source_rgba (cr, argb.red_double(), argb.green_double(), argb.blue_double(), argb.alpha_double());
     cairo_rectangle(cr, x, y, width, height);
     cairo_fill(cr);
     cairo_restore(cr);//还原画笔
+
+    return 0;
 }
 
-void draw::draw_text(char *text, char *family, double font_size, char alignment, int32_t color_code, double x, double y)
+int8_t draw::draw_text(const char *text, const char *family, double font_size, char alignment, int32_t color_code, double x, double y)
 {
+    if(!this->initrd)return 1;
+
     cairo_save(cr);//保存画笔
     color argb(color_code);
     cairo_set_source_rgba (cr, argb.red_double(), argb.green_double(), argb.blue_double(), argb.alpha_double());
@@ -101,10 +110,14 @@ void draw::draw_text(char *text, char *family, double font_size, char alignment,
     cairo_text_path (cr, text);
     cairo_fill(cr);
     cairo_restore(cr);//还原画笔
+
+    return 0;
 }
 
-void draw::draw_png (char *pngfilename, double x, double y, double width, double height)
+int8_t draw::draw_png (const char *pngfilename, double x, double y, double width, double height)
 {
+    if(!this->initrd)return 1;
+
     cairo_surface_t *img;
     img=cairo_image_surface_create_from_png(pngfilename);
 
@@ -126,10 +139,14 @@ void draw::draw_png (char *pngfilename, double x, double y, double width, double
 
     cairo_surface_destroy (img);//回收PNG介质
     cairo_restore(cr);//还原画笔
+
+    return 0;
 }
 
-void draw::draw_svg (char *svgfilename, double x, double y, double width, double height)
+int8_t draw::draw_svg (const char *svgfilename, double x, double y, double width, double height)
 {
+    if(!this->initrd)return 1;
+
     RsvgHandle *svg;
     svg = rsvg_handle_new_from_file(svgfilename,NULL);
 
@@ -150,9 +167,8 @@ void draw::draw_svg (char *svgfilename, double x, double y, double width, double
     }
     rsvg_handle_render_cairo(svg, cr);
 
-    rsvg_handle_free(svg);//释放handle
+    rsvg_handle_close(svg,NULL);//释放handle
     cairo_restore(cr);//还原画笔
+
+    return 0;
 }
-
-
-
