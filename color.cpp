@@ -14,7 +14,7 @@ color::color(int32_t code)
     this->set(code);
 }
 
-color::color(char *code)
+color::color(const char *code)
 {
     this->set(code);
 }
@@ -49,7 +49,7 @@ void color::set(int32_t code)
     this->blue=(double)(code&0xff)/(double)0xff;
 }
 
-void color::set(char *code)
+void color::set(const char *code)
 {
     int32_t ecode;
     if(code[0]=='#')

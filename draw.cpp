@@ -53,6 +53,29 @@ int8_t draw::init(const char *filename,surface_type type,double width,double hei
 
 int8_t draw::make()
 {
+    const char *jsondata="[{\"type\":\"rectangle\",\"color_code\":\"FCF7E8\"},{\"type\":\"svg\",\"filename\":\"bg-veins.svg\"},{\"type\":\"png\",\"filename\":\"1.png\"},{\"type\":\"text\",\"text\":\"YJBeetle\"}]";
+    jsondata_init(jsondata);
+
+    int count=jsondata_count(); //元素个数
+    const char *type;
+
+    for(int i=0;jsondata_element_in(i),i!=count;jsondata_element_out(),++i) //循环处理该成员中的元素
+    {
+        type=jsondata_getitem("type");
+        printf("%s\n",type); //输出值
+        printf("==========\n");
+
+        if(strstr(type,"rectangle"))
+        {
+            const char *color=jsondata_getitem("color");
+        }
+    }
+
+
+
+
+
+
     init("out.pdf",PDF,A3_HEIGHT,A3_WIDTH);
 
     draw_rectangle(0xFCF7E8, 0, 0, page_width, page_height);
@@ -73,12 +96,43 @@ int8_t draw::make()
     return 0;
 }
 
-int8_t draw::draw_rectangle(int32_t color_code, double x, double y, double width, double height)
+int8_t draw::jsondata_init(const char *jsondata)
+{
+    jsondata_parser=json_parser_new();
+    json_parser_load_from_data(jsondata_parser,jsondata,-1,NULL);
+    jsondata_node=json_parser_get_root(jsondata_parser); //得到root结点
+    jsondata_reader=json_reader_new(jsondata_node); //使用JsonReader来做解析
+    return 0;
+}
+
+const char * draw::jsondata_getitem(const char *item)
+{
+    json_reader_read_member(jsondata_reader,item); //得到该元素中的成员
+    const char *value=json_reader_get_string_value(jsondata_reader);
+    json_reader_end_member(jsondata_reader); //返回上一个节点
+    return value;
+}
+
+int32_t draw::jsondata_count()
+{
+    return json_reader_count_elements(jsondata_reader);
+}
+
+int8_t draw::jsondata_element_in(int32_t i)
+{
+    json_reader_read_element(jsondata_reader,i); //读取第i个元素
+}
+
+int8_t draw::jsondata_element_out()
+{
+    json_reader_end_element(jsondata_reader); //返回上一个节点
+}
+
+int8_t draw::draw_rectangle(color argb, double x, double y, double width, double height)
 {
     if(!this->initrd)return 1;
 
     cairo_save(cr);//保存画笔
-    color argb(color_code);
     cairo_set_source_rgba (cr, argb.red_double(), argb.green_double(), argb.blue_double(), argb.alpha_double());
     cairo_rectangle(cr, x, y, width, height);
     cairo_fill(cr);
@@ -87,12 +141,11 @@ int8_t draw::draw_rectangle(int32_t color_code, double x, double y, double width
     return 0;
 }
 
-int8_t draw::draw_text(const char *text, const char *family, double font_size, char alignment, int32_t color_code, double x, double y)
+int8_t draw::draw_text(const char *text, const char *family, double font_size, char alignment, color argb, double x, double y)
 {
     if(!this->initrd)return 1;
 
     cairo_save(cr);//保存画笔
-    color argb(color_code);
     cairo_set_source_rgba (cr, argb.red_double(), argb.green_double(), argb.blue_double(), argb.alpha_double());
     cairo_select_font_face (cr, family, CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_NORMAL);
     cairo_set_font_size (cr, font_size);
