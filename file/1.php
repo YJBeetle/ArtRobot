@@ -9,4 +9,6 @@ $data=array(
 echo "=========\n";
 echo json_encode($data)."\n";
 echo "=========\n";
-
+echo "=========\n";
+echo addslashes(json_encode($data))."\n";
+echo "=========\n";
