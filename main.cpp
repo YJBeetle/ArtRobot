@@ -9,6 +9,8 @@
 #include <cairo-svg.h>
 #include <librsvg/rsvg.h>
 
+#include <json-glib/json-glib.h>
+
 #include "default.h"
 #include "color.h"
 #include "draw.h"
