@@ -53,9 +53,9 @@ void color::set(const char *code)
 {
     int32_t ecode;
     if(code[0]=='#')
-        sscanf(code,"#%x",ecode);
+        sscanf(code,"#%x",&ecode);
     else
-        sscanf(code,"%x",ecode);
+        sscanf(code,"%x",&ecode);
     this->set(ecode);
 }
 

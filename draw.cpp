@@ -78,7 +78,7 @@ int8_t draw::make()
 
     init("out.pdf",PDF,A3_HEIGHT,A3_WIDTH);
 
-    draw_rectangle(0xFCF7E8, 0, 0, page_width, page_height);
+    draw_rectangle("FCF7E8", 0, 0, page_width, page_height);
     draw_svg("bg-veins.svg", 0, 0, page_width, page_height);
     draw_png("1.png",100,100,100,100);
     draw_svg("logo.svg", (page_width-50)/2, 30, 50, 37.544);
