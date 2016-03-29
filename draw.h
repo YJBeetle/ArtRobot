@@ -22,6 +22,7 @@ private:
     cairo_t *cr;//画笔
 
     int8_t init(const char *filename,surface_type type,double width,double height);
+    int8_t uninit();
 
     JsonParser *jsondata_parser;
     JsonNode *jsondata_node;

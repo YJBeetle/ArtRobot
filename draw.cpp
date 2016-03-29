@@ -51,6 +51,12 @@ int8_t draw::init(const char *filename,surface_type type,double width,double hei
     return 0;
 }
 
+int8_t draw::uninit()
+{
+    cairo_destroy (cr);//回收画笔
+    cairo_surface_destroy (surface);//回收介质
+}
+
 int8_t draw::make()
 {
     const char *jsondata="[{\"type\":\"rectangle\",\"color_code\":\"FCF7E8\"},{\"type\":\"svg\",\"filename\":\"bg-veins.svg\"},{\"type\":\"png\",\"filename\":\"1.png\"},{\"type\":\"text\",\"text\":\"YJBeetle\"}]";
@@ -89,9 +95,7 @@ int8_t draw::make()
     draw_text("YJBeetle", "Yuanti SC", 20, 1, 0x686767, page_width/2, 100);
     draw_text("A测试中文", "Lantinghei SC Extralight", 20, 1, 0x686767, page_width/2, 120);
 
-
-    cairo_destroy (cr);//回收画笔
-    cairo_surface_destroy (surface);//回收介质
+    uninit();
 
     return 0;
 }
