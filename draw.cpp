@@ -60,40 +60,26 @@ int8_t draw::uninit()
 
 int8_t draw::make()
 {
-    const char *jsondata="{\"outfile\":\"out.pdf\",\"type\":\"PDF\",\"width\":\"420\",\"height\":\"297\",\"draw\":[{\"type\":\"rectangle\",\"color\":\"FCF7E8\"},{\"type\":\"svg\",\"filename\":\"bg-veins.svg\"},{\"type\":\"png\",\"filename\":\"1.png\"},{\"type\":\"text\",\"text\":\"YJBeetle\"}]}";
+    const char *jsondata="{\"outfile\":\"out.pdf\",\"type\":\"PDF\",\"width\":420,\"height\":297,\"draw\":[{\"type\":\"rectangle\",\"color\":\"FCF7E8\",\"x\":0,\"y\":0,\"width\":420,\"height\":297},{\"type\":\"svg\",\"filename\":\"bg-veins.svg\"},{\"type\":\"png\",\"filename\":\"1.png\"},{\"type\":\"text\",\"text\":\"YJBeetle\"}]}";
     const char *type;
 
     jsondata_init(jsondata);
 
-    type=jsondata_getitem("type");
-    printf("%s\n",type);
-    type=jsondata_getitem("width");
-    printf("%s\n",type);
-    type=jsondata_getitem("height");
-    printf("%s\n",type);
-    init(jsondata_getitem("outfile"),"PDF",A3_HEIGHT,A3_WIDTH);
+    init(jsondata_get_string("outfile"),jsondata_get_string("type"),jsondata_get_double("width"),jsondata_get_double("height"));
 
     jsondata_read_member("draw");
     int count=jsondata_count(); //元素个数
     for(int i=0;jsondata_read_element(i),i<count;jsondata_end_element(),++i) //循环处理该成员中的元素
     {
-        type=jsondata_getitem("type");
+        type=jsondata_get_string("type");
         printf("%s\n",type); //输出值
-        printf("==========\n");
 
         if(strstr(type,"rectangle"))
         {
-            const char *color=jsondata_getitem("color");
+            draw_rectangle(jsondata_get_string("color"), jsondata_get_double("x"), jsondata_get_double("y"), jsondata_get_double("width"), jsondata_get_double("height"));
         }
     }
 
-
-
-
-
-
-
-    draw_rectangle("0xFCF7E8", 0, 0, page_width, page_height);
     draw_svg("bg-veins.svg", 0, 0, page_width, page_height);
     draw_png("1.png",100,100,100,100);
     draw_svg("logo.svg", (page_width-50)/2, 30, 50, 37.544);
@@ -143,10 +129,26 @@ int8_t draw::jsondata_end_element()
     json_reader_end_element(jsondata_reader); //返回上一个节点
 }
 
-const char * draw::jsondata_getitem(const char *item)
+const char * draw::jsondata_get_string(const char *item)
 {
     jsondata_read_member(item); //得到该元素中的成员
     const char *value=json_reader_get_string_value(jsondata_reader);
+    jsondata_end_member(); //返回上一个节点
+    return value;
+}
+
+int64_t draw::jsondata_get_int(const char *item)
+{
+    jsondata_read_member(item); //得到该元素中的成员
+    int64_t value=json_reader_get_int_value(jsondata_reader);
+    jsondata_end_member(); //返回上一个节点
+    return value;
+}
+
+double draw::jsondata_get_double(const char *item)
+{
+    jsondata_read_member(item); //得到该元素中的成员
+    int64_t value=json_reader_get_double_value(jsondata_reader);
     jsondata_end_member(); //返回上一个节点
     return value;
 }
