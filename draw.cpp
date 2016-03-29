@@ -20,32 +20,33 @@ draw::draw()
     this->initrd=0;
 }
 
-int8_t draw::init(const char *filename,surface_type type,double width,double height)
+int8_t draw::init(const char *filename,const char *type,double width,double height)
 {
     if(this->initrd)return 1;
     this->initrd=1;
 
     //this->outfile=filename;
-    this->out_type=type;
+    //this->out_type=type;
     this->page_width=width;
     this->page_height=height;
 
-    switch (type) {
-    case PDF://PDF
+    if(strstr(type,"PDF")||strstr(type,"pdf"))
+    {
         surface = cairo_pdf_surface_create (filename, MM2PT(page_width), MM2PT(page_height));//创建介质
         //cairo_surface_set_fallback_resolution(surface,300,300);//设置分辨率
         cr = cairo_create (surface);//创建画笔
         cairo_scale (cr, MM2PT(1), MM2PT(1));//缩放画笔，因PDF用mm作为最终单位故需缩放画笔
-        break;
-    case SVG://SVG
+    }
+    else if(strstr(type,"SVG")||strstr(type,"svg"))
+    {
         surface = cairo_svg_surface_create (filename, page_width, page_height);
         cr = cairo_create (surface);//创建画笔
-        break;
-    default:
+    }
+    else
+    {
         fprintf (stderr, "未知的输出类型\n");
         this->initrd=0;
         return 2;
-        break;
     }
 
     return 0;
@@ -64,29 +65,26 @@ int8_t draw::make()
 
     jsondata_init(jsondata);
 
-    type=jsondata_getitem("outfile");
-    printf("%s\n",type); //输出值
-    printf("==\n");
+    type=jsondata_getitem("type");
+    printf("%s\n",type);
+    type=jsondata_getitem("width");
+    printf("%s\n",type);
+    type=jsondata_getitem("height");
+    printf("%s\n",type);
+    init(jsondata_getitem("outfile"),"PDF",A3_HEIGHT,A3_WIDTH);
 
     jsondata_read_member("draw");
-
     int count=jsondata_count(); //元素个数
-    printf("count=%d\n",count);
-    printf("==\n");
-
-
     for(int i=0;jsondata_read_element(i),i<count;jsondata_end_element(),++i) //循环处理该成员中的元素
     {
-
-
         type=jsondata_getitem("type");
         printf("%s\n",type); //输出值
         printf("==========\n");
 
-        //if(strstr(type,"rectangle"))
-        //{
-        //    const char *color=jsondata_getitem("color");
-        //}
+        if(strstr(type,"rectangle"))
+        {
+            const char *color=jsondata_getitem("color");
+        }
     }
 
 
@@ -94,7 +92,6 @@ int8_t draw::make()
 
 
 
-    init("out.pdf",PDF,A3_HEIGHT,A3_WIDTH);
 
     draw_rectangle("0xFCF7E8", 0, 0, page_width, page_height);
     draw_svg("bg-veins.svg", 0, 0, page_width, page_height);

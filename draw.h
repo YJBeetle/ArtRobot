@@ -1,27 +1,20 @@
 #ifndef DRAW_H
 #define DRAW_H
 
-enum _surface_type{
-    PDF,
-    SVG
-};
-
-typedef enum _surface_type surface_type;
-
 class draw
 {
 private:
     int8_t initrd;
 
-    //char *outfile;
+    //const char *outfile;
+    //const char *out_type;
     double page_width;
     double page_height;
-    surface_type out_type;
 
     cairo_surface_t *surface;//介质
     cairo_t *cr;//画笔
 
-    int8_t init(const char *filename,surface_type type,double width,double height);
+    int8_t init(const char *filename,const char *type,double width,double height);
     int8_t uninit();
 
     JsonParser *jsondata_parser;
