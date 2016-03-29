@@ -59,22 +59,34 @@ int8_t draw::uninit()
 
 int8_t draw::make()
 {
-    const char *jsondata="[{\"type\":\"rectangle\",\"color_code\":\"FCF7E8\"},{\"type\":\"svg\",\"filename\":\"bg-veins.svg\"},{\"type\":\"png\",\"filename\":\"1.png\"},{\"type\":\"text\",\"text\":\"YJBeetle\"}]";
-    jsondata_init(jsondata);
-
-    int count=jsondata_count(); //元素个数
+    const char *jsondata="{\"outfile\":\"out.pdf\",\"type\":\"PDF\",\"width\":\"420\",\"height\":\"297\",\"draw\":[{\"type\":\"rectangle\",\"color\":\"FCF7E8\"},{\"type\":\"svg\",\"filename\":\"bg-veins.svg\"},{\"type\":\"png\",\"filename\":\"1.png\"},{\"type\":\"text\",\"text\":\"YJBeetle\"}]}";
     const char *type;
 
-    for(int i=0;jsondata_element_in(i),i!=count;jsondata_element_out(),++i) //循环处理该成员中的元素
+    jsondata_init(jsondata);
+
+    type=jsondata_getitem("outfile");
+    printf("%s\n",type); //输出值
+    printf("==\n");
+
+    jsondata_read_member("draw");
+
+    int count=jsondata_count(); //元素个数
+    printf("count=%d\n",count);
+    printf("==\n");
+
+
+    for(int i=0;jsondata_read_element(i),i<count;jsondata_end_element(),++i) //循环处理该成员中的元素
     {
+
+
         type=jsondata_getitem("type");
         printf("%s\n",type); //输出值
         printf("==========\n");
 
-        if(strstr(type,"rectangle"))
-        {
-            const char *color=jsondata_getitem("color");
-        }
+        //if(strstr(type,"rectangle"))
+        //{
+        //    const char *color=jsondata_getitem("color");
+        //}
     }
 
 
@@ -109,27 +121,37 @@ int8_t draw::jsondata_init(const char *jsondata)
     return 0;
 }
 
-const char * draw::jsondata_getitem(const char *item)
-{
-    json_reader_read_member(jsondata_reader,item); //得到该元素中的成员
-    const char *value=json_reader_get_string_value(jsondata_reader);
-    json_reader_end_member(jsondata_reader); //返回上一个节点
-    return value;
-}
-
 int32_t draw::jsondata_count()
 {
     return json_reader_count_elements(jsondata_reader);
 }
 
-int8_t draw::jsondata_element_in(int32_t i)
+int8_t draw::jsondata_read_member(const char *member)
+{
+    json_reader_read_member(jsondata_reader,member);
+}
+
+int8_t draw::jsondata_end_member()
+{
+    json_reader_end_member(jsondata_reader);
+}
+
+int8_t draw::jsondata_read_element(int32_t i)
 {
     json_reader_read_element(jsondata_reader,i); //读取第i个元素
 }
 
-int8_t draw::jsondata_element_out()
+int8_t draw::jsondata_end_element()
 {
     json_reader_end_element(jsondata_reader); //返回上一个节点
+}
+
+const char * draw::jsondata_getitem(const char *item)
+{
+    jsondata_read_member(item); //得到该元素中的成员
+    const char *value=json_reader_get_string_value(jsondata_reader);
+    jsondata_end_member(); //返回上一个节点
+    return value;
 }
 
 int8_t draw::draw_rectangle(color argb, double x, double y, double width, double height)
