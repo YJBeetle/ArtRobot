@@ -18,6 +18,7 @@
 draw::draw()
 {
     this->initrd=0;
+    this->jsondata_initrd=0;
 }
 
 int8_t draw::init(const char *filename,const char *type,double width,double height)
@@ -98,6 +99,9 @@ int8_t draw::make()
 
 int8_t draw::jsondata_init(const char *jsondata)
 {
+    if(this->jsondata_initrd)return 1;
+    this->jsondata_initrd=1;
+
     jsondata_parser=json_parser_new();
     json_parser_load_from_data(jsondata_parser,jsondata,-1,NULL);
     jsondata_node=json_parser_get_root(jsondata_parser); //得到root结点
@@ -107,31 +111,37 @@ int8_t draw::jsondata_init(const char *jsondata)
 
 int32_t draw::jsondata_count()
 {
+    if(!this->jsondata_initrd)return -1;
     return json_reader_count_elements(jsondata_reader);
 }
 
 int8_t draw::jsondata_read_member(const char *member)
 {
+    if(!this->jsondata_initrd)return 1;
     json_reader_read_member(jsondata_reader,member);
 }
 
 int8_t draw::jsondata_end_member()
 {
+    if(!this->jsondata_initrd)return 1;
     json_reader_end_member(jsondata_reader);
 }
 
 int8_t draw::jsondata_read_element(int32_t i)
 {
+    if(!this->jsondata_initrd)return 1;
     json_reader_read_element(jsondata_reader,i); //读取第i个元素
 }
 
 int8_t draw::jsondata_end_element()
 {
+    if(!this->jsondata_initrd)return 1;
     json_reader_end_element(jsondata_reader); //返回上一个节点
 }
 
 const char * draw::jsondata_get_string(const char *item)
 {
+    if(!this->jsondata_initrd)return 0;
     jsondata_read_member(item); //得到该元素中的成员
     const char *value=json_reader_get_string_value(jsondata_reader);
     jsondata_end_member(); //返回上一个节点
@@ -140,6 +150,7 @@ const char * draw::jsondata_get_string(const char *item)
 
 int64_t draw::jsondata_get_int(const char *item)
 {
+    if(!this->jsondata_initrd)return 0;
     jsondata_read_member(item); //得到该元素中的成员
     int64_t value=json_reader_get_int_value(jsondata_reader);
     jsondata_end_member(); //返回上一个节点
@@ -148,6 +159,7 @@ int64_t draw::jsondata_get_int(const char *item)
 
 double draw::jsondata_get_double(const char *item)
 {
+    if(!this->jsondata_initrd)return 0;
     jsondata_read_member(item); //得到该元素中的成员
     int64_t value=json_reader_get_double_value(jsondata_reader);
     jsondata_end_member(); //返回上一个节点

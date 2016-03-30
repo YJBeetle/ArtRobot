@@ -17,6 +17,7 @@ private:
     int8_t init(const char *filename,const char *type,double width,double height);
     int8_t uninit();
 
+    int8_t jsondata_initrd;
     JsonParser *jsondata_parser;
     JsonNode *jsondata_node;
     JsonReader *jsondata_reader;
