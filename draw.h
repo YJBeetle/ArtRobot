@@ -41,7 +41,6 @@ private:
 public:
     draw();
     draw(const char *jsondata);
-    int8_t make();//将会删除，测试时期使用
     int8_t make(const char *jsondata);
 
 };
