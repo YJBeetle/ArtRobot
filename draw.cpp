@@ -21,6 +21,54 @@ draw::draw()
     this->jsondata_initrd=0;
 }
 
+draw::draw(const char *jsondata)
+{
+    draw();//构造函数初始化
+    make(jsondata);
+}
+
+int8_t draw::make()//将会删除，测试时期使用
+{
+    const char *jsondata="{\"outfile\":\"out.pdf\",\"type\":\"PDF\",\"width\":420,\"height\":297,\"draw\":[{\"type\":\"rectangle\",\"color\":\"FCF7E8\",\"x\":0,\"y\":0,\"width\":420,\"height\":297},{\"type\":\"svgfile\",\"filename\":\"bg-veins.svg\",\"x\":0,\"y\":0,\"width\":420,\"height\":297},{\"type\":\"pngfile\",\"filename\":\"1.png\",\"x\":10,\"y\":10,\"width\":100,\"height\":100},{\"type\":\"rectangle\",\"color\":\"686767\",\"x\":0,\"y\":0,\"width\":420,\"height\":16},{\"type\":\"rectangle\",\"color\":\"686767\",\"x\":0,\"y\":281,\"width\":420,\"height\":16},{\"type\":\"text\",\"text\":\"Add:No.9 West Section of the South 2nd Ring.LianHu District.Xi\'an\",\"family\":\"Lantinghei SC Demibold\",\"size\":5,\"alignment\":1,\"color\":\"ffffff\",\"x\":210,\"y\":10},{\"type\":\"text\",\"text\":\"Add:No.9 West Section of the South 2nd Ring.LianHu District.Xi\'an\",\"family\":\"Lantinghei SC Demibold\",\"size\":5,\"alignment\":1,\"color\":\"ffffff\",\"x\":210,\"y\":291},{\"type\":\"svgfile\",\"filename\":\"logo.svg\",\"x\":185,\"y\":30,\"width\":50,\"height\":37.544},{\"type\":\"text\",\"text\":\"YJBeetle\",\"family\":\"Yuanti SC\",\"size\":20,\"alignment\":1,\"color\":\"686767\",\"x\":210,\"y\":100},{\"type\":\"text\",\"text\":\"\\u6d4b\\u8bd5\\u4e2d\\u6587\",\"family\":\"Lantinghei SC Extralight\",\"size\":20,\"alignment\":1,\"color\":\"686767\",\"x\":210,\"y\":120}]}";
+    make(jsondata);
+}
+
+int8_t draw::make(const char *jsondata)
+{
+    jsondata_init(jsondata);
+
+    init(jsondata_get_string("outfile"),jsondata_get_string("type"),jsondata_get_double("width"),jsondata_get_double("height"));
+
+    jsondata_read_member("draw");
+    int count=jsondata_count(); //元素个数
+    const char *type;
+    for(int i=0;jsondata_read_element(i),i<count;jsondata_end_element(),++i) //循环处理该成员中的元素
+    {
+        type=jsondata_get_string("type");
+
+        if(strstr(type,"rectangle"))
+        {
+            draw_rectangle(jsondata_get_string("color"), jsondata_get_double("x"), jsondata_get_double("y"), jsondata_get_double("width"), jsondata_get_double("height"));
+        }
+        else if(strstr(type,"text"))
+        {
+            draw_text(jsondata_get_string("text"), jsondata_get_string("family"), jsondata_get_double("size"), jsondata_get_int("alignment"), jsondata_get_string("color"), jsondata_get_double("x"), jsondata_get_double("y"));
+        }
+        else if(strstr(type,"svgfile"))
+        {
+            draw_svg(jsondata_get_string("filename"), jsondata_get_double("x"), jsondata_get_double("y"), jsondata_get_double("width"), jsondata_get_double("height"));
+        }
+        else if(strstr(type,"pngfile"))
+        {
+            draw_png(jsondata_get_string("filename"), jsondata_get_double("x"), jsondata_get_double("y"), jsondata_get_double("width"), jsondata_get_double("height"));
+        }
+    }
+
+    uninit();
+
+    return 0;
+}
+
 int8_t draw::init(const char *filename,const char *type,double width,double height)
 {
     if(this->initrd)return 1;
@@ -57,44 +105,6 @@ int8_t draw::uninit()
 {
     cairo_destroy (cr);//回收画笔
     cairo_surface_destroy (surface);//回收介质
-}
-
-int8_t draw::make()
-{
-    const char *jsondata="{\"outfile\":\"out.pdf\",\"type\":\"PDF\",\"width\":420,\"height\":297,\"draw\":[{\"type\":\"rectangle\",\"color\":\"FCF7E8\",\"x\":0,\"y\":0,\"width\":420,\"height\":297},{\"type\":\"svgfile\",\"filename\":\"bg-veins.svg\",\"x\":0,\"y\":0,\"width\":420,\"height\":297},{\"type\":\"pngfile\",\"filename\":\"1.png\",\"x\":10,\"y\":10,\"width\":100,\"height\":100},{\"type\":\"rectangle\",\"color\":\"686767\",\"x\":0,\"y\":0,\"width\":420,\"height\":16},{\"type\":\"rectangle\",\"color\":\"686767\",\"x\":0,\"y\":281,\"width\":420,\"height\":16},{\"type\":\"text\",\"text\":\"Add:No.9 West Section of the South 2nd Ring.LianHu District.Xi\'an\",\"family\":\"Lantinghei SC Demibold\",\"size\":5,\"alignment\":1,\"color\":\"ffffff\",\"x\":210,\"y\":10},{\"type\":\"text\",\"text\":\"Add:No.9 West Section of the South 2nd Ring.LianHu District.Xi\'an\",\"family\":\"Lantinghei SC Demibold\",\"size\":5,\"alignment\":1,\"color\":\"ffffff\",\"x\":210,\"y\":291},{\"type\":\"svgfile\",\"filename\":\"logo.svg\",\"x\":185,\"y\":30,\"width\":50,\"height\":37.544},{\"type\":\"text\",\"text\":\"YJBeetle\",\"family\":\"Yuanti SC\",\"size\":20,\"alignment\":1,\"color\":\"686767\",\"x\":210,\"y\":100},{\"type\":\"text\",\"text\":\"\\u6d4b\\u8bd5\\u4e2d\\u6587\",\"family\":\"Lantinghei SC Extralight\",\"size\":20,\"alignment\":1,\"color\":\"686767\",\"x\":210,\"y\":120}]}";
-
-    jsondata_init(jsondata);
-
-    init(jsondata_get_string("outfile"),jsondata_get_string("type"),jsondata_get_double("width"),jsondata_get_double("height"));
-
-    jsondata_read_member("draw");
-    int count=jsondata_count(); //元素个数
-    const char *type;
-    for(int i=0;jsondata_read_element(i),i<count;jsondata_end_element(),++i) //循环处理该成员中的元素
-    {
-        type=jsondata_get_string("type");
-
-        if(strstr(type,"rectangle"))
-        {
-            draw_rectangle(jsondata_get_string("color"), jsondata_get_double("x"), jsondata_get_double("y"), jsondata_get_double("width"), jsondata_get_double("height"));
-        }
-        else if(strstr(type,"text"))
-        {
-            draw_text(jsondata_get_string("text"), jsondata_get_string("family"), jsondata_get_double("size"), jsondata_get_int("alignment"), jsondata_get_string("color"), jsondata_get_double("x"), jsondata_get_double("y"));
-        }
-        else if(strstr(type,"svgfile"))
-        {
-            draw_svg(jsondata_get_string("filename"), jsondata_get_double("x"), jsondata_get_double("y"), jsondata_get_double("width"), jsondata_get_double("height"));
-        }
-        else if(strstr(type,"pngfile"))
-        {
-            draw_png(jsondata_get_string("filename"), jsondata_get_double("x"), jsondata_get_double("y"), jsondata_get_double("width"), jsondata_get_double("height"));
-        }
-    }
-
-    uninit();
-
-    return 0;
 }
 
 int8_t draw::jsondata_init(const char *jsondata)
