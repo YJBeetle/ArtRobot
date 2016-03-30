@@ -60,8 +60,7 @@ int8_t draw::uninit()
 
 int8_t draw::make()
 {
-    const char *jsondata="{\"outfile\":\"out.pdf\",\"type\":\"PDF\",\"width\":420,\"height\":297,\"draw\":[{\"type\":\"rectangle\",\"color\":\"FCF7E8\",\"x\":0,\"y\":0,\"width\":420,\"height\":297},{\"type\":\"svg\",\"filename\":\"bg-veins.svg\"},{\"type\":\"png\",\"filename\":\"1.png\"},{\"type\":\"text\",\"text\":\"YJBeetle\"}]}";
-    const char *type;
+    const char *jsondata="{\"outfile\":\"out.pdf\",\"type\":\"PDF\",\"width\":420,\"height\":297,\"draw\":[{\"type\":\"rectangle\",\"color\":\"FCF7E8\",\"x\":0,\"y\":0,\"width\":420,\"height\":297},{\"type\":\"svgfile\",\"filename\":\"bg-veins.svg\",\"x\":0,\"y\":0,\"width\":420,\"height\":297},{\"type\":\"pngfile\",\"filename\":\"1.png\",\"x\":10,\"y\":10,\"width\":100,\"height\":100},{\"type\":\"rectangle\",\"color\":\"686767\",\"x\":0,\"y\":0,\"width\":420,\"height\":16},{\"type\":\"rectangle\",\"color\":\"686767\",\"x\":0,\"y\":281,\"width\":420,\"height\":16},{\"type\":\"text\",\"text\":\"Add:No.9 West Section of the South 2nd Ring.LianHu District.Xi\'an\",\"family\":\"Lantinghei SC Demibold\",\"size\":5,\"alignment\":1,\"color\":\"ffffff\",\"x\":210,\"y\":10},{\"type\":\"text\",\"text\":\"Add:No.9 West Section of the South 2nd Ring.LianHu District.Xi\'an\",\"family\":\"Lantinghei SC Demibold\",\"size\":5,\"alignment\":1,\"color\":\"ffffff\",\"x\":210,\"y\":291},{\"type\":\"svgfile\",\"filename\":\"logo.svg\",\"x\":185,\"y\":30,\"width\":50,\"height\":37.544},{\"type\":\"text\",\"text\":\"YJBeetle\",\"family\":\"Yuanti SC\",\"size\":20,\"alignment\":1,\"color\":\"686767\",\"x\":210,\"y\":100},{\"type\":\"text\",\"text\":\"\\u6d4b\\u8bd5\\u4e2d\\u6587\",\"family\":\"Lantinghei SC Extralight\",\"size\":20,\"alignment\":1,\"color\":\"686767\",\"x\":210,\"y\":120},{\"type\":\"rectangle\"},{\"type\":\"text\"},{\"type\":\"svgfile\"},{\"type\":\"pngfile\"}]}";
 
     jsondata_init(jsondata);
 
@@ -69,26 +68,28 @@ int8_t draw::make()
 
     jsondata_read_member("draw");
     int count=jsondata_count(); //元素个数
+    const char *type;
     for(int i=0;jsondata_read_element(i),i<count;jsondata_end_element(),++i) //循环处理该成员中的元素
     {
         type=jsondata_get_string("type");
-        printf("%s\n",type); //输出值
 
         if(strstr(type,"rectangle"))
         {
             draw_rectangle(jsondata_get_string("color"), jsondata_get_double("x"), jsondata_get_double("y"), jsondata_get_double("width"), jsondata_get_double("height"));
         }
+        else if(strstr(type,"text"))
+        {
+            draw_text(jsondata_get_string("text"), jsondata_get_string("family"), jsondata_get_double("size"), jsondata_get_int("alignment"), jsondata_get_string("color"), jsondata_get_double("x"), jsondata_get_double("y"));
+        }
+        else if(strstr(type,"svgfile"))
+        {
+            draw_svg(jsondata_get_string("filename"), jsondata_get_double("x"), jsondata_get_double("y"), jsondata_get_double("width"), jsondata_get_double("height"));
+        }
+        else if(strstr(type,"pngfile"))
+        {
+            draw_png(jsondata_get_string("filename"), jsondata_get_double("x"), jsondata_get_double("y"), jsondata_get_double("width"), jsondata_get_double("height"));
+        }
     }
-
-    draw_svg("bg-veins.svg", 0, 0, page_width, page_height);
-    draw_png("1.png",100,100,100,100);
-    draw_svg("logo.svg", (page_width-50)/2, 30, 50, 37.544);
-    draw_rectangle( 0x686767, 0, 0, page_width, 16);
-    draw_rectangle( 0x686767, 0, page_height-16, page_width, 16);
-    draw_text("Add:No.9 West Section of the South 2nd Ring.LianHu District.Xi'an", "Lantinghei SC Demibold", 5, 1, 0xffffff, page_width/2, 10);
-    draw_text("Add:No.9 West Section of the South 2nd Ring.LianHu District.Xi'an", "Lantinghei SC Demibold", 5, 1, 0xffffff, page_width/2, page_height-6);
-    draw_text("YJBeetle", "Yuanti SC", 20, 1, 0x686767, page_width/2, 100);
-    draw_text("A测试中文", "Lantinghei SC Extralight", 20, 1, 0x686767, page_width/2, 120);
 
     uninit();
 
@@ -166,24 +167,32 @@ int8_t draw::draw_rectangle(color argb, double x, double y, double width, double
     return 0;
 }
 
-int8_t draw::draw_text(const char *text, const char *family, double font_size, char alignment, color argb, double x, double y)
+int8_t draw::draw_text(const char *text, const char *family, double font_size, int8_t alignment, color argb, double x, double y)
 {
     if(!this->initrd)return 1;
+    if(!text)return 2;
+    if(!family)return 3;
 
     cairo_save(cr);//保存画笔
     cairo_set_source_rgba (cr, argb.red_double(), argb.green_double(), argb.blue_double(), argb.alpha_double());
     cairo_select_font_face (cr, family, CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_NORMAL);
     cairo_set_font_size (cr, font_size);
 
-    if (alignment)
+    cairo_text_extents_t extents;
+    switch(alignment)
     {
-        cairo_text_extents_t extents;
+    case 1:
         cairo_text_extents(cr,text,&extents);
         cairo_move_to (cr, x-extents.width/2, y);
-    }
-    else
-    {
+        break;
+    case 2:
+        cairo_text_extents(cr,text,&extents);
+        cairo_move_to (cr, x-extents.width, y);
+        break;
+    case 0:
+    default:
         cairo_move_to (cr, x, y);
+        break;
     }
 
     //cairo_show_text (cr, text);
