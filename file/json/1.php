@@ -93,22 +93,10 @@ $data=(object)[
 			"color"=>"686767",
 			"x"=>420/2,
 			"y"=>120
-		],
-
-		(object)[
-			"type"=>"rectangle"
-		],
-		(object)[
-			"type"=>"text"
-		],
-		(object)[
-			"type"=>"svgfile"
-		],
-		(object)[
-			"type"=>"pngfile"
 		]
 	]
 ];
+
 echo "=========\n";
 echo json_encode($data)."\n";
 echo "=========\n";
