@@ -17,8 +17,8 @@
 
 draw::draw()
 {
-    this->initrd=0;
-    this->jsondata_initrd=0;
+    this->inited=0;
+    this->jsondata_inited=0;
 }
 
 draw::draw(const char *jsondata)
@@ -65,8 +65,8 @@ int8_t draw::make(const char *jsondata)
 
 int8_t draw::init(const char *filename,const char *type,double width,double height)
 {
-    if(this->initrd)return 1;
-    this->initrd=1;
+    if(this->inited)return 1;
+    this->inited=1;
 
     //this->outfile=filename;
     //this->out_type=type;
@@ -88,7 +88,7 @@ int8_t draw::init(const char *filename,const char *type,double width,double heig
     else
     {
         fprintf (stderr, "未知的输出类型\n");
-        this->initrd=0;
+        this->inited=0;
         return 2;
     }
 
@@ -103,8 +103,8 @@ int8_t draw::uninit()
 
 int8_t draw::jsondata_init(const char *jsondata)
 {
-    if(this->jsondata_initrd)return 1;
-    this->jsondata_initrd=1;
+    if(this->jsondata_inited)return 1;
+    this->jsondata_inited=1;
 
     jsondata_parser=json_parser_new();
     json_parser_load_from_data(jsondata_parser,jsondata,-1,NULL);
@@ -115,37 +115,37 @@ int8_t draw::jsondata_init(const char *jsondata)
 
 int32_t draw::jsondata_count()
 {
-    if(!this->jsondata_initrd)return -1;
+    if(!this->jsondata_inited)return -1;
     return json_reader_count_elements(jsondata_reader);
 }
 
 int8_t draw::jsondata_read_member(const char *member)
 {
-    if(!this->jsondata_initrd)return 1;
+    if(!this->jsondata_inited)return 1;
     json_reader_read_member(jsondata_reader,member);
 }
 
 int8_t draw::jsondata_end_member()
 {
-    if(!this->jsondata_initrd)return 1;
+    if(!this->jsondata_inited)return 1;
     json_reader_end_member(jsondata_reader);
 }
 
 int8_t draw::jsondata_read_element(int32_t i)
 {
-    if(!this->jsondata_initrd)return 1;
+    if(!this->jsondata_inited)return 1;
     json_reader_read_element(jsondata_reader,i); //读取第i个元素
 }
 
 int8_t draw::jsondata_end_element()
 {
-    if(!this->jsondata_initrd)return 1;
+    if(!this->jsondata_inited)return 1;
     json_reader_end_element(jsondata_reader); //返回上一个节点
 }
 
 const char * draw::jsondata_get_string(const char *item)
 {
-    if(!this->jsondata_initrd)return 0;
+    if(!this->jsondata_inited)return 0;
     jsondata_read_member(item); //得到该元素中的成员
     const char *value=json_reader_get_string_value(jsondata_reader);
     jsondata_end_member(); //返回上一个节点
@@ -154,7 +154,7 @@ const char * draw::jsondata_get_string(const char *item)
 
 int64_t draw::jsondata_get_int(const char *item)
 {
-    if(!this->jsondata_initrd)return 0;
+    if(!this->jsondata_inited)return 0;
     jsondata_read_member(item); //得到该元素中的成员
     int64_t value=json_reader_get_int_value(jsondata_reader);
     jsondata_end_member(); //返回上一个节点
@@ -163,7 +163,7 @@ int64_t draw::jsondata_get_int(const char *item)
 
 double draw::jsondata_get_double(const char *item)
 {
-    if(!this->jsondata_initrd)return 0;
+    if(!this->jsondata_inited)return 0;
     jsondata_read_member(item); //得到该元素中的成员
     int64_t value=json_reader_get_double_value(jsondata_reader);
     jsondata_end_member(); //返回上一个节点
@@ -172,7 +172,7 @@ double draw::jsondata_get_double(const char *item)
 
 int8_t draw::draw_rectangle(color argb, double x, double y, double width, double height)
 {
-    if(!this->initrd)return 1;
+    if(!this->inited)return 1;
 
     cairo_save(cr);//保存画笔
     cairo_set_source_rgba (cr, argb.red_double(), argb.green_double(), argb.blue_double(), argb.alpha_double());
@@ -185,7 +185,7 @@ int8_t draw::draw_rectangle(color argb, double x, double y, double width, double
 
 int8_t draw::draw_text(const char *text, const char *family, double font_size, int8_t alignment, color argb, double x, double y)
 {
-    if(!this->initrd)return 1;
+    if(!this->inited)return 1;
     if(!text)return 2;
     if(!family)return 3;
 
@@ -221,7 +221,7 @@ int8_t draw::draw_text(const char *text, const char *family, double font_size, i
 
 int8_t draw::draw_png (const char *pngfilename, double x, double y, double width, double height)
 {
-    if(!this->initrd)return 1;
+    if(!this->inited)return 1;
     if(!this->filecheck(pngfilename))return 2;
 
     cairo_surface_t *img=NULL;
@@ -251,7 +251,7 @@ int8_t draw::draw_png (const char *pngfilename, double x, double y, double width
 
 int8_t draw::draw_svg (const char *svgfilename, double x, double y, double width, double height)
 {
-    if(!this->initrd)return 1;
+    if(!this->inited)return 1;
     if(!this->filecheck(svgfilename))return 2;
 
     RsvgHandle *svg;

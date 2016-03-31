@@ -4,7 +4,7 @@
 class draw
 {
 private:
-    int8_t initrd;
+    int8_t inited;
 
     //const char *outfile;
     //const char *out_type;
@@ -17,7 +17,7 @@ private:
     int8_t init(const char *filename,const char *type,double width,double height);
     int8_t uninit();
 
-    int8_t jsondata_initrd;
+    int8_t jsondata_inited;
     JsonParser *jsondata_parser;
     JsonNode *jsondata_node;
     JsonReader *jsondata_reader;
