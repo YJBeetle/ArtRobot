@@ -66,7 +66,8 @@ int8_t draw::make(const char *jsondata)
 int8_t draw::init(const char *filename,const char *type,double width,double height)
 {
     if(this->inited)return 1;
-    this->inited=1;
+    if(!filename)return 2;
+    if(!type)return 3;
 
     //this->outfile=filename;
     //this->out_type=type;
@@ -89,16 +90,21 @@ int8_t draw::init(const char *filename,const char *type,double width,double heig
     {
         fprintf (stderr, "未知的输出类型\n");
         this->inited=0;
-        return 2;
+        return 3;
     }
 
+    this->inited=1;
     return 0;
 }
 
 int8_t draw::uninit()
 {
+    if(!this->inited)return 1;
+
     cairo_destroy (cr);//回收画笔
     cairo_surface_destroy (surface);//回收介质
+
+    return 0;
 }
 
 int8_t draw::jsondata_init(const char *jsondata)
@@ -123,24 +129,28 @@ int8_t draw::jsondata_read_member(const char *member)
 {
     if(!this->jsondata_inited)return 1;
     json_reader_read_member(jsondata_reader,member);
+    return 0;
 }
 
 int8_t draw::jsondata_end_member()
 {
     if(!this->jsondata_inited)return 1;
     json_reader_end_member(jsondata_reader);
+    return 0;
 }
 
 int8_t draw::jsondata_read_element(int32_t i)
 {
     if(!this->jsondata_inited)return 1;
     json_reader_read_element(jsondata_reader,i); //读取第i个元素
+    return 0;
 }
 
 int8_t draw::jsondata_end_element()
 {
     if(!this->jsondata_inited)return 1;
     json_reader_end_element(jsondata_reader); //返回上一个节点
+    return 0;
 }
 
 const char * draw::jsondata_get_string(const char *item)
