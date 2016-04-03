@@ -3,8 +3,12 @@ cmake_minimum_required(VERSION 2.8)
 aux_source_directory(. SRC_LIST)
 
 #OS X
-include_directories(/opt/local/include/)
-include_directories(/opt/local/include/cairo/)
+include_directories(/opt/local/include/cairo)
+include_directories(/opt/local/include/librsvg-2.0)
+include_directories(/opt/local/include/glib-2.0)
+include_directories(/opt/local/lib/glib-2.0/include)
+include_directories(/opt/local/include/gdk-pixbuf-2.0)
+include_directories(/opt/local/include/json-glib-1.0)
 link_directories(/opt/local/lib/)
 
 #Win MSYS2
