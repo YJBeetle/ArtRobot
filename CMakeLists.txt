@@ -21,6 +21,6 @@ include_directories(c:/opt/msys64/mingw64/include/json-glib-1.0)
 
 add_executable(${PROJECT_NAME} ${SRC_LIST})
 
-target_link_libraries(Art_robot cairo)
-target_link_libraries(Art_robot rsvg-2)
-target_link_libraries(Art_robot json-glib-1.0)
+target_link_libraries(${PROJECT_NAME} cairo)
+target_link_libraries(${PROJECT_NAME} rsvg-2)
+target_link_libraries(${PROJECT_NAME} json-glib-1.0)
