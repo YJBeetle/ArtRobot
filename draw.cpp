@@ -21,12 +21,6 @@ draw::draw()
     this->jsondata_inited=0;
 }
 
-draw::draw(const char *jsondata)
-{
-    draw();//构造函数初始化
-    make(jsondata);
-}
-
 int8_t draw::make(const char *jsondata)
 {
     jsondata_init(jsondata);

@@ -40,7 +40,6 @@ private:
 
 public:
     draw();
-    draw(const char *jsondata);
     int8_t make(const char *jsondata);
 
 };
