@@ -19,7 +19,7 @@ color::color(const char *code)
     this->set(code);
 }
 
-color::color(int8_t red, int8_t green, int8_t blue, int8_t alpha)
+color::color(uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha)
 {
 
     this->set(red,green,blue,alpha);
@@ -66,7 +66,7 @@ void color::set(const char *code)
     this->set(ecode);
 }
 
-void color::set(int8_t red, int8_t green, int8_t blue, int8_t alpha)
+void color::set(uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha)
 {
     this->red=(double)red/(double)0xff;
     this->green=(double)green/(double)0xff;
