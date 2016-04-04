@@ -2,6 +2,14 @@ project(Art_robot)
 cmake_minimum_required(VERSION 2.8)
 aux_source_directory(. SRC_LIST)
 
+#Linux
+include_directories(/usr/include/cairo)
+include_directories(/usr/include/librsvg-2.0)
+include_directories(/usr/include/glib-2.0)
+include_directories(/usr/lib/x86_64-linux-gnu/glib-2.0/include)
+include_directories(/usr/include/gdk-pixbuf-2.0)
+include_directories(/usr/include/json-glib-1.0)
+
 #OS X
 include_directories(/opt/local/include/cairo)
 include_directories(/opt/local/include/librsvg-2.0)
