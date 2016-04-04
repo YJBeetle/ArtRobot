@@ -51,7 +51,7 @@ int8_t draw::make(const char *jsondata)
 
         if(strstr(type,"rectangle"))
         {
-            switch(draw_rectangle(jsondata_get_string("color"), jsondata_get_double("x"), jsondata_get_double("y"), jsondata_get_double("width"), jsondata_get_double("height")))
+            switch(draw_rectangle(jsondata_get_string("Color"), jsondata_get_double("x"), jsondata_get_double("y"), jsondata_get_double("width"), jsondata_get_double("height")))
             {
             case 0:
                 break;
@@ -64,7 +64,7 @@ int8_t draw::make(const char *jsondata)
         }
         else if(strstr(type,"text"))
         {
-            switch(draw_text(jsondata_get_string("text"), jsondata_get_string("family"), jsondata_get_double("size"), jsondata_get_int("alignment"), jsondata_get_string("color"), jsondata_get_double("x"), jsondata_get_double("y")))
+            switch(draw_text(jsondata_get_string("text"), jsondata_get_string("family"), jsondata_get_double("size"), jsondata_get_int("alignment"), jsondata_get_string("Color"), jsondata_get_double("x"), jsondata_get_double("y")))
             {
             case 0:
                 break;
@@ -237,12 +237,12 @@ double draw::jsondata_get_double(const char *item)
     return value;
 }
 
-int8_t draw::draw_rectangle(color argb, double x, double y, double width, double height)
+int8_t draw::draw_rectangle(Color argb, double x, double y, double width, double height)
 {
     if(!this->inited)return 1;
 
     cairo_save(cr);//保存画笔
-    cairo_set_source_rgba (cr, argb.red_double(), argb.green_double(), argb.blue_double(), argb.alpha_double());
+    cairo_set_source_rgba (cr, argb.redDouble(), argb.greenDouble(), argb.blueDouble(), argb.alphaDouble());
     cairo_rectangle(cr, x, y, width, height);
     cairo_fill(cr);
     cairo_restore(cr);//还原画笔
@@ -250,14 +250,14 @@ int8_t draw::draw_rectangle(color argb, double x, double y, double width, double
     return 0;
 }
 
-int8_t draw::draw_text(const char *text, const char *family, double font_size, int8_t alignment, color argb, double x, double y)
+int8_t draw::draw_text(const char *text, const char *family, double font_size, int8_t alignment, Color argb, double x, double y)
 {
     if(!this->inited)return 1;
     if(!text)return 2;
     if(!family)return 3;
 
     cairo_save(cr);//保存画笔
-    cairo_set_source_rgba (cr, argb.red_double(), argb.green_double(), argb.blue_double(), argb.alpha_double());
+    cairo_set_source_rgba (cr, argb.redDouble(), argb.greenDouble(), argb.blueDouble(), argb.alphaDouble());
     cairo_select_font_face (cr, family, CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_NORMAL);
     cairo_set_font_size (cr, font_size);
 
@@ -331,10 +331,10 @@ int8_t draw::draw_svg (const char *svgfilename, double x, double y, double width
     {
         unsigned int svg_width, svg_height;
         double scaleX, scaleY;
-        RsvgDimensionData dimension_data;
-        rsvg_handle_get_dimensions(svg,&dimension_data);
-        svg_width=dimension_data.width;
-        svg_height=dimension_data.height;
+        RsvgDimensionData dimensionData;
+        rsvg_handle_get_dimensions(svg,&dimensionData);
+        svg_width=dimensionData.width;
+        svg_height=dimensionData.height;
         scaleX=width/(double)svg_width;
         scaleY=height/(double)svg_height;
         cairo_scale (cr, scaleX, scaleY);

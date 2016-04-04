@@ -4,33 +4,8 @@
 #include "default.h"
 #include "color.h"
 
-color::color()
-{
-    set();
-}
 
-color::color(int32_t code)
-{
-    this->set(code);
-}
-
-color::color(const char *code)
-{
-    this->set(code);
-}
-
-color::color(uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha)
-{
-
-    this->set(red,green,blue,alpha);
-}
-
-color::color(double red, double green, double blue, double alpha)
-{
-    this->set(red,green,blue,alpha);
-}
-
-void color::set()
+void Color::set()
 {
     this->red=0;
     this->green=0;
@@ -38,7 +13,7 @@ void color::set()
     this->alpha=0;
 }
 
-void color::set(int32_t code)
+void Color::set(int32_t code)
 {
     if(code<=0xffffff)
         this->alpha=(double)1;
@@ -49,7 +24,7 @@ void color::set(int32_t code)
     this->blue=(double)(code&0xff)/(double)0xff;
 }
 
-void color::set(const char *code)
+void Color::set(const char *code)
 {
     int32_t ecode=0;
     if(code)
@@ -66,7 +41,7 @@ void color::set(const char *code)
     this->set(ecode);
 }
 
-void color::set(uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha)
+void Color::set(uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha)
 {
     this->red=(double)red/(double)0xff;
     this->green=(double)green/(double)0xff;
@@ -74,31 +49,11 @@ void color::set(uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha)
     this->alpha=(double)alpha/(double)0xff;
 }
 
-void color::set(double red, double green, double blue, double alpha)
+void Color::set(double red, double green, double blue, double alpha)
 {
     this->red=(red<1)?((red>0)?red:0):1;
     this->green=(green<1)?((green>0)?green:0):1;
     this->blue=(blue<1)?((blue>0)?blue:0):1;
     this->alpha=(alpha<1)?((alpha>0)?alpha:0):1;
-}
-
-double color::red_double()
-{
-    return this->red;
-}
-
-double color::green_double()
-{
-    return this->green;
-}
-
-double color::blue_double()
-{
-    return this->blue;
-}
-
-double color::alpha_double()
-{
-    return this->alpha;
 }
 
