@@ -25,7 +25,22 @@ int8_t draw::make(const char *jsondata)
 {
     jsondata_init(jsondata);
 
-    init(jsondata_get_string("outfile"),jsondata_get_string("type"),jsondata_get_double("width"),jsondata_get_double("height"));
+    switch(init(jsondata_get_string("outfile"),jsondata_get_string("type"),jsondata_get_double("width"),jsondata_get_double("height")))
+    {
+    case 0:
+        break;
+    case 1:
+        fprintf(stderr,"Init: warning: Repeat initialize!\n");
+        break;
+    case 2:
+        fprintf(stderr,"Init: error: outfile is unavailable , Failure to initialize!\n");
+        break;
+    case 3:
+        fprintf(stderr,"Init: error: Unknow type , Failure to initialize!\n");
+        break;
+    default:
+        fprintf(stderr,"Init: error: Unknow error code\n");
+    }
 
     jsondata_read_member("draw");
     int count=jsondata_count(); //元素个数
@@ -36,19 +51,67 @@ int8_t draw::make(const char *jsondata)
 
         if(strstr(type,"rectangle"))
         {
-            draw_rectangle(jsondata_get_string("color"), jsondata_get_double("x"), jsondata_get_double("y"), jsondata_get_double("width"), jsondata_get_double("height"));
+            switch(draw_rectangle(jsondata_get_string("color"), jsondata_get_double("x"), jsondata_get_double("y"), jsondata_get_double("width"), jsondata_get_double("height")))
+            {
+            case 0:
+                break;
+            case 1:
+                fprintf(stderr,"DrawGeometry: warning: not initialized!\n");
+                break;
+            default:
+                fprintf(stderr,"DrawGeometry: warning: Unknow error code.\n");
+            }
         }
         else if(strstr(type,"text"))
         {
-            draw_text(jsondata_get_string("text"), jsondata_get_string("family"), jsondata_get_double("size"), jsondata_get_int("alignment"), jsondata_get_string("color"), jsondata_get_double("x"), jsondata_get_double("y"));
+            switch(draw_text(jsondata_get_string("text"), jsondata_get_string("family"), jsondata_get_double("size"), jsondata_get_int("alignment"), jsondata_get_string("color"), jsondata_get_double("x"), jsondata_get_double("y")))
+            {
+            case 0:
+                break;
+            case 1:
+                fprintf(stderr,"DrawTEXT: warning: not initialized!\n");
+                break;
+            case 2:
+                fprintf(stderr,"DrawTEXT: warning: no text.\n");
+                break;
+            case 3:
+                fprintf(stderr,"DrawTEXT: warning: no family.\n");
+                break;
+            default:
+                fprintf(stderr,"DrawTEXT: warning: Unknow error code.\n");
+            }
         }
         else if(strstr(type,"svgfile"))
         {
-            draw_svg(jsondata_get_string("filename"), jsondata_get_double("x"), jsondata_get_double("y"), jsondata_get_double("width"), jsondata_get_double("height"));
+            switch(draw_svg(jsondata_get_string("filename"), jsondata_get_double("x"), jsondata_get_double("y"), jsondata_get_double("width"), jsondata_get_double("height")))
+            {
+            case 0:
+                break;
+            case 1:
+                fprintf(stderr,"DrawSVG: warning: not initialized!\n");
+                break;
+            case 2:
+                fprintf(stderr,"DrawSVG: warning: file not found: %s\n",jsondata_get_string("filename"));
+                break;
+            default:
+                fprintf(stderr,"DrawSVG: warning: Unknow error code.\n");
+            }
         }
         else if(strstr(type,"pngfile"))
         {
-            draw_png(jsondata_get_string("filename"), jsondata_get_double("x"), jsondata_get_double("y"), jsondata_get_double("width"), jsondata_get_double("height"));
+            switch(draw_png(jsondata_get_string("filename"), jsondata_get_double("x"), jsondata_get_double("y"), jsondata_get_double("width"), jsondata_get_double("height")))
+            {
+            case 0:
+                break;
+            case 1:
+                fprintf(stderr,"DrawPNG: warning: not initialized!\n");
+                break;
+            case 2:
+                fprintf(stderr,"DrawPNG: warning: file not found: %s\n",jsondata_get_string("filename"));
+                break;
+            default:
+                fprintf(stderr,"DrawPNG: warning: Unknow error code.\n");
+            }
         }
     }
 
