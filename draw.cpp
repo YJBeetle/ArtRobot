@@ -56,10 +56,10 @@ int8_t draw::make(const char *jsondata)
             case 0:
                 break;
             case 1:
-                fprintf(stderr,"DrawGeometry: warning: not initialized!\n");
+                fprintf(stderr,"DrawRectangle: warning: not initialized!\n");
                 break;
             default:
-                fprintf(stderr,"DrawGeometry: warning: Unknow error code.\n");
+                fprintf(stderr,"DrawRectangle: warning: Unknow error code.\n");
             }
         }
         else if(strstr(type,"text"))
