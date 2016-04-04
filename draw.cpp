@@ -286,36 +286,6 @@ int8_t draw::draw_text(const char *text, const char *family, double font_size, i
     return 0;
 }
 
-int8_t draw::draw_png (const char *pngfilename, double x, double y, double width, double height)
-{
-    if(!this->inited)return 1;
-    if(!this->filecheck(pngfilename))return 2;
-
-    cairo_surface_t *img=NULL;
-    img=cairo_image_surface_create_from_png(pngfilename);
-
-    cairo_save(cr);//保存画笔
-
-    cairo_translate (cr, x, y);
-    if(width||height)
-    {
-        unsigned int png_width, png_height;
-        double scaleX, scaleY;
-        png_width=cairo_image_surface_get_width(img);
-        png_height=cairo_image_surface_get_height(img);
-        scaleX=width/(double)png_width;
-        scaleY=height/(double)png_height;
-        cairo_scale (cr, scaleX, scaleY);
-    }
-    cairo_set_source_surface(cr,img,0,0);
-    cairo_paint(cr);
-
-    cairo_surface_destroy (img);//回收PNG介质
-    cairo_restore(cr);//还原画笔
-
-    return 0;
-}
-
 int8_t draw::draw_svg (const char *svgfilename, double x, double y, double width, double height)
 {
     if(!this->inited)return 1;
@@ -342,6 +312,36 @@ int8_t draw::draw_svg (const char *svgfilename, double x, double y, double width
     rsvg_handle_render_cairo(svg, cr);
 
     rsvg_handle_close(svg,NULL);//释放handle
+    cairo_restore(cr);//还原画笔
+
+    return 0;
+}
+
+int8_t draw::draw_png (const char *pngfilename, double x, double y, double width, double height)
+{
+    if(!this->inited)return 1;
+    if(!this->filecheck(pngfilename))return 2;
+
+    cairo_surface_t *img=NULL;
+    img=cairo_image_surface_create_from_png(pngfilename);
+
+    cairo_save(cr);//保存画笔
+
+    cairo_translate (cr, x, y);
+    if(width||height)
+    {
+        unsigned int png_width, png_height;
+        double scaleX, scaleY;
+        png_width=cairo_image_surface_get_width(img);
+        png_height=cairo_image_surface_get_height(img);
+        scaleX=width/(double)png_width;
+        scaleY=height/(double)png_height;
+        cairo_scale (cr, scaleX, scaleY);
+    }
+    cairo_set_source_surface(cr,img,0,0);
+    cairo_paint(cr);
+
+    cairo_surface_destroy (img);//回收PNG介质
     cairo_restore(cr);//还原画笔
 
     return 0;
