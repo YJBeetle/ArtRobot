@@ -163,7 +163,7 @@ int8_t draw::uninit()
     return 0;
 }
 
-int8_t draw::draw_rectangle(color argb, double x, double y, double width, double height)
+int8_t draw::draw_rectangle(Color argb, double x, double y, double width, double height)
 {
     if(!this->inited)return 1;
 
