@@ -7,12 +7,12 @@
 
 #include "json.h"
 
-json::json()
+Json::Json()
 {
     this->inited=0;
 }
 
-int8_t json::init(const char *jsondata)
+int8_t Json::init(const char *jsondata)
 {
     if(this->inited)return 1;
     this->inited=1;
@@ -24,41 +24,41 @@ int8_t json::init(const char *jsondata)
     return 0;
 }
 
-int32_t json::count()
+int32_t Json::count()
 {
     if(!this->inited)return -1;
     return json_reader_count_elements(reader);
 }
 
-int8_t json::read_member(const char *member)
+int8_t Json::read_member(const char *member)
 {
     if(!this->inited)return 1;
     json_reader_read_member(reader,member);
     return 0;
 }
 
-int8_t json::end_member()
+int8_t Json::end_member()
 {
     if(!this->inited)return 1;
     json_reader_end_member(reader);
     return 0;
 }
 
-int8_t json::read_element(int32_t i)
+int8_t Json::read_element(int32_t i)
 {
     if(!this->inited)return 1;
     json_reader_read_element(reader,i); //读取第i个元素
     return 0;
 }
 
-int8_t json::end_element()
+int8_t Json::end_element()
 {
     if(!this->inited)return 1;
     json_reader_end_element(reader); //返回上一个节点
     return 0;
 }
 
-const char * json::get_string(const char *item)
+const char * Json::get_string(const char *item)
 {
     if(!this->inited)return 0;
     read_member(item); //得到该元素中的成员
@@ -67,7 +67,7 @@ const char * json::get_string(const char *item)
     return value;
 }
 
-int64_t json::get_int(const char *item)
+int64_t Json::get_int(const char *item)
 {
     if(!this->inited)return 0;
     read_member(item); //得到该元素中的成员
@@ -76,7 +76,7 @@ int64_t json::get_int(const char *item)
     return value;
 }
 
-double json::get_double(const char *item)
+double Json::get_double(const char *item)
 {
     if(!this->inited)return 0;
     read_member(item); //得到该元素中的成员

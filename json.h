@@ -1,8 +1,7 @@
 #ifndef JSON_H
 #define JSON_H
 
-
-class json
+class Json
 {
 private:
     int8_t inited;
@@ -11,7 +10,7 @@ private:
     JsonReader *reader;
 
 public:
-    json();
+    Json();
 
     int8_t init(const char *jsondata);
 
