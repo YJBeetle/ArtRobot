@@ -7,8 +7,15 @@
 #include <cairo-pdf.h>
 //#include <cairo-ps.h>
 #include <cairo-svg.h>
+#include <cairo-ft.h>
 #include <librsvg/rsvg.h>
 #include <json-glib/json-glib.h>
+
+#include <ft2build.h>
+#include FT_FREETYPE_H
+#include FT_TYPE1_TABLES_H
+#include FT_SFNT_NAMES_H
+#include FT_TRUETYPE_IDS_H
 
 #include "default.h"
 #include "color.h"
@@ -177,16 +184,29 @@ int8_t draw::draw_rectangle(Color argb, double x, double y, double width, double
     return 0;
 }
 
-int8_t draw::draw_text(const char *text, const char *family, double font_size, int8_t alignment, Color argb, double x, double y)
+int8_t draw::draw_text(const char *text, const char *fontfile, double font_size, int8_t alignment, Color argb, double x, double y)
 {
     if(!this->inited)return 1;
     if(!text)return 2;
-    if(!family)return 3;
+    if(!fontfile)return 3;
 
     cairo_save(cr);//保存画笔
-    cairo_set_source_rgba (cr, argb.redDouble(), argb.greenDouble(), argb.blueDouble(), argb.alphaDouble());
-    cairo_select_font_face (cr, family, CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_NORMAL);
+    FT_Library ft_library;
+    FT_Face ft_face;
+    cairo_font_face_t *cr_face;
+    if (FT_Init_FreeType (&ft_library)) {
+        printf("FT_Init_FreeType failed\n");
+        return -1;
+    }
+    if (FT_New_Face (ft_library, fontfile, 0, &ft_face)) {
+        printf("FT_New_Face failed\n");
+        return -1;
+    }
+    cr_face = cairo_ft_font_face_create_for_ft_face (ft_face, 0);
+    cairo_set_font_face (cr, cr_face);
+    //cairo_select_font_face (cr, family, CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_NORMAL);
     cairo_set_font_size (cr, font_size);
+    cairo_set_source_rgba (cr, argb.redDouble(), argb.greenDouble(), argb.blueDouble(), argb.alphaDouble());
 
     cairo_text_extents_t extents;
     switch(alignment)
