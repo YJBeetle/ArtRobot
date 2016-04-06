@@ -71,7 +71,7 @@ int8_t draw::make(const char *jsondata)
         }
         else if(strstr(type,"text"))
         {
-            switch(draw_text(json.get_string("text"), json.get_string("family"), json.get_double("size"), json.get_int("alignment"), json.get_string("color"), json.get_double("x"), json.get_double("y")))
+            switch(draw_text(json.get_string("text"), json.get_string("font"), json.get_double("size"), json.get_int("alignment"), json.get_string("color"), json.get_double("x"), json.get_double("y")))
             {
             case 0:
                 break;

@@ -49,7 +49,7 @@ $data=(object)[
 		(object)[
 			"type"=>"text",
 			"text"=>"Add:No.9 West Section of the South 2nd Ring.LianHu District.Xi'an",
-			"family"=>"Lantinghei SC Demibold",
+			"font"=>"Lantinghei SC Demibold",
 			"size"=>5,
 			"alignment"=>1,
 			"color"=>"ffffff",
@@ -59,7 +59,7 @@ $data=(object)[
 		(object)[
 			"type"=>"text",
 			"text"=>"Add:No.9 West Section of the South 2nd Ring.LianHu District.Xi'an",
-			"family"=>"Lantinghei SC Demibold",
+			"font"=>"Lantinghei SC Demibold",
 			"size"=>5,
 			"alignment"=>1,
 			"color"=>"ffffff",
@@ -77,7 +77,7 @@ $data=(object)[
 		(object)[
 			"type"=>"text",
 			"text"=>"YJBeetle",
-			"family"=>"Yuanti SC",
+			"font"=>"Yuanti SC",
 			"size"=>20,
 			"alignment"=>1,
 			"color"=>"686767",
@@ -87,7 +87,7 @@ $data=(object)[
 		(object)[
 			"type"=>"text",
 			"text"=>"测试中文",
-			"family"=>"Lantinghei SC Extralight",
+			"font"=>"simkai.ttf",
 			"size"=>20,
 			"alignment"=>1,
 			"color"=>"686767",
