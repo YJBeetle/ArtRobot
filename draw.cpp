@@ -84,6 +84,12 @@ int8_t draw::make(const char *jsondata)
             case 3:
                 fprintf(stderr,"DrawTEXT: warning: no family.\n");
                 break;
+            case 4:
+                fprintf(stderr,"DrawTEXT: warning: FT_Init_FreeType failed.\n");
+                break;
+            case 5:
+                fprintf(stderr,"DrawTEXT: error: FT_New_Face failed, maybe font not found.\n");
+                break;
             default:
                 fprintf(stderr,"DrawTEXT: warning: Unknow error code.\n");
             }
@@ -195,12 +201,10 @@ int8_t draw::draw_text(const char *text, const char *fontfile, double font_size,
     FT_Face ft_face;
     cairo_font_face_t *cr_face;
     if (FT_Init_FreeType (&ft_library)) {
-        printf("FT_Init_FreeType failed\n");
-        return -1;
+        return 4;
     }
     if (FT_New_Face (ft_library, fontfile, 0, &ft_face)) {
-        printf("FT_New_Face failed\n");
-        return -1;
+        return 5;
     }
     cr_face = cairo_ft_font_face_create_for_ft_face (ft_face, 0);
     cairo_set_font_face (cr, cr_face);
