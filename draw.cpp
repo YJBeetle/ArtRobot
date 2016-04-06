@@ -22,6 +22,7 @@ draw::draw()
 
 int8_t draw::make(const char *jsondata)
 {
+    if(!jsondata)return 1;
     json.init(jsondata);
 
     switch(init(json.get_string("outfile"),json.get_string("type"),json.get_double("width"),json.get_double("height")))
