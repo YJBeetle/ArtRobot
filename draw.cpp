@@ -8,14 +8,9 @@
 //#include <cairo-ps.h>
 #include <cairo-svg.h>
 #include <cairo-ft.h>
+#include <freetype/freetype.h>
 #include <librsvg/rsvg.h>
 #include <json-glib/json-glib.h>
-
-#include <ft2build.h>
-#include FT_FREETYPE_H
-#include FT_TYPE1_TABLES_H
-#include FT_SFNT_NAMES_H
-#include FT_TRUETYPE_IDS_H
 
 #include "default.h"
 #include "color.h"
