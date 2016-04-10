@@ -5,3 +5,9 @@
 CMakeLists.txt.user
 CMakeLists.txt.user.*
 *.autosave
+
+#PHP Storm
+.idea
+
+#bitfile
+file/Art_robot
