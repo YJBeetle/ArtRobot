@@ -8,7 +8,6 @@
 //#include <cairo-ps.h>
 #include <cairo-svg.h>
 #include <cairo-ft.h>
-#include <freetype/freetype.h>
 #include <librsvg/rsvg.h>
 #include <json-glib/json-glib.h>
 

@@ -15,6 +15,7 @@ link_directories(/opt/local/lib/)
 
 #Win MSYS2
 include_directories(c:/opt/msys64/mingw64/include/cairo)
+include_directories(c:/opt/msys64/mingw64/include/freetype2)
 include_directories(c:/opt/msys64/mingw64/include/librsvg-2.0)
 include_directories(c:/opt/msys64/mingw64/include/glib-2.0)
 include_directories(c:/opt/msys64/mingw64/lib/glib-2.0/include)
