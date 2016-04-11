@@ -8,8 +8,10 @@ $jsondata=fread($file,filesize($filename));
 fclose($file);
 
 //run
+$jsondata1=json_decode($jsondata);
+$jsondata2=json_encode($jsondata1);
 chdir($DIR);
-$return=exec('Art_robot "'.addslashes($jsondata).'"');
+$return=exec('Art_robot "'.addslashes($jsondata2).'"');
 
 
 
@@ -41,7 +43,7 @@ $return=exec('Art_robot "'.addslashes($jsondata).'"');
 <h3>调试输出</h3>
 <p>
     json
-    <textarea name="textarea" rows="30" id="textarea"><?php echo $jsondata;?></textarea>
+    <textarea name="textarea" rows="10" id="textarea"><?php echo $jsondata2;?></textarea>
     <br>
     stdout
     <textarea name="textarea2" id="textarea2"><?php echo $return;?></textarea>
