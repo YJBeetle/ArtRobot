@@ -1,6 +1,6 @@
 <?php
 
-$DIR="/Volumes/Data0/YJBeetle/Work/Art_robot/Art_robot/file/";
+$DIR="../file/";
 
 $filename=$DIR."json.txt";
 $file = fopen($filename, "r") or die("Unable to open file!");
@@ -8,7 +8,8 @@ $jsondata=fread($file,filesize($filename));
 fclose($file);
 
 //run
-$return=exec('cd '.$DIR.';./Art_robot "'.addslashes($jsondata).'"')."\n";
+chdir($DIR);
+$return=exec('Art_robot "'.addslashes($jsondata).'"');
 
 
 

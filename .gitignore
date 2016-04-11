@@ -11,3 +11,6 @@ CMakeLists.txt.user.*
 
 #bitfile
 file/Art_robot
+file/Art_robot.exe
+file/out.pdf
+file/out.svg
