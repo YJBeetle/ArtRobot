@@ -14,6 +14,9 @@ fclose($file);
 $json=json_decode($jsontext);
 $outfile=sys_get_temp_dir().'/out.svg';
 $json->outfile=$outfile;
+
+$json->draw[8]->text="word啊";
+
 $jsonrun=json_encode($json);
 
 //run
