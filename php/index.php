@@ -1,11 +1,13 @@
 <?php
+//选中模板
+$template='1';
 
 //设置工作目录
-$DIR="../file/";
-chdir($DIR);
+$dir="template/".$template;
+chdir($dir);
 
 //读取json文件
-$filename="json.txt";
+$filename="data.json";
 $file = fopen($filename, "r") or die("Unable to open file!");
 $jsontext=fread($file,filesize($filename));
 fclose($file);
@@ -20,7 +22,7 @@ $json->draw[8]->text="word啊";
 $jsonrun=json_encode($json);
 
 //run
-$return=exec('Art_robot "'.addslashes($jsonrun).'"');
+$return=exec(dirname(__FILE__).'/exec/Art_robot "'.addslashes($jsonrun).'"');
 
 
 
