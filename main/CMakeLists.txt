@@ -24,6 +24,7 @@ include_directories(c:/opt/msys64/mingw64/include/json-glib-1.0)
 
 #Linux
 include_directories(/usr/include/cairo)
+include_directories(/usr/include/freetype2)
 include_directories(/usr/include/librsvg-2.0)
 include_directories(/usr/include/glib-2.0)
 include_directories(/usr/include/gdk-pixbuf-2.0)
