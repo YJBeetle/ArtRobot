@@ -53,15 +53,17 @@ $return=exec(dirname(__FILE__).'/exec/Art_robot "'.addslashes($jsonrun).'"');
 <p><img src="imgshow.php"></p>
 <h3>调试输出</h3>
 <p>
-    jsontext
+    模板json数据
     <textarea name="textarea" rows="10" id="textarea"><?php echo $jsontext;?></textarea>
-    json
+    处理后数据结构
     <textarea name="textarea" rows="10" id="textarea"><?php echo print_r($json);?></textarea>
-    jsonrun
+    生成json数据
     <textarea name="textarea" rows="10" id="textarea"><?php echo $jsonrun;?></textarea>
+    command line
+    <textarea name="textarea" rows="10" id="textarea"><?php echo dirname(__FILE__).'/exec/Art_robot "'.addslashes($jsonrun).'"';?></textarea>
     <br>
     stdout
-    <textarea name="textarea2" id="textarea2"><?php echo $return;?></textarea>
+    <textarea name="textarea2" rows="5" id="textarea2"><?php echo $return;?></textarea>
 </p>
 </body>
 </html>
