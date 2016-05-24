@@ -16,13 +16,19 @@ fclose($file);
 $json=json_decode($jsontext);
 $outfile=sys_get_temp_dir().'/out.svg';
 $json->outfile=$outfile;
-
 $json->draw[8]->text="word啊";
 
+//编码写入
 $jsonrun=json_encode($json);
+$filename=sys_get_temp_dir().'/run.json';
+$file = fopen($filename, "w") or die("Unable to open file!");
+fwrite($file,$jsonrun);
+fclose($file);
+
 
 //run
-$return=exec(dirname(__FILE__).'/exec/Art_robot "'.addslashes($jsonrun).'"');
+$cmdline=dirname(__FILE__).'/exec/Art_robot -f "'.sys_get_temp_dir().'/run.json'.'"';
+$return=exec($cmdline);
 
 
 
@@ -60,7 +66,7 @@ $return=exec(dirname(__FILE__).'/exec/Art_robot "'.addslashes($jsonrun).'"');
     生成json数据
     <textarea name="textarea" rows="10" id="textarea"><?php echo $jsonrun;?></textarea>
     command line
-    <textarea name="textarea" rows="10" id="textarea"><?php echo dirname(__FILE__).'/exec/Art_robot "'.addslashes($jsonrun).'"';?></textarea>
+    <textarea name="textarea" rows="10" id="textarea"><?php echo $cmdline;?></textarea>
     <br>
     stdout
     <textarea name="textarea2" rows="5" id="textarea2"><?php echo $return;?></textarea>
