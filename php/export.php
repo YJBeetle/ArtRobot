@@ -28,7 +28,10 @@ $json->outfile=$outfile;
 //设置文字内容
 $json->draw[7]->text=$_GET['text'];
 $json->draw[8]->text=$_GET['text2'];
-$json->draw[9]->text='会议时间'.$_GET['date'];
+$json->draw[9]->text='会议时间:'.$_GET['date'];
+$json->draw[10]->text='会议地点:'.$_GET['where'];
+$json->draw[11]->text='Date:'.$_GET['date'];
+$json->draw[12]->text='Location:'.$_GET['where-en'];
 
 //编码并写入json文件
 $jsonrun=json_encode($json);
