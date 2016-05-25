@@ -33,12 +33,12 @@ int main(int argc, char *argv[])
         if(jsonfile)
         {
             char *d;
-            fseek(jsonfile,0,SEEK_END); //把指针移动到文件的结尾 ，获取文件长度
-            int len=ftell(jsonfile); //获取文件长度
-            d=new char[len+1]; //定义数组长度
-            rewind(jsonfile); //把指针移动到文件开头 因为我们一开始把指针移动到结尾，如果不移动回来 会出错
-            fread(d,1,len,jsonfile); //读文件
-            d[len]=0; //把读到的文件最后一位 写为0 要不然系统会一直寻找到0后才结束
+            fseek(jsonfile,0,SEEK_END);
+            int len=ftell(jsonfile);
+            d=new char[len+1];
+            rewind(jsonfile);
+            fread(d,1,len,jsonfile);
+            d[len]=0;
             fclose(jsonfile);
             jsondata=d;
         }
@@ -50,10 +50,17 @@ int main(int argc, char *argv[])
     }
     else if(strcmp(argv1,"-c")==0)
     {
-        printf("c");
-        return 1;
+        char *line = NULL;
+        size_t len = 0;
+        ssize_t read;
+
+        while ((read = getline(&line, &len, stdin)) != -1)
+        {
+            printf("Retrieved line of length %zu, %u :\n", read, len);
+            printf("%s", line);
+        }
     }
-    else if(strcmp(argv1,"-h")==0)
+    else if(strcmp(argv1,"-h")==0||strcmp(argv1,"--help")==0)
     {
         printf("帮助：\n  -c        stdin输入\n  -f [file] 文件输入\n  -h        显示本帮助信息\n");
         return 0;
