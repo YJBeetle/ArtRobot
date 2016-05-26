@@ -48,18 +48,18 @@ int main(int argc, char *argv[])
             return 1;
         }
     }
-    else if(strcmp(argv1,"-c")==0)
-    {
-        char *line = NULL;
-        size_t len = 0;
-        ssize_t read;
-
-        while ((read = getline(&line, &len, stdin)) != -1)
-        {
-            printf("Retrieved line of length %zu, %u :\n", read, len);
-            printf("%s", line);
-        }
-    }
+//    else if(strcmp(argv1,"-c")==0)
+//    {
+//        char *line = NULL;
+//        size_t len = 0;
+//        ssize_t read;
+//
+//        while ((read = getline(&line, &len, stdin)) != -1)
+//        {
+//            printf("Retrieved line of length %zu, %u :\n", read, len);
+//            printf("%s", line);
+//        }
+//    }
     else if(strcmp(argv1,"-h")==0||strcmp(argv1,"--help")==0)
     {
         printf("帮助：\n  -c        stdin输入\n  -f [file] 文件输入\n  -h        显示本帮助信息\n");

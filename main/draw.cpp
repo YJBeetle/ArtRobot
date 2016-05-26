@@ -65,7 +65,7 @@ int8_t draw::make(const char *jsondata)
         }
         else if(strstr(type,"text"))
         {
-            switch(draw_text(json.get_string("text"), json.get_string("font"), json.get_double("size"), json.get_int("alignment"), json.get_string("color"), json.get_double("x"), json.get_double("y")))
+            switch(draw_text(json.get_string("text"), json.get_string("font"), json.get_int("face"), json.get_double("size"), json.get_int("alignment"), json.get_string("color"), json.get_double("x"), json.get_double("y")))
             {
             case 0:
                 break;
@@ -184,22 +184,22 @@ int8_t draw::draw_rectangle(Color argb, double x, double y, double width, double
     return 0;
 }
 
-int8_t draw::draw_text(const char *text, const char *fontfile, double font_size, int8_t alignment, Color argb, double x, double y)
+int8_t draw::draw_text(const char *text, const char *fontfile, long face_index, double font_size, int8_t alignment, Color argb, double x, double y)
 {
     if(!this->inited)return 1;
     if(!text)return 2;
     if(!fontfile)return 3;
+    if(!face_index)face_index=0;
+    printf("%d",face_index);
 
     cairo_save(cr);//保存画笔
     FT_Library ft_library;
     FT_Face ft_face;
     cairo_font_face_t *cr_face;
-    if (FT_Init_FreeType (&ft_library)) {
+    if (FT_Init_FreeType (&ft_library))
         return 4;
-    }
-    if (FT_New_Face (ft_library, fontfile, 0, &ft_face)) {
+    if (FT_New_Face (ft_library, fontfile, face_index, &ft_face))
         return 5;
-    }
     cr_face = cairo_ft_font_face_create_for_ft_face (ft_face, 0);
     cairo_set_font_face (cr, cr_face);
     //cairo_select_font_face (cr, family, CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_NORMAL);
