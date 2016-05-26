@@ -20,6 +20,6 @@
 //typedef long long int   int64_t;
 //#endif
 
-
+#define DEBUG 1
 
 #endif // DEFAULT_H

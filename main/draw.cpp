@@ -52,73 +52,19 @@ int8_t draw::make(const char *jsondata)
 
         if(strstr(type,"rectangle"))
         {
-            switch(draw_rectangle(json.get_string("color"), json.get_double("x"), json.get_double("y"), json.get_double("width"), json.get_double("height")))
-            {
-            case 0:
-                break;
-            case 1:
-                fprintf(stderr,"DrawRectangle: warning: not initialized!\n");
-                break;
-            default:
-                fprintf(stderr,"DrawRectangle: warning: Unknow error code.\n");
-            }
+            draw_rectangle(json.get_string("color"), json.get_double("x"), json.get_double("y"), json.get_double("width"), json.get_double("height"));
         }
         else if(strstr(type,"text"))
         {
-            switch(draw_text(json.get_string("text"), json.get_string("font"), json.get_int("face"), json.get_double("size"), json.get_int("alignment"), json.get_string("color"), json.get_double("x"), json.get_double("y")))
-            {
-            case 0:
-                break;
-            case 1:
-                fprintf(stderr,"DrawTEXT: warning: not initialized!\n");
-                break;
-            case 2:
-                fprintf(stderr,"DrawTEXT: warning: no text.\n");
-                break;
-            case 3:
-                fprintf(stderr,"DrawTEXT: warning: no family.\n");
-                break;
-            case 4:
-                fprintf(stderr,"DrawTEXT: warning: FT_Init_FreeType failed.\n");
-                break;
-            case 5:
-                fprintf(stderr,"DrawTEXT: error: FT_New_Face failed, maybe font not found.\n");
-                break;
-            default:
-                fprintf(stderr,"DrawTEXT: warning: Unknow error code.\n");
-            }
+            draw_text(json.get_string("text"), json.get_string("font"), json.get_int("face"), json.get_double("size"), json.get_int("alignment"), json.get_string("color"), json.get_double("x"), json.get_double("y"));
         }
         else if(strstr(type,"svgfile"))
         {
-            switch(draw_svg(json.get_string("filename"), json.get_double("x"), json.get_double("y"), json.get_double("width"), json.get_double("height")))
-            {
-            case 0:
-                break;
-            case 1:
-                fprintf(stderr,"DrawSVG: warning: not initialized!\n");
-                break;
-            case 2:
-                fprintf(stderr,"DrawSVG: warning: file not found: %s\n",json.get_string("filename"));
-                break;
-            default:
-                fprintf(stderr,"DrawSVG: warning: Unknow error code.\n");
-            }
+            draw_svg(json.get_string("filename"), json.get_double("x"), json.get_double("y"), json.get_double("width"), json.get_double("height"));
         }
         else if(strstr(type,"pngfile"))
         {
-            switch(draw_png(json.get_string("filename"), json.get_double("x"), json.get_double("y"), json.get_double("width"), json.get_double("height")))
-            {
-            case 0:
-                break;
-            case 1:
-                fprintf(stderr,"DrawPNG: warning: not initialized!\n");
-                break;
-            case 2:
-                fprintf(stderr,"DrawPNG: warning: file not found: %s\n",json.get_string("filename"));
-                break;
-            default:
-                fprintf(stderr,"DrawPNG: warning: Unknow error code.\n");
-            }
+            draw_png(json.get_string("filename"), json.get_double("x"), json.get_double("y"), json.get_double("width"), json.get_double("height"));
         }
     }
 
@@ -173,7 +119,13 @@ int8_t draw::uninit()
 
 int8_t draw::draw_rectangle(Color argb, double x, double y, double width, double height)
 {
-    if(!this->inited)return 1;
+    if(!this->inited)
+    {
+#ifdef DEBUG
+        fprintf(stderr,"DrawRectangle: warning: not initialized!\n");
+#endif
+        return 1;
+    }
 
     cairo_save(cr);//保存画笔
     cairo_set_source_rgba (cr, argb.redDouble(), argb.greenDouble(), argb.blueDouble(), argb.alphaDouble());
@@ -186,9 +138,27 @@ int8_t draw::draw_rectangle(Color argb, double x, double y, double width, double
 
 int8_t draw::draw_text(const char *text, const char *fontfile, long face_index, double font_size, int8_t alignment, Color argb, double x, double y)
 {
-    if(!this->inited)return 1;
-    if(!text)return 2;
-    if(!fontfile)return 3;
+    if(!this->inited)
+    {
+#ifdef DEBUG
+        fprintf(stderr,"DrawTEXT: warning: not initialized!\n");
+#endif
+        return 1;
+    }
+    if(!text)
+    {
+#ifdef DEBUG
+        fprintf(stderr,"DrawTEXT: warning: no text.\n");
+#endif
+        return 2;
+    }
+    if(!fontfile)
+    {
+#ifdef DEBUG
+        fprintf(stderr,"DrawTEXT: warning: no family.\n");
+#endif
+        return 3;
+    }
     if(!face_index)face_index=0;
 
     cairo_save(cr);//保存画笔
@@ -196,9 +166,19 @@ int8_t draw::draw_text(const char *text, const char *fontfile, long face_index, 
     FT_Face ft_face;
     cairo_font_face_t *cr_face;
     if (FT_Init_FreeType (&ft_library))
+    {
+#ifdef DEBUG
+        fprintf(stderr,"DrawTEXT: warning: FT_Init_FreeType failed.\n");
+#endif
         return 4;
+    }
     if (FT_New_Face (ft_library, fontfile, face_index, &ft_face))
+    {
+#ifdef DEBUG
+        fprintf(stderr,"DrawTEXT: error: FT_New_Face failed, maybe font not found.\n");
+#endif
         return 5;
+    }
     cr_face = cairo_ft_font_face_create_for_ft_face (ft_face, 0);
     cairo_set_font_face (cr, cr_face);
     //cairo_select_font_face (cr, family, CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_NORMAL);
@@ -232,8 +212,20 @@ int8_t draw::draw_text(const char *text, const char *fontfile, long face_index, 
 
 int8_t draw::draw_svg (const char *svgfilename, double x, double y, double width, double height)
 {
-    if(!this->inited)return 1;
-    if(!this->filecheck(svgfilename))return 2;
+    if(!this->inited)
+    {
+#ifdef DEBUG
+        fprintf(stderr,"DrawSVG: warning: not initialized!\n");
+#endif
+        return 1;
+    }
+    if(!this->filecheck(svgfilename))
+    {
+#ifdef DEBUG
+        fprintf(stderr,"DrawSVG: warning: file not found: %s\n",json.get_string("filename"));
+#endif
+        return 2;
+    }
 
     RsvgHandle *svg;
     svg = rsvg_handle_new_from_file(svgfilename,NULL);
@@ -263,8 +255,20 @@ int8_t draw::draw_svg (const char *svgfilename, double x, double y, double width
 
 int8_t draw::draw_png (const char *pngfilename, double x, double y, double width, double height)
 {
-    if(!this->inited)return 1;
-    if(!this->filecheck(pngfilename))return 2;
+    if(!this->inited)
+    {
+#ifdef DEBUG
+        fprintf(stderr,"DrawPNG: warning: not initialized!\n");
+#endif
+        return 1;
+    }
+    if(!this->filecheck(pngfilename))
+    {
+#ifdef DEBUG
+        fprintf(stderr,"DrawPNG: warning: file not found: %s\n",json.get_string("filename"));
+#endif
+        return 2;
+    }
 
     cairo_surface_t *img=NULL;
     img=cairo_image_surface_create_from_png(pngfilename);
