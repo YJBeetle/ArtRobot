@@ -26,39 +26,50 @@ int8_t draw::make(const char *jsondata)
     if(!jsondata)return 1;
     json.init(jsondata);
 
-    init(json.get_string("outfile"),json.get_string("type"),json.get_double("width"),json.get_double("height"));
+    init(json.get_string("outfile"),json.get_string("type"),json.get_double("width"),json.get_double("height"),json.get_int("count"));
+
 
     json.read_member("draw");
-    int count=json.count(); //元素个数
-    const char *type;
-    for(int i=0;json.read_element(i),i<count;json.end_element(),++i) //循环处理该成员中的元素
+    int page_i=0;
+    do
     {
-        type=json.get_string("type");
+        if(this->page_count)json.read_element(page_i);
 
-        if(strstr(type,"rectangle"))
+        int count=json.count(); //元素个数
+        const char *type;
+        for(int i=0;json.read_element(i),i<count;json.end_element(),i++) //循环处理该成员中的元素
         {
-            draw_rectangle(json.get_string("color"), json.get_double("x"), json.get_double("y"), json.get_double("width"), json.get_double("height"));
+            type=json.get_string("type");
+
+            if(strstr(type,"rectangle"))
+            {
+                draw_rectangle(json.get_string("color"), json.get_double("x"), json.get_double("y"), json.get_double("width"), json.get_double("height"));
+            }
+            else if(strstr(type,"text"))
+            {
+                draw_text(json.get_string("text"), json.get_string("font"), json.get_int("face"), json.get_double("size"), json.get_int("alignment"), json.get_string("color"), json.get_double("x"), json.get_double("y"));
+            }
+            else if(strstr(type,"svgfile"))
+            {
+                draw_svg(json.get_string("filename"), json.get_double("x"), json.get_double("y"), json.get_double("width"), json.get_double("height"));
+            }
+            else if(strstr(type,"pngfile"))
+            {
+                draw_png(json.get_string("filename"), json.get_double("x"), json.get_double("y"), json.get_double("width"), json.get_double("height"));
+            }
         }
-        else if(strstr(type,"text"))
-        {
-            draw_text(json.get_string("text"), json.get_string("font"), json.get_int("face"), json.get_double("size"), json.get_int("alignment"), json.get_string("color"), json.get_double("x"), json.get_double("y"));
-        }
-        else if(strstr(type,"svgfile"))
-        {
-            draw_svg(json.get_string("filename"), json.get_double("x"), json.get_double("y"), json.get_double("width"), json.get_double("height"));
-        }
-        else if(strstr(type,"pngfile"))
-        {
-            draw_png(json.get_string("filename"), json.get_double("x"), json.get_double("y"), json.get_double("width"), json.get_double("height"));
-        }
+
+        if(this->page_count)json.end_element();
+        page_i++;
     }
+    while(page_i<this->page_count);
 
     uninit();
 
     return 0;
 }
 
-int8_t draw::init(const char *filename,const char *type,double width,double height)
+int8_t draw::init(const char *filename,const char *type,double width,double height,int64_t count)
 {
     if(this->inited)
     {
@@ -82,10 +93,11 @@ int8_t draw::init(const char *filename,const char *type,double width,double heig
         return 3;
     }
 
-    //this->outfile=filename;
-    //this->out_type=type;
+    this->out_file=filename;
+    this->out_type=type;
     this->page_width=width;
     this->page_height=height;
+    this->page_count=count;
 
     if(strstr(type,"PDF")||strstr(type,"pdf"))
     {
