@@ -3,7 +3,7 @@
   "type":"SVG",
   "width":420,
   "height":297,
-  "count":1,
+  "count":2,
   "draw":[
     [
       {
@@ -133,6 +133,16 @@
         "color":"686767",
         "x":210,
         "y":240
+      }
+    ],
+    [
+      {
+        "type":"pngfile",
+        "filename":"img\/1.png",
+        "x":0,
+        "y":0,
+        "width":420,
+        "height":297
       }
     ]
   ]

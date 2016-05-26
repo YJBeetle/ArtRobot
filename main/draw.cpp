@@ -28,19 +28,22 @@ int8_t draw::make(const char *jsondata)
 
     init(json.get_string("outfile"),json.get_string("type"),json.get_double("width"),json.get_double("height"),json.get_int("count"));
 
-
     json.read_member("draw");
-    int page_i=0;
+    int64_t page_count=this->page_count;
+    int64_t page_i=0;
+    int64_t layer_count=0;
+    int64_t layer_i=0;
     do
     {
-        if(this->page_count)json.read_element(page_i);
+        if(page_count)json.read_element(page_i);
 
-        int count=json.count(); //元素个数
+        layer_count=json.count(); //元素个数
         const char *type;
-        for(int i=0;json.read_element(i),i<count;json.end_element(),i++) //循环处理该成员中的元素
+        for(layer_i=0;layer_i<layer_count;layer_i++) //循环处理该成员中的元素
         {
-            type=json.get_string("type");
+            json.read_element(layer_i);
 
+            type=json.get_string("type");
             if(strstr(type,"rectangle"))
             {
                 draw_rectangle(json.get_string("color"), json.get_double("x"), json.get_double("y"), json.get_double("width"), json.get_double("height"));
@@ -57,12 +60,14 @@ int8_t draw::make(const char *jsondata)
             {
                 draw_png(json.get_string("filename"), json.get_double("x"), json.get_double("y"), json.get_double("width"), json.get_double("height"));
             }
+
+            json.end_element();
         }
 
-        if(this->page_count)json.end_element();
+        if(page_count)json.end_element();
         page_i++;
     }
-    while(page_i<this->page_count);
+    while(page_i<page_count);
 
     uninit();
 
