@@ -190,7 +190,6 @@ int8_t draw::draw_text(const char *text, const char *fontfile, long face_index, 
     if(!text)return 2;
     if(!fontfile)return 3;
     if(!face_index)face_index=0;
-    printf("%d",face_index);
 
     cairo_save(cr);//保存画笔
     FT_Library ft_library;
