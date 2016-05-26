@@ -18,8 +18,10 @@ public:
 
     int8_t read_member(const char *member);
     int8_t end_member();
+    int8_t is_object();
     int8_t read_element(int32_t i);
     int8_t end_element();
+    int8_t is_array();
 
     const char * get_string(const char *item);
     int64_t get_int(const char *item);

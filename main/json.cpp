@@ -44,6 +44,12 @@ int8_t Json::end_member()
     return 0;
 }
 
+int8_t Json::is_object()
+{
+    if(!this->inited)return 1;
+    return json_reader_is_object(reader);
+}
+
 int8_t Json::read_element(int32_t i)
 {
     if(!this->inited)return 1;
@@ -56,6 +62,12 @@ int8_t Json::end_element()
     if(!this->inited)return 1;
     json_reader_end_element(reader); //返回上一个节点
     return 0;
+}
+
+int8_t Json::is_array()
+{
+    if(!this->inited)return 1;
+    return json_reader_is_array(reader);
 }
 
 const char * Json::get_string(const char *item)
