@@ -26,22 +26,7 @@ int8_t draw::make(const char *jsondata)
     if(!jsondata)return 1;
     json.init(jsondata);
 
-    switch(init(json.get_string("outfile"),json.get_string("type"),json.get_double("width"),json.get_double("height")))
-    {
-    case 0:
-        break;
-    case 1:
-        fprintf(stderr,"Init: warning: Repeat initialize!\n");
-        break;
-    case 2:
-        fprintf(stderr,"Init: error: outfile is unavailable , Failure to initialize!\n");
-        break;
-    case 3:
-        fprintf(stderr,"Init: error: Unknow type , Failure to initialize!\n");
-        break;
-    default:
-        fprintf(stderr,"Init: error: Unknow error code\n");
-    }
+    init(json.get_string("outfile"),json.get_string("type"),json.get_double("width"),json.get_double("height"));
 
     json.read_member("draw");
     int count=json.count(); //元素个数
@@ -75,9 +60,27 @@ int8_t draw::make(const char *jsondata)
 
 int8_t draw::init(const char *filename,const char *type,double width,double height)
 {
-    if(this->inited)return 1;
-    if(!filename)return 2;
-    if(!type)return 3;
+    if(this->inited)
+    {
+#ifdef DEBUG
+        fprintf(stderr,"Init: warning: Repeat initialize!\n");
+#endif
+        return 1;
+    }
+    if(!filename)
+    {
+#ifdef DEBUG
+        fprintf(stderr,"Init: error: outfile is unavailable , Failure to initialize!\n");
+#endif
+        return 2;
+    }
+    if(!type)
+    {
+#ifdef DEBUG
+        fprintf(stderr,"Init: error: Unknow type , Failure to initialize!\n");
+#endif
+        return 3;
+    }
 
     //this->outfile=filename;
     //this->out_type=type;
