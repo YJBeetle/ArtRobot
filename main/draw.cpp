@@ -118,7 +118,9 @@ int8_t draw::init(const char *filename,const char *type,double width,double heig
     }
     else
     {
-        fprintf (stderr, "未知的输出类型\n");
+#ifdef DEBUG
+        fprintf(stderr,"Init: error: Unknow type , Failure to initialize!\n");
+#endif
         this->inited=0;
         return 3;
     }
