@@ -6,6 +6,9 @@
  * Time: 下午4:33
  */
 
+//常量
+//$TMPDIR=sys_get_temp_dir();
+$TMPDIR=dirname(__FILE__).'/tmp';
 
 //选中模板
 $template='1';
@@ -22,7 +25,7 @@ fclose($file);
 
 //数据处理
 $json=json_decode($jsontext);
-$outfile=sys_get_temp_dir().'/out.svg';
+$outfile=$TMPDIR.'/out.svg';
 $json->outfile=$outfile;
 
 //设置文字内容
@@ -35,14 +38,14 @@ $json->draw[0][12]->text='Location:'.$_GET['where-en'];
 
 //编码并写入json文件
 $jsonrun=json_encode($json);
-$filename=sys_get_temp_dir().'/run.json';
+$filename=$TMPDIR.'/run.json';
 $file = fopen($filename, "w") or die("Unable to open file!");
 fwrite($file,$jsonrun);
 fclose($file);
 
 
 //run
-$cmdline=dirname(__FILE__).'/exec/Art_robot -f "'.sys_get_temp_dir().'/run.json'.'"';
+$cmdline=dirname(__FILE__).'/exec/Art_robot -f "'.$TMPDIR.'/run.json'.'"';
 $return=exec($cmdline);
 
 

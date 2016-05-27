@@ -12,10 +12,9 @@ CMakeLists.txt.user.*
 #CMake
 /build
 
-#output file
-file/out.pdf
-file/out.svg
-
 #bit file copy
 /php/exec/Art_robot.exe
 /php/exec/Art_robot
+
+#tmpfile
+/php/tmp
