@@ -30,7 +30,7 @@ $json->draw[0][7]->text=$_GET['text'];
 $json->draw[0][8]->text=$_GET['text2'];
 $json->draw[0][9]->text='会议时间:'.$_GET['date'];
 $json->draw[0][10]->text='会议地点:'.$_GET['where'];
-$json->draw[0][11]->text='Date:'.$_GET['date'];
+$json->draw[0][11]->text='Date:'.$_GET['date-en'];
 $json->draw[0][12]->text='Location:'.$_GET['where-en'];
 
 //编码并写入json文件
