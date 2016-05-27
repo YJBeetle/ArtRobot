@@ -33,30 +33,31 @@ int8_t draw::make(const char *jsondata)
     int64_t page_i=0;
     int64_t layer_count=0;
     int64_t layer_i=0;
-    do
+    const char *layer_type;
+    for(page_i=0;page_i<page_count;page_i++)
     {
         if(page_count)json.read_element(page_i);
 
         layer_count=json.count(); //元素个数
-        const char *type;
         for(layer_i=0;layer_i<layer_count;layer_i++) //循环处理该成员中的元素
         {
             json.read_element(layer_i);
 
-            type=json.get_string("type");
-            if(strstr(type,"rectangle"))
+            layer_type=json.get_string("type");
+            if(!layer_type)continue;
+            if(strstr(layer_type,"rectangle"))
             {
                 draw_rectangle(json.get_string("color"), json.get_double("x"), json.get_double("y"), json.get_double("width"), json.get_double("height"));
             }
-            else if(strstr(type,"text"))
+            else if(strstr(layer_type,"text"))
             {
                 draw_text(json.get_string("text"), json.get_string("font"), json.get_int("face"), json.get_double("size"), json.get_int("alignment"), json.get_string("color"), json.get_double("x"), json.get_double("y"));
             }
-            else if(strstr(type,"svgfile"))
+            else if(strstr(layer_type,"svgfile"))
             {
                 draw_svg(json.get_string("filename"), json.get_double("x"), json.get_double("y"), json.get_double("width"), json.get_double("height"));
             }
-            else if(strstr(type,"pngfile"))
+            else if(strstr(layer_type,"pngfile"))
             {
                 draw_png(json.get_string("filename"), json.get_double("x"), json.get_double("y"), json.get_double("width"), json.get_double("height"));
             }
@@ -64,11 +65,9 @@ int8_t draw::make(const char *jsondata)
             json.end_element();
         }
 
-        nextpage();
         if(page_count)json.end_element();
-        page_i++;
+        if(page_i+1<page_count)nextpage();
     }
-    while(page_i<page_count);
 
     uninit();
 
@@ -157,7 +156,7 @@ int8_t draw::nextpage()
         strcpy(out_file_new,out_file);
         char *out_file_ext=strrchr(out_file_new,'.');
         strcpy(out_file_ext+1+(page_count_i/10+1),out_file_ext);
-        sprintf(out_file_ext,"-%d%s",page_count_i,out_file_ext+1+(page_count_i/10+1));
+        sprintf(out_file_ext,"-%lld%s",page_count_i,out_file_ext+1+(page_count_i/10+1));
 
         //创建新介质
         cairo_destroy(cr);//回收画笔
@@ -165,6 +164,7 @@ int8_t draw::nextpage()
         surface = cairo_svg_surface_create (out_file_new, page_width, page_height);
         cr = cairo_create (surface);//创建画笔
 
+        printf("|%s|",out_file_new);
         //释放
         free(out_file_new);
     }
