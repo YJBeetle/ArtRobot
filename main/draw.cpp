@@ -45,19 +45,19 @@ int8_t draw::make(const char *jsondata)
 
             layer_type=json.get_string("type");
             if(!layer_type)continue;
-            if(strstr(layer_type,"rectangle"))
+            if(!strcasecmp(layer_type,"rectangle"))
             {
                 draw_rectangle(json.get_string("color"), json.get_double("x"), json.get_double("y"), json.get_double("width"), json.get_double("height"));
             }
-            else if(strstr(layer_type,"text"))
+            else if(!strcasecmp(layer_type,"text"))
             {
                 draw_text(json.get_string("text"), json.get_string("font"), json.get_int("face"), json.get_double("size"), json.get_int("alignment"), json.get_string("color"), json.get_double("x"), json.get_double("y"));
             }
-            else if(strstr(layer_type,"svgfile"))
+            else if(!strcasecmp(layer_type,"svgfile"))
             {
                 draw_svg(json.get_string("filename"), json.get_double("x"), json.get_double("y"), json.get_double("width"), json.get_double("height"));
             }
-            else if(strstr(layer_type,"pngfile"))
+            else if(!strcasecmp(layer_type,"pngfile"))
             {
                 draw_png(json.get_string("filename"), json.get_double("x"), json.get_double("y"), json.get_double("width"), json.get_double("height"));
             }
@@ -105,14 +105,14 @@ int8_t draw::init(const char *filename,const char *type,double width,double heig
     this->page_count=count;
     this->page_count_i=0;
 
-    if(strstr(out_type,"PDF")||strstr(out_type,"pdf"))
+    if(!strcasecmp(out_type,"PDF"))
     {
         surface = cairo_pdf_surface_create (out_file, MM2PT(page_width), MM2PT(page_height));//创建介质
         //cairo_surface_set_fallback_resolution(surface,300,300);//设置分辨率
         cr = cairo_create (surface);//创建画笔
         cairo_scale (cr, MM2PT(1), MM2PT(1));//缩放画笔，因PDF用mm作为最终单位故需缩放画笔
     }
-    else if(strstr(out_type,"SVG")||strstr(out_type,"svg"))
+    else if(!strcasecmp(out_type,"SVG"))
     {
         surface = cairo_svg_surface_create (out_file, page_width, page_height);
         cr = cairo_create (surface);//创建画笔
@@ -144,11 +144,11 @@ int8_t draw::nextpage()
 {
     if(!this->inited)return 1;
 
-    if(strstr(out_type,"PDF")||strstr(out_type,"pdf"))
+    if(!strcasecmp(out_type,"PDF"))
     {
         cairo_show_page(cr);
     }
-    else if(strstr(out_type,"SVG")||strstr(out_type,"svg"))
+    else if(!strcasecmp(out_type,"SVG"))
     {
         //计算新文件名
         page_count_i++;
@@ -164,7 +164,6 @@ int8_t draw::nextpage()
         surface = cairo_svg_surface_create (out_file_new, page_width, page_height);
         cr = cairo_create (surface);//创建画笔
 
-        printf("|%s|",out_file_new);
         //释放
         free(out_file_new);
     }
