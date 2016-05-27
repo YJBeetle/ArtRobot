@@ -1,7 +1,10 @@
 <?php
 
 header('Content-type: image/svg+xml');
-$filename=sys_get_temp_dir().'/out.svg';
+
+$TMPDIR=dirname(__FILE__).'/tmp';
+
+$filename=$TMPDIR.'/out.svg';
 
 $file = fopen($filename, "rb");
 echo fread($file,filesize($filename));

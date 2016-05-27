@@ -9,6 +9,7 @@
 //常量
 //$TMPDIR=sys_get_temp_dir();
 $TMPDIR=dirname(__FILE__).'/tmp';
+//mkdir($TMPDIR,0777);
 
 //选中模板
 $template='1';
