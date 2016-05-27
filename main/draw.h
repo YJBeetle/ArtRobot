@@ -11,6 +11,7 @@ private:
     Json json;
 
     const char *out_file;
+    char *out_file_i;
     const char *out_type;
     double page_width;
     double page_height;
