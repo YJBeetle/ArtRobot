@@ -9,12 +9,8 @@ CMakeLists.txt.user.*
 #PHP Storm
 .idea
 
-#CMake
-/build
-
-#bit file copy
-/php/exec/Art_robot.exe
-/php/exec/Art_robot
+#Build
+/exec/*
 
 #tmpfile
-/php/tmp
+/tmp/*
