@@ -99,13 +99,10 @@ int8_t draw::init(const char *filename,const char *type,double width,double heig
     }
 
     this->out_file=filename;
-    this->out_file_i=new char[strlen(out_file)];
-    strcpy(out_file_i,out_file);
     this->out_type=type;
     this->page_width=width;
     this->page_height=height;
     this->page_count=count;
-    this->page_count_i=0;
 
     if(!strcasecmp(out_type,"PDF"))
     {
@@ -143,11 +140,13 @@ int8_t draw::uninit()
 
     if(!strcasecmp(out_type,"PNG"))
     {
-        cairo_surface_write_to_png(surface,out_file_i);
+        cairo_surface_write_to_png(surface,out_file);
     }
 
     cairo_destroy (cr);//回收画笔
     cairo_surface_destroy (surface);//回收介质
+
+    this->inited=0;
 
     return 0;
 }
@@ -156,43 +155,23 @@ int8_t draw::nextpage()
 {
     if(!this->inited)return 1;
 
-    if(!strcasecmp(out_type,"PNG"))
-    {
-        cairo_surface_write_to_png(surface,out_file_i);
-    }
-
-    page_count_i++;
-
-    if(!strcasecmp(out_type,"SVG")||!strcasecmp(out_type,"PNG"))
-    {
-        //计算新文件名
-        if(out_file_i)free(out_file_i);//释放
-        out_file_i=new char[strlen(out_file)+1+(page_count_i/10+1)];
-        strcpy(out_file_i,out_file);
-        char *out_file_ext=strrchr(out_file_i,'.');
-        strcpy(out_file_ext+1+(page_count_i/10+1),out_file_ext);
-        sprintf(out_file_ext,"-%lld%s",page_count_i,out_file_ext+1+(page_count_i/10+1));
-    }
-
     if(!strcasecmp(out_type,"PDF"))
     {
         cairo_show_page(cr);
     }
     else if(!strcasecmp(out_type,"SVG"))
     {
-        //创建新介质
-        cairo_destroy(cr);//回收画笔
-        cairo_surface_destroy (surface);//回收介质
-        surface = cairo_svg_surface_create (out_file_i, page_width, page_height);
-        cr = cairo_create (surface);//创建画笔
+#ifdef DEBUG
+        fprintf(stderr,"NextPage: warning: SVG surface not support multi-page,!\n");
+#endif
+        return 1;
     }
     else if(!strcasecmp(out_type,"PNG"))
     {
-        //创建新介质
-        cairo_destroy(cr);//回收画笔
-        cairo_surface_destroy (surface);//回收介质
-        surface = cairo_image_surface_create (CAIRO_FORMAT_ARGB32, page_width, page_height);
-        cr = cairo_create (surface);//创建画笔
+#ifdef DEBUG
+        fprintf(stderr,"NextPage: warning: PNG surface not support multi-page,!\n");
+#endif
+        return 1;
     }
 
     return 0;

@@ -11,12 +11,10 @@ private:
     Json json;
 
     const char *out_file;
-    char *out_file_i;
     const char *out_type;
     double page_width;
     double page_height;
     int64_t page_count;
-    int64_t page_count_i;
 
     cairo_surface_t *surface;//介质
     cairo_t *cr;//画笔
