@@ -38,3 +38,5 @@ target_link_libraries(${PROJECT_NAME} cairo)
 target_link_libraries(${PROJECT_NAME} freetype)
 target_link_libraries(${PROJECT_NAME} rsvg-2)
 target_link_libraries(${PROJECT_NAME} json-glib-1.0)
+
+#set(CMAKE_EXE_LINKER_FLAGS "-static -v")

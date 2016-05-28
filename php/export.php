@@ -46,8 +46,8 @@ fclose($file);
 
 
 //run
-$cmdline=dirname(__FILE__).'/exec/Art_robot -f "'.$TMPDIR.'/run.json'.'"';
-$return=exec($cmdline);
+$cmdline=dirname(__FILE__).'/exec/Art_robot -f "'.$TMPDIR.'/run.json'.'" 2>&1';
+//$return=exec($cmdline);
 
 
 ?>
@@ -82,7 +82,12 @@ $return=exec($cmdline);
     <textarea name="textarea" rows="10" id="textarea"><?php echo $cmdline;?></textarea>
     <br>
     stdout
-    <textarea name="textarea2" rows="5" id="textarea2"><?php echo $return;?></textarea>
+    <textarea name="textarea2" rows="5" id="textarea2"><?php
+        //passthru('env');
+        //passthru('export PATH=/opt/local/bin:/opt/local/sbin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/opt/X11/bin');
+        //passthru('export DYLD_LIBRARY_PATH=/opt/local/lib/');
+        passthru($cmdline);
+        ?></textarea>
 </p>
 </body>
 </html>
