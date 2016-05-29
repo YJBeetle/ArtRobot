@@ -34,7 +34,7 @@ fwrite($file,$jsonrun);
 fclose($file);
 
 //run
-$cmdline=dirname(__FILE__).'/exec/Art_robot -f "'.$TMPDIR.'/run.json'.'" ';
+$cmdline=dirname(__FILE__).'/exec/Art_robot -f "'.$TMPDIR.'/run.json'.'" 2>&1';
 exec($cmdline);
 //passthru($cmdline);
 
