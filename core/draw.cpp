@@ -96,13 +96,6 @@ int8_t draw::init(const char *filename,const char *type,double width,double heig
 #endif
         return 1;
     }
-    if(!filename)
-    {
-#ifdef DEBUG
-        fprintf(stderr,"Init: error: outfile is unavailable , Failure to initialize!\n");
-#endif
-        return 2;
-    }
     if(!type)
     {
 #ifdef DEBUG
@@ -111,7 +104,6 @@ int8_t draw::init(const char *filename,const char *type,double width,double heig
         return 3;
     }
 
-    //fprintf(stderr,"|%d,%s|\n",filename,filename);
     if(filename&&strcmp(filename,""))
     {
         this->out_file_stream=fopen(filename,"wb");
