@@ -2,6 +2,9 @@
 #include <stdint.h>
 #include <string.h>
 #include <math.h>
+#ifdef WIN32
+    #include <fcntl.h>
+#endif
 
 #include <cairo.h>
 #include <cairo-pdf.h>
@@ -110,6 +113,9 @@ int8_t draw::init(const char *filename,const char *type,double width,double heig
     }
     else
     {
+#ifdef WIN32
+        _setmode(_fileno(stdout), O_BINARY);
+#endif
         this->out_file=stdout;
     }
     this->surface_type=type;
