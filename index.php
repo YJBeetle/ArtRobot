@@ -23,6 +23,7 @@ if(@$_POST['submit']) {
 
 //数据处理
     $json = json_decode($jsontext);
+    $json->type="SVG";
 
 //设置文字内容
     $json->draw[0][7]->text = $_POST['text'];

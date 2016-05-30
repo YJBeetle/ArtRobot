@@ -28,9 +28,25 @@ $file = fopen($filename, "w") or die("Unable to open file!");
 fwrite($file,$jsondata);
 fclose($file);
 
-//run
+//$cmdline
 $cmdline=dirname(__FILE__)."/exec/Art_robot \"$TMPDIR/run.json\"";
 
+//识别并设置文件类型
+$json=json_decode($jsondata);
+switch (strtoupper($json->type))
+{
+    case "PDF":
+        header('Content-type: application/pdf');
+        break;
+    case "SVG":
+        header('Content-type: image/svg+xml');
+        break;
+    case "PNG":
+        header('Content-type: image/png');
+        break;
+    default:
+
+}
+
 //output
-header('Content-type: image/svg+xml');
 passthru($cmdline);
