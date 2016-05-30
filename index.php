@@ -73,7 +73,8 @@ if(@$_POST['submit']) {
     <p><img src="export.php"></p>
     <p><a href="export.php?type=pdf">下载PDF版本</a></p>
     <p><a href="export.php?type=png">下载PNG版本</a></p>
-    <?php/*
+    <?php
+    /*
     <h3>调试输出</h3>
     <p>
         模板json数据
@@ -83,7 +84,8 @@ if(@$_POST['submit']) {
         生成json数据
         <textarea name="textarea" rows="10" id="textarea"><?php echo $jsonrun; ?></textarea>
     </p>
-*/?>
+*/
+    ?>
     <?php
 }
 ?>
