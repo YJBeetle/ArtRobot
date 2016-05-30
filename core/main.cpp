@@ -12,6 +12,7 @@
 #include <json-glib/json-glib.h>
 
 #include "default.h"
+#include "args.h"
 #include "color.h"
 #include "json.h"
 #include "draw.h"
@@ -20,54 +21,9 @@
 
 int main(int argc, char *argv[])
 {
-    const char *jsondata=NULL;
-
     //解析argv
-    const char *argv1=NULL;
-    argv1=argv[1]?argv[1]:"";
-    if(!strcmp(argv1,"-f"))
-    {
-        FILE* jsonfile;
-        jsonfile=fopen(argv[2],"r");
-        if(jsonfile)
-        {
-            char *d;
-            fseek(jsonfile,0,SEEK_END);
-            int len=ftell(jsonfile);
-            d=new char[len+1];
-            rewind(jsonfile);
-            fread(d,1,len,jsonfile);
-            d[len]=0;
-            fclose(jsonfile);
-            jsondata=d;
-        }
-        else
-        {
-            printf("文件不存在\n");
-            return 1;
-        }
-    }
-//    else if(!strcmp(argv1,"-c"))
-//    {
-//        char *line = NULL;
-//        size_t len = 0;
-//        ssize_t read;
-//
-//        while ((read = getline(&line, &len, stdin)) != -1)
-//        {
-//            printf("Retrieved line of length %zu, %u :\n", read, len);
-//            printf("%s", line);
-//        }
-//    }
-    else if(!strcmp(argv1,"-h")||!strcmp(argv1,"--help"))
-    {
-        printf("帮助：\n  -c        stdin输入\n  -f [file] 文件输入\n  -h        显示本帮助信息\n");
-        return 0;
-    }
-    else
-    {
-        jsondata=argv[1];
-    }
+    args args;
+    args.args_parse(argc,argv);
 
     //测试用
     //SVG
@@ -90,7 +46,7 @@ int main(int argc, char *argv[])
 
     //do
     draw drawfile;
-    drawfile.make(jsondata);
+    drawfile.make(args.jsondata_s(),args.output_s());
 
 #ifdef DEBUG
     //计时结束

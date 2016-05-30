@@ -21,12 +21,12 @@ draw::draw()
     this->inited=0;
 }
 
-int8_t draw::make(const char *jsondata)
+int8_t draw::make(const char *jsondata,const char *output)
 {
     if(!jsondata)return 1;
     json.init(jsondata);
 
-    init(json.get_string("outfile"),json.get_string("type"),json.get_double("width"),json.get_double("height"),json.get_int("count"));
+    init(output,json.get_string("type"),json.get_double("width"),json.get_double("height"),json.get_int("count"));
 
     json.read_member("draw");
     int64_t page_count=this->page_count;

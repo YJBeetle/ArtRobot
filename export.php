@@ -22,19 +22,14 @@ $template = '1';
 $dir = "template/" . $template;
 chdir($dir);
 
-//数据处理
-$data=json_decode($jsondata);
-$data->outfile=$outfile;
-
-//编码并写入json文件
-$jsonrun=json_encode($data);
+//写入json文件
 $filename=$TMPDIR.'/run.json';
 $file = fopen($filename, "w") or die("Unable to open file!");
-fwrite($file,$jsonrun);
+fwrite($file,$jsondata);
 fclose($file);
 
 //run
-$cmdline=dirname(__FILE__).'/exec/Art_robot -f "'.$TMPDIR.'/run.json'.'" 2>&1';
+$cmdline=dirname(__FILE__)."/exec/Art_robot -f \"$TMPDIR/run.json\" -o \"$outfile\" 2>&1";
 exec($cmdline);
 //passthru($cmdline);
 

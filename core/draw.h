@@ -32,7 +32,7 @@ private:
 
 public:
     draw();
-    int8_t make(const char *jsondata);
+    int8_t make(const char *jsondata,const char *output);
 
 };
 
