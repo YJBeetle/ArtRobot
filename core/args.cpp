@@ -59,19 +59,15 @@ void args::args_help (const char *argv0)
     printf ("Usage: %s [OPTIONS] \n", argv0_base);
     printf ("%s - \n", argv0_base);
     puts ("");
-    printf ("  -w, --width=WIDTH\tWidth of output image in pixels\n");
-    printf ("  -h, --height=HEIGHT\tHeight of output image in pixels\n");
-    printf ("  -s, --scale=FACTOR\tScale image by FACTOR\n");
-    puts ("");
-    printf ("  --flipx\t\tFlip X coordinates of image\n");
-    printf ("  --flipy\t\tFlip Y coordinates of image\n");
+    printf ("  -f, --jsonfile\tjson file\n");
+    printf ("  -o, --output\tout put file\n");
+    printf ("  -c, --console\tconsole out put\n");
     puts ("");
     printf ("  --help\t\tGive this help list\n");
     printf ("  -V, --version\t\tPrint program version\n");
 
     free (argv0_copy);
 }
-
 
 void args::args_usage (const char *argv0)
 {

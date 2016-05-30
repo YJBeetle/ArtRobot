@@ -53,7 +53,6 @@ int main(int argc, char *argv[])
     gettimeofday(&tpend,NULL);
     timeuse=1000000*(tpend.tv_sec-tpstart.tv_sec)+tpend.tv_usec-tpstart.tv_usec;
     timeuse/=1000000;
-
     //输出耗时
     fprintf(stderr,"Used Time:%fs\n",timeuse);
 #endif
