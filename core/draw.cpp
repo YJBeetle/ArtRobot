@@ -19,7 +19,7 @@
 draw::draw()
 {
     //init
-    this->out_file_stream=NULL;
+    this->out_file=NULL;
     this->surface_count=0;
     this->surface_height=0;
     this->surface_width=0;
@@ -106,11 +106,11 @@ int8_t draw::init(const char *filename,const char *type,double width,double heig
 
     if(filename&&strcmp(filename,""))
     {
-        this->out_file_stream=fopen(filename,"wb");
+        this->out_file=fopen(filename,"wb");
     }
     else
     {
-        this->out_file_stream=stdout;
+        this->out_file=stdout;
     }
     this->surface_type=type;
     this->surface_width=width;
@@ -119,14 +119,14 @@ int8_t draw::init(const char *filename,const char *type,double width,double heig
 
     if(!strcasecmp(surface_type,"PDF"))
     {
-        surface = cairo_pdf_surface_create_for_stream(writeCairo,(void*)this->out_file_stream, MM2PT(surface_width), MM2PT(surface_height));//创建介质
+        surface = cairo_pdf_surface_create_for_stream(writeCairo,(void*)this->out_file, MM2PT(surface_width), MM2PT(surface_height));//创建介质
         //cairo_surface_set_fallback_resolution(surface,300,300);//设置分辨率
         cr = cairo_create (surface);//创建画笔
         cairo_scale (cr, MM2PT(1), MM2PT(1));//缩放画笔，因PDF用mm作为最终单位故需缩放画笔
     }
     else if(!strcasecmp(surface_type,"SVG"))
     {
-        surface = cairo_svg_surface_create_for_stream(writeCairo,(void*)this->out_file_stream, surface_width, surface_height);
+        surface = cairo_svg_surface_create_for_stream(writeCairo,(void*)this->out_file, surface_width, surface_height);
         cr = cairo_create (surface);//创建画笔
     }
     else if(!strcasecmp(surface_type,"PNG"))
@@ -159,13 +159,13 @@ int8_t draw::uninit()
 
     if(!strcasecmp(surface_type,"PNG"))
     {
-        cairo_surface_write_to_png_stream(surface,writeCairo,(void*)this->out_file_stream);
+        cairo_surface_write_to_png_stream(surface,writeCairo,(void*)this->out_file);
     }
 
     cairo_destroy (cr);//回收画笔
     cairo_surface_destroy (surface);//回收介质
 
-    //fclose(this->out_file_stream);
+    fclose(this->out_file);
 
     this->inited=0;
 
