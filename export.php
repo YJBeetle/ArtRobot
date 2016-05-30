@@ -6,6 +6,7 @@
  * Time: 下午4:33
  */
 //init
+error_reporting(0);//禁用错误报告
 session_start();
 
 $TMPDIR=dirname(__FILE__).'/tmp';
@@ -44,8 +45,11 @@ switch (strtoupper($json->type))
         header('Content-type: image/png');
         break;
     default:
-
 }
+
+//设置文件名
+//date_default_timezone_set('Asia/Shanghai');
+header('Content-Disposition: attachment;filename=MYFO-Media-'.date('y-m-d_h-i-s',time()).'.'.$json->type);
 
 //output
 passthru($cmdline);
