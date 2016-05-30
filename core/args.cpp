@@ -61,7 +61,6 @@ void args::args_help (const char *argv0)
     puts ("");
     printf ("  -f, --jsonfile\tjson file\n");
     printf ("  -o, --output\tout put file\n");
-    printf ("  -c, --console\tconsole out put\n");
     puts ("");
     printf ("  --help\t\tGive this help list\n");
     printf ("  -V, --version\t\tPrint program version\n");
@@ -82,12 +81,11 @@ void args::args_usage (const char *argv0)
 
 int args::args_parse(int argc, char *argv[])
 {
-    static const char args_optstring[] = "f:o:c:V";
+    static const char args_optstring[] = "f:o:V";
     static struct option args_options[] = {
         /* name,		has_arg,	flag,	val */
         {"jsonfile",	1,			0,		'f'},
         {"output",		1,			0,		'o'},
-        {"console",		0,			0,		'c'},
         {"version",		0,			0,		'V'},
         { 0 }
     };
