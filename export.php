@@ -29,12 +29,8 @@ fwrite($file,$jsondata);
 fclose($file);
 
 //run
-$cmdline=dirname(__FILE__)."/exec/Art_robot -f \"$TMPDIR/run.json\" -o \"$outfile\" 2>&1";
-exec($cmdline);
-//passthru($cmdline);
+$cmdline=dirname(__FILE__)."/exec/Art_robot \"$TMPDIR/run.json\"";
 
+//output
 header('Content-type: image/svg+xml');
-
-$file = fopen($outfile, "rb");
-echo fread($file,filesize($outfile));
-fclose($file);
+passthru($cmdline);
