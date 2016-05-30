@@ -71,6 +71,7 @@ if(@$_POST['submit']) {
     ?>
     <h3>输出预览</h3>
     <p><img src="export.php"></p>
+    <h3>下载</h3>
     <p><a href="export.php?type=pdf">下载PDF版本</a></p>
     <p><a href="export.php?type=png">下载PNG版本</a></p>
     <?php
