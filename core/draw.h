@@ -10,7 +10,6 @@ private:
 
     Json json;
 
-    const char *out_file;
     FILE* out_file_stream;
     const char *surface_type;
     double surface_width;

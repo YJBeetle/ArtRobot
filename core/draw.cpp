@@ -18,6 +18,13 @@
 
 draw::draw()
 {
+    //init
+    this->out_file_stream=NULL;
+    this->surface_count=0;
+    this->surface_height=0;
+    this->surface_width=0;
+
+    //set
     this->inited=0;
 }
 
@@ -26,17 +33,23 @@ int8_t draw::make(const char *jsondata,const char *output)
     if(!jsondata)return 1;
     json.init(jsondata);
 
-    init(output,json.get_string("type"),json.get_double("width"),json.get_double("height"),json.get_int("count"));
+    if(init(output,json.get_string("type"),json.get_double("width"),json.get_double("height"),json.get_int("count")))
+    {
+#ifdef DEBUG
+        fprintf(stderr,"make: error: Init failed!\n");
+#endif
+        return 2;
+    }
 
     json.read_member("draw");
-    int64_t surface_count=this->surface_count;
+    int64_t page_count=this->surface_count;
     int64_t page_i=0;
     int64_t layer_count=0;
     int64_t layer_i=0;
     const char *layer_type;
-    for(page_i=0;page_i<surface_count;page_i++)
+    for(page_i=0;page_i<page_count;page_i++)
     {
-        if(surface_count)json.read_element(page_i);
+        if(page_count)json.read_element(page_i);
 
         layer_count=json.count(); //元素个数
         for(layer_i=0;layer_i<layer_count;layer_i++) //循环处理该成员中的元素
@@ -65,8 +78,8 @@ int8_t draw::make(const char *jsondata,const char *output)
             json.end_element();
         }
 
-        if(surface_count)json.end_element();
-        if(page_i+1<surface_count)nextpage();
+        if(page_count)json.end_element();
+        if(page_i+1<page_count)nextpage();
     }
 
     uninit();
@@ -98,8 +111,15 @@ int8_t draw::init(const char *filename,const char *type,double width,double heig
         return 3;
     }
 
-    this->out_file=filename;
-    this->out_file_stream=fopen(filename,"wb");
+    //fprintf(stderr,"|%d,%s|\n",filename,filename);
+    if(filename&&strcmp(filename,""))
+    {
+        this->out_file_stream=fopen(filename,"wb");
+    }
+    else
+    {
+        this->out_file_stream=stdout;
+    }
     this->surface_type=type;
     this->surface_width=width;
     this->surface_height=height;
@@ -137,7 +157,13 @@ int8_t draw::init(const char *filename,const char *type,double width,double heig
 
 int8_t draw::uninit()
 {
-    if(!this->inited)return 1;
+    if(!this->inited)
+    {
+#ifdef DEBUG
+        fprintf(stderr,"uninit: warning: not initialized!\n");
+#endif
+        return 1;
+    }
 
     if(!strcasecmp(surface_type,"PNG"))
     {
@@ -147,7 +173,7 @@ int8_t draw::uninit()
     cairo_destroy (cr);//回收画笔
     cairo_surface_destroy (surface);//回收介质
 
-    fclose(this->out_file_stream);
+    //fclose(this->out_file_stream);
 
     this->inited=0;
 
@@ -156,7 +182,13 @@ int8_t draw::uninit()
 
 int8_t draw::nextpage()
 {
-    if(!this->inited)return 1;
+    if(!this->inited)
+    {
+#ifdef DEBUG
+//        fprintf(stderr,"nextpage: warning: not initialized!\n");
+#endif
+        return 1;
+    }
 
     if(!strcasecmp(surface_type,"PDF"))
     {
