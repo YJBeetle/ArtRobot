@@ -22,34 +22,58 @@ $template = '1';
 $dir = "template/" . $template;
 chdir($dir);
 
+//解析json数据
+$json=json_decode($jsondata);
+
+//处理json数据
+if (@$_GET['type'])
+{
+    switch (strtoupper($_GET['type']))
+    {
+        case 'PDF':
+            $json->type='PDF';
+            break;
+        case 'SVG':
+            $json->type='SVG';
+            break;
+        case 'PNG':
+            $json->type='PNG';
+            break;
+        default:
+    }
+}
+
+//编码json数据
+$jsonrun=json_encode($json);
+
 //写入json文件
 $filename=$TMPDIR.'/run.json';
 $file = fopen($filename, "w") or die("Unable to open file!");
-fwrite($file,$jsondata);
+fwrite($file,$jsonrun);
 fclose($file);
 
 //$cmdline
 $cmdline=dirname(__FILE__)."/exec/Art_robot \"$filename\"";
 
-//识别并设置文件类型
-$json=json_decode($jsondata);
+//设置文件类型
 switch (strtoupper($json->type))
 {
-    case "PDF":
+    case 'PDF':
         header('Content-type: application/pdf');
         break;
-    case "SVG":
+    case 'SVG':
         header('Content-type: image/svg+xml');
         break;
-    case "PNG":
+    case 'PNG':
         header('Content-type: image/png');
         break;
     default:
+        header('Content-type: application/octet-stream');
 }
 
 //设置文件名
 //date_default_timezone_set('Asia/Shanghai');
-header('Content-Disposition: attachment;filename=MYFO-Media-'.date('y-m-d_h-i-s',time()).'.'.$json->type);
+header('Content-Disposition: attachment;filename=MYFO-Media-'.date('y-m-d_h-i-s',time()).'.'.strtolower($json->type));
 
 //output
 passthru($cmdline);
