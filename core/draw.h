@@ -11,10 +11,11 @@ private:
     Json json;
 
     const char *out_file;
-    const char *out_type;
-    double page_width;
-    double page_height;
-    int64_t page_count;
+    FILE* out_file_stream;
+    const char *surface_type;
+    double surface_width;
+    double surface_height;
+    int64_t surface_count;
 
     cairo_surface_t *surface;//介质
     cairo_t *cr;//画笔
@@ -35,5 +36,7 @@ public:
     int8_t make(const char *jsondata,const char *output);
 
 };
+
+cairo_status_t writeCairo(void * closure, const unsigned char* data, unsigned int length);
 
 #endif // DRAW_H

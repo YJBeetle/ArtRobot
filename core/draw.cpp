@@ -29,14 +29,14 @@ int8_t draw::make(const char *jsondata,const char *output)
     init(output,json.get_string("type"),json.get_double("width"),json.get_double("height"),json.get_int("count"));
 
     json.read_member("draw");
-    int64_t page_count=this->page_count;
+    int64_t surface_count=this->surface_count;
     int64_t page_i=0;
     int64_t layer_count=0;
     int64_t layer_i=0;
     const char *layer_type;
-    for(page_i=0;page_i<page_count;page_i++)
+    for(page_i=0;page_i<surface_count;page_i++)
     {
-        if(page_count)json.read_element(page_i);
+        if(surface_count)json.read_element(page_i);
 
         layer_count=json.count(); //元素个数
         for(layer_i=0;layer_i<layer_count;layer_i++) //循环处理该成员中的元素
@@ -65,8 +65,8 @@ int8_t draw::make(const char *jsondata,const char *output)
             json.end_element();
         }
 
-        if(page_count)json.end_element();
-        if(page_i+1<page_count)nextpage();
+        if(surface_count)json.end_element();
+        if(page_i+1<surface_count)nextpage();
     }
 
     uninit();
@@ -99,26 +99,27 @@ int8_t draw::init(const char *filename,const char *type,double width,double heig
     }
 
     this->out_file=filename;
-    this->out_type=type;
-    this->page_width=width;
-    this->page_height=height;
-    this->page_count=count;
+    this->out_file_stream=fopen(filename,"wb");
+    this->surface_type=type;
+    this->surface_width=width;
+    this->surface_height=height;
+    this->surface_count=count;
 
-    if(!strcasecmp(out_type,"PDF"))
+    if(!strcasecmp(surface_type,"PDF"))
     {
-        surface = cairo_pdf_surface_create (out_file, MM2PT(page_width), MM2PT(page_height));//创建介质
+        surface = cairo_pdf_surface_create_for_stream(writeCairo,(void*)this->out_file_stream, MM2PT(surface_width), MM2PT(surface_height));//创建介质
         //cairo_surface_set_fallback_resolution(surface,300,300);//设置分辨率
         cr = cairo_create (surface);//创建画笔
         cairo_scale (cr, MM2PT(1), MM2PT(1));//缩放画笔，因PDF用mm作为最终单位故需缩放画笔
     }
-    else if(!strcasecmp(out_type,"SVG"))
+    else if(!strcasecmp(surface_type,"SVG"))
     {
-        surface = cairo_svg_surface_create (out_file, page_width, page_height);
+        surface = cairo_svg_surface_create_for_stream(writeCairo,(void*)this->out_file_stream, surface_width, surface_height);
         cr = cairo_create (surface);//创建画笔
     }
-    else if(!strcasecmp(out_type,"PNG"))
+    else if(!strcasecmp(surface_type,"PNG"))
     {
-        surface = cairo_image_surface_create (CAIRO_FORMAT_ARGB32, page_width, page_height);
+        surface = cairo_image_surface_create (CAIRO_FORMAT_ARGB32, surface_width, surface_height);
         cr = cairo_create (surface);//创建画笔
     }
     else
@@ -138,13 +139,15 @@ int8_t draw::uninit()
 {
     if(!this->inited)return 1;
 
-    if(!strcasecmp(out_type,"PNG"))
+    if(!strcasecmp(surface_type,"PNG"))
     {
-        cairo_surface_write_to_png(surface,out_file);
+        cairo_surface_write_to_png_stream(surface,writeCairo,(void*)this->out_file_stream);
     }
 
     cairo_destroy (cr);//回收画笔
     cairo_surface_destroy (surface);//回收介质
+
+    fclose(this->out_file_stream);
 
     this->inited=0;
 
@@ -155,18 +158,18 @@ int8_t draw::nextpage()
 {
     if(!this->inited)return 1;
 
-    if(!strcasecmp(out_type,"PDF"))
+    if(!strcasecmp(surface_type,"PDF"))
     {
         cairo_show_page(cr);
     }
-    else if(!strcasecmp(out_type,"SVG"))
+    else if(!strcasecmp(surface_type,"SVG"))
     {
 #ifdef DEBUG
         fprintf(stderr,"NextPage: warning: SVG surface not support multi-page,!\n");
 #endif
         return 1;
     }
-    else if(!strcasecmp(out_type,"PNG"))
+    else if(!strcasecmp(surface_type,"PNG"))
     {
 #ifdef DEBUG
         fprintf(stderr,"NextPage: warning: PNG surface not support multi-page,!\n");
@@ -175,6 +178,13 @@ int8_t draw::nextpage()
     }
 
     return 0;
+}
+
+cairo_status_t writeCairo(void * closure, const unsigned char* data, unsigned int length)
+{
+    //cout << string((const char*)data, length) << endl;
+    fwrite(data,length,1,(FILE*)closure);
+    return CAIRO_STATUS_SUCCESS;
 }
 
 int8_t draw::draw_rectangle(Color argb, double x, double y, double width, double height)
