@@ -9,7 +9,6 @@
 session_start();
 
 $TMPDIR=dirname(__FILE__).'/tmp';
-$outfile=$TMPDIR.'/exportdata';
 
 //获取数据
 //$jsondata=$GLOBALS['HTTP_RAW_POST_DATA'];
@@ -29,7 +28,7 @@ fwrite($file,$jsondata);
 fclose($file);
 
 //$cmdline
-$cmdline=dirname(__FILE__)."/exec/Art_robot \"$TMPDIR/run.json\"";
+$cmdline=dirname(__FILE__)."/exec/Art_robot \"$filename\"";
 
 //识别并设置文件类型
 $json=json_decode($jsondata);
@@ -50,3 +49,6 @@ switch (strtoupper($json->type))
 
 //output
 passthru($cmdline);
+
+//clear
+unlink($filename);
