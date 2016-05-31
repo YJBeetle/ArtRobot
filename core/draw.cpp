@@ -15,11 +15,11 @@
 #include <json-glib/json-glib.h>
 
 #include "default.h"
-#include "color.h"
-#include "json.h"
-#include "draw.h"
+#include "Color.h"
+#include "Json.h"
+#include "Draw.h"
 
-draw::draw()
+Draw::Draw()
 {
     //init
     this->out_file=NULL;
@@ -30,7 +30,7 @@ draw::draw()
     this->inited=0;
 }
 
-int8_t draw::init(const char *filename,const char *type,double width,double height)
+int8_t Draw::init(const char *filename,const char *type,double width,double height)
 {
     if(this->inited)
     {
@@ -92,7 +92,7 @@ int8_t draw::init(const char *filename,const char *type,double width,double heig
     return 0;
 }
 
-int8_t draw::uninit()
+int8_t Draw::uninit()
 {
     if(!this->inited)
     {
@@ -117,7 +117,7 @@ int8_t draw::uninit()
     return 0;
 }
 
-int8_t draw::nextpage()
+int8_t Draw::nextpage()
 {
     if(!this->inited)
     {
@@ -156,7 +156,7 @@ cairo_status_t writeCairo(void * closure, const unsigned char* data, unsigned in
     return CAIRO_STATUS_SUCCESS;
 }
 
-int8_t draw::draw_rectangle(Color argb, double x, double y, double width, double height)
+int8_t Draw::draw_rectangle(Color argb, double x, double y, double width, double height)
 {
     if(!this->inited)
     {
@@ -175,7 +175,7 @@ int8_t draw::draw_rectangle(Color argb, double x, double y, double width, double
     return 0;
 }
 
-int8_t draw::draw_text(const char *text, const char *fontfile, long face_index, double font_size, int8_t alignment, Color argb, double x, double y)
+int8_t Draw::draw_text(const char *text, const char *fontfile, long face_index, double font_size, int8_t alignment, Color argb, double x, double y)
 {
     if(!this->inited)
     {
@@ -249,7 +249,7 @@ int8_t draw::draw_text(const char *text, const char *fontfile, long face_index, 
     return 0;
 }
 
-int8_t draw::draw_svg (const char *svgfilename, double x, double y, double width, double height)
+int8_t Draw::draw_svg (const char *svgfilename, double x, double y, double width, double height)
 {
     if(!this->inited)
     {
@@ -292,7 +292,7 @@ int8_t draw::draw_svg (const char *svgfilename, double x, double y, double width
     return 0;
 }
 
-int8_t draw::draw_png (const char *pngfilename, double x, double y, double width, double height)
+int8_t Draw::draw_png (const char *pngfilename, double x, double y, double width, double height)
 {
     if(!this->inited)
     {
@@ -334,7 +334,7 @@ int8_t draw::draw_png (const char *pngfilename, double x, double y, double width
     return 0;
 }
 
-int8_t draw::filecheck (const char *filename)
+int8_t Draw::filecheck (const char *filename)
 {
     FILE* file;
     file=fopen (filename, "rb");

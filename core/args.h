@@ -2,7 +2,7 @@
 #define ARGS_H
 
 
-class args
+class Args
 {
 private:
     char *output;
@@ -13,10 +13,10 @@ private:
     void args_usage(const char *argv0);
 
 public:
-    args();
+    Args();
     int args_parse(int argc, char *argv[]);
-    char *jsondata_s();
-    char *output_s();
+    char *jsondata_s(){return jsondata;}
+    char *output_s(){return output;}
 };
 
 #endif // ARGS_H

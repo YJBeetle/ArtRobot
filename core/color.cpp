@@ -2,7 +2,7 @@
 #include <stdint.h>
 
 #include "default.h"
-#include "color.h"
+#include "Color.h"
 
 
 void Color::set()

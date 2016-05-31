@@ -12,10 +12,10 @@
 #include <json-glib/json-glib.h>
 
 #include "default.h"
-#include "args.h"
-#include "color.h"
-#include "json.h"
-#include "draw.h"
+#include "Args.h"
+#include "Color.h"
+#include "Json.h"
+#include "Draw.h"
 
 #include <sys/time.h>
 
@@ -29,7 +29,7 @@ int main(int argc, char *argv[])
 #endif
 
     //解析argv
-    args args;
+    Args args;
     args.args_parse(argc,argv);
 
     //解析Json
@@ -43,7 +43,7 @@ int main(int argc, char *argv[])
     }
 
     //绘制
-    draw draw;
+    Draw draw;
     if(draw.init(args.output_s(),json.get_string("type"),json.get_double("width"),json.get_double("height")))
     {
 #ifdef DEBUG
@@ -78,7 +78,6 @@ int main(int argc, char *argv[])
         for(layer_i=0;layer_i<layer_count;layer_i++) //循环处理该成员中的元素
         {
             json.read_element(layer_i);
-            //printf("|%d,%d|",json.is_array(),json.count());
 
             layer_type=json.get_string("type");
             if(!layer_type)continue;

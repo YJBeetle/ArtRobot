@@ -5,53 +5,16 @@
 #include <getopt.h>
 
 #include "default.h"
-#include "args.h"
+#include "Args.h"
 
-args::args()
+Args::Args()
 {
     this->output=NULL;
     this->jsonfile=NULL;
     this->jsondata=NULL;
-
-    static const char ARGS_PROGRAM_DESCRIPTION[] = "svg2png - Render an SVG image to a PNG image";
-    static const char ARGS_PROGRAM_BUG_ADDRESS[] = "<cworth@isi.edu>";
-
-    static const char ARGS_PROGRAM_ARGDOC[] = "[<SVG_file> [<PNG_file>]]";
-
-
-    enum {
-        ARGS_VAL_HELP = 256,
-        ARGS_VAL_FLIPX,
-        ARGS_VAL_FLIPY
-    };
-
-
 }
 
-char *args::output_s()
-{
-    return this->output;
-}
-
-char *args::jsondata_s()
-{
-    return this->jsondata;
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-void args::args_help (const char *argv0)
+void Args::args_help (const char *argv0)
 {
     char *argv0_copy = strdup (argv0);
     char *argv0_base = basename (argv0_copy);
@@ -68,7 +31,7 @@ void args::args_help (const char *argv0)
     free (argv0_copy);
 }
 
-void args::args_usage (const char *argv0)
+void Args::args_usage (const char *argv0)
 {
     char *argv0_copy = strdup (argv0);
     char *argv0_base = basename (argv0_copy);
@@ -79,7 +42,7 @@ void args::args_usage (const char *argv0)
     free (argv0_copy);
 }
 
-int args::args_parse(int argc, char *argv[])
+int Args::args_parse(int argc, char *argv[])
 {
     static const char args_optstring[] = "f:o:V";
     static struct option args_options[] = {

@@ -1,9 +1,9 @@
 #ifndef DRAW_H
 #define DRAW_H
-#include "color.h"
-#include "json.h"
+#include "Color.h"
+#include "Json.h"
 
-class draw
+class Draw
 {
 private:
     int8_t inited;
@@ -19,7 +19,7 @@ private:
     int8_t filecheck(const char *filename);
 
 public:
-    draw();
+    Draw();
 
     int8_t init(const char *filename,const char *type,double width,double height);
     int8_t uninit();

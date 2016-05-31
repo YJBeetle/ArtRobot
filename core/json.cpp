@@ -5,7 +5,7 @@
 
 #include <json-glib/json-glib.h>
 
-#include "json.h"
+#include "Json.h"
 
 Json::Json()
 {
