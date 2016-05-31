@@ -52,23 +52,33 @@ int main(int argc, char *argv[])
         return 2;
     }
 
-    int64_t page_count=json.get_int("count");
+    //准备绘制，默认多页
+    json.read_member("draw");
+    int8_t multipage=1;
+    int64_t page_count=json.count();
     int64_t page_i=0;
     int64_t layer_count=0;
     int64_t layer_i=0;
 
-    json.read_member("draw");
-
+    //单页检测，如果是单页
+    json.read_element(0);
+    if(json.get_string("type"))
+    {
+        multipage=0;
+        page_count=1;
+    }
+    json.end_element();
 
     const char *layer_type;
     for(page_i=0;page_i<page_count;page_i++)
     {
-        if(page_count)json.read_element(page_i);
+        if(multipage)json.read_element(page_i);
 
         layer_count=json.count(); //元素个数
         for(layer_i=0;layer_i<layer_count;layer_i++) //循环处理该成员中的元素
         {
             json.read_element(layer_i);
+            //printf("|%d,%d|",json.is_array(),json.count());
 
             layer_type=json.get_string("type");
             if(!layer_type)continue;
@@ -92,8 +102,11 @@ int main(int argc, char *argv[])
             json.end_element();
         }
 
-        if(page_count)json.end_element();
-        if(page_i+1<page_count)draw.nextpage();
+        if(multipage)
+        {
+            json.end_element();
+            if(page_i+1<page_count)draw.nextpage();
+        }
     }
 
     draw.uninit();

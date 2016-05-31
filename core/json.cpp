@@ -52,16 +52,15 @@ int8_t Json::is_object()
 
 int8_t Json::read_element(int32_t i)
 {
-    if(!this->inited)return 1;
-    json_reader_read_element(reader,i); //读取第i个元素
-    return 0;
+    if(!this->inited)return 0;
+    return json_reader_read_element(reader,i); //读取第i个元素
 }
 
 int8_t Json::end_element()
 {
-    if(!this->inited)return 1;
+    if(!this->inited)return 0;
     json_reader_end_element(reader); //返回上一个节点
-    return 0;
+    return 1;
 }
 
 int8_t Json::is_array()
