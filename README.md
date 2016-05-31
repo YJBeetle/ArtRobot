@@ -12,7 +12,7 @@ Art_robot
 
 ```
 {
-  "type":"PDF",
+  "type":"SVG",
   "width":420,
   "height":297,
   "draw":[
@@ -151,10 +151,9 @@ Art_robot
 
 ```
 {
-  "type":"SVG",
+  "type":"PDF",
   "width":420,
   "height":297,
-  "count":2,
   "draw":[
     [
       {
