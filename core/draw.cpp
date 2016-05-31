@@ -23,7 +23,6 @@ draw::draw()
 {
     //init
     this->out_file=NULL;
-    this->surface_count=0;
     this->surface_height=0;
     this->surface_width=0;
 
@@ -31,66 +30,7 @@ draw::draw()
     this->inited=0;
 }
 
-int8_t draw::make(const char *jsondata,const char *output)
-{
-    if(!jsondata)return 1;
-    json.init(jsondata);
-
-    if(init(output,json.get_string("type"),json.get_double("width"),json.get_double("height"),json.get_int("count")))
-    {
-#ifdef DEBUG
-        fprintf(stderr,"make: error: Init failed!\n");
-#endif
-        return 2;
-    }
-
-    json.read_member("draw");
-    int64_t page_count=this->surface_count;
-    int64_t page_i=0;
-    int64_t layer_count=0;
-    int64_t layer_i=0;
-    const char *layer_type;
-    for(page_i=0;page_i<page_count;page_i++)
-    {
-        if(page_count)json.read_element(page_i);
-
-        layer_count=json.count(); //元素个数
-        for(layer_i=0;layer_i<layer_count;layer_i++) //循环处理该成员中的元素
-        {
-            json.read_element(layer_i);
-
-            layer_type=json.get_string("type");
-            if(!layer_type)continue;
-            if(!strcasecmp(layer_type,"rectangle"))
-            {
-                draw_rectangle(json.get_string("color"), json.get_double("x"), json.get_double("y"), json.get_double("width"), json.get_double("height"));
-            }
-            else if(!strcasecmp(layer_type,"text"))
-            {
-                draw_text(json.get_string("text"), json.get_string("font"), json.get_int("face"), json.get_double("size"), json.get_int("alignment"), json.get_string("color"), json.get_double("x"), json.get_double("y"));
-            }
-            else if(!strcasecmp(layer_type,"svgfile"))
-            {
-                draw_svg(json.get_string("filename"), json.get_double("x"), json.get_double("y"), json.get_double("width"), json.get_double("height"));
-            }
-            else if(!strcasecmp(layer_type,"pngfile"))
-            {
-                draw_png(json.get_string("filename"), json.get_double("x"), json.get_double("y"), json.get_double("width"), json.get_double("height"));
-            }
-
-            json.end_element();
-        }
-
-        if(page_count)json.end_element();
-        if(page_i+1<page_count)nextpage();
-    }
-
-    uninit();
-
-    return 0;
-}
-
-int8_t draw::init(const char *filename,const char *type,double width,double height,int64_t count)
+int8_t draw::init(const char *filename,const char *type,double width,double height)
 {
     if(this->inited)
     {
@@ -121,7 +61,6 @@ int8_t draw::init(const char *filename,const char *type,double width,double heig
     this->surface_type=type;
     this->surface_width=width;
     this->surface_height=height;
-    this->surface_count=count;
 
     if(!strcasecmp(surface_type,"PDF"))
     {
@@ -322,7 +261,7 @@ int8_t draw::draw_svg (const char *svgfilename, double x, double y, double width
     if(!this->filecheck(svgfilename))
     {
 #ifdef DEBUG
-        fprintf(stderr,"DrawSVG: warning: file not found: %s\n",json.get_string("filename"));
+        fprintf(stderr,"DrawSVG: warning: file not found: %s\n",svgfilename);
 #endif
         return 2;
     }
@@ -365,7 +304,7 @@ int8_t draw::draw_png (const char *pngfilename, double x, double y, double width
     if(!this->filecheck(pngfilename))
     {
 #ifdef DEBUG
-        fprintf(stderr,"DrawPNG: warning: file not found: %s\n",json.get_string("filename"));
+        fprintf(stderr,"DrawPNG: warning: file not found: %s\n",pngfilename);
 #endif
         return 2;
     }
