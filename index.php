@@ -26,12 +26,20 @@ if(@$_POST['submit']) {
     $json->type="SVG";
 
 //设置文字内容
+    /*
     $json->draw[0][7]->text = $_POST['text'];
     $json->draw[0][8]->text = $_POST['text2'];
     $json->draw[0][9]->text = '会议时间:' . $_POST['date'];
     $json->draw[0][10]->text = '会议地点:' . $_POST['where'];
     $json->draw[0][11]->text = 'Date:' . $_POST['date-en'];
     $json->draw[0][12]->text = 'Location:' . $_POST['where-en'];
+    */
+    $json->draw[7]->text = $_POST['text'];
+    $json->draw[8]->text = $_POST['text2'];
+    $json->draw[9]->text = '会议时间:' . $_POST['date'];
+    $json->draw[10]->text = '会议地点:' . $_POST['where'];
+    $json->draw[11]->text = 'Date:' . $_POST['date-en'];
+    $json->draw[12]->text = 'Location:' . $_POST['where-en'];
 
 //编码并写入
     $jsonrun = json_encode($json);
