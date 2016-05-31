@@ -51,15 +51,6 @@ if(@$_POST['submit']) {
 <head>
     <meta charset="UTF-8">
     <title>Art robot测试页面</title>
-
-    <style type="text/css">
-        #textarea {
-            width: 100%;
-        }
-        #textarea2 {
-            width: 100%;
-        }
-    </style>
 </head>
 
 <body>
@@ -82,19 +73,6 @@ if(@$_POST['submit']) {
     <h3>下载</h3>
     <p><a href="export.php?type=pdf">下载PDF版本</a></p>
     <p><a href="export.php?type=png">下载PNG版本</a></p>
-    <?php
-    /*
-    <h3>调试输出</h3>
-    <p>
-        模板json数据
-        <textarea name="textarea" rows="10" id="textarea"><?php echo $jsontext; ?></textarea>
-        处理后数据结构
-        <textarea name="textarea" rows="10" id="textarea"><?php echo print_r($json); ?></textarea>
-        生成json数据
-        <textarea name="textarea" rows="10" id="textarea"><?php echo $jsonrun; ?></textarea>
-    </p>
-*/
-    ?>
     <?php
 }
 ?>
