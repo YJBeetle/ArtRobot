@@ -2,6 +2,8 @@
   "type":"svg",
   "width":420,
   "height":297,
+  "unit":"px",
+  "ppi":72,
   "draw":[
     [
       {

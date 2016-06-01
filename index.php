@@ -69,7 +69,7 @@ if(@$_POST['submit']) {
 if(@$_POST['submit']) {
     ?>
     <h3>输出预览</h3>
-    <p><img src="export.php"></p>
+    <p><img src="export.php?type=svg&unit=px"></p>
     <h3>下载</h3>
     <p><a href="export.php?type=pdf&unit=mm">下载PDF版本</a></p>
     <p><a href="export.php?type=png&unit=mm">下载PNG版本</a></p>

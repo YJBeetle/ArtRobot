@@ -15,6 +15,8 @@ Art_robot
   "type":"SVG",
   "width":420,
   "height":297,
+  "unit":"px",
+  "ppi":72,
   "draw":[
     {
     "type":"rectangle",
@@ -154,6 +156,8 @@ Art_robot
   "type":"PDF",
   "width":420,
   "height":297,
+  "unit":"mm",
+  "ppi":72,
   "draw":[
     [
       {

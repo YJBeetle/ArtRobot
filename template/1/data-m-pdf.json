@@ -1,7 +1,9 @@
 {
-  "type":"svg",
+  "type":"pdf",
   "width":420,
   "height":297,
+  "unit":"mm",
+  "ppi":72,
   "draw":[
     [
       {
