@@ -46,6 +46,10 @@ if (@$_GET['ppi'])
 {
     $json->ppi=intval($_GET['ppi']);
 }
+if (@$_GET['unit'])
+{
+    $json->unit=$_GET['unit'];
+}
 
 //编码json数据
 $jsonrun=json_encode($json);

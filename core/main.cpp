@@ -44,7 +44,7 @@ int main(int argc, char *argv[])
 
     //绘制
     Draw draw;
-    if(draw.init(args.output_s(),json.get_string("type"),json.get_double("width"),json.get_double("height"),json.get_double("ppi")))
+    if(draw.init(args.output_s(),json.get_string("type"),json.get_double("width"),json.get_double("height"),json.get_string("unit"),json.get_double("ppi")))
     {
 #ifdef DEBUG
         fprintf(stderr,"Main: error: Draw Init failed!\n");

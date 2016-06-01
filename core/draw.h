@@ -21,7 +21,7 @@ private:
 public:
     Draw();
 
-    int8_t init(const char *filename,const char *type,double width,double height,double ppi);
+    int8_t init(const char *filename,const char *type,double width,double height,const char *unit,double ppi);
     int8_t uninit();
     int8_t nextpage();
 
