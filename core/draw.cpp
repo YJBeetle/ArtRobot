@@ -97,7 +97,7 @@ int8_t Draw::uninit()
     if(!this->inited)
     {
 #ifdef DEBUG
-        fprintf(stderr,"uninit: warning: not initialized!\n");
+        fprintf(stderr,"Uninit: warning: not initialized!\n");
 #endif
         return 1;
     }
@@ -122,7 +122,7 @@ int8_t Draw::nextpage()
     if(!this->inited)
     {
 #ifdef DEBUG
-//        fprintf(stderr,"nextpage: warning: not initialized!\n");
+        fprintf(stderr,"NextPage: warning: not initialized!\n");
 #endif
         return 1;
     }
