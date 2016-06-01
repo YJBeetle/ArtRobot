@@ -113,7 +113,7 @@ int Args::args_parse(int argc, char *argv[])
     else
     {
 #ifdef DEBUG
-        fprintf(stderr,"Args: error: Json file are not found!\n");
+        fprintf(stderr,"Args::args_parse: error: Json file are not found!\n");
 #endif
     }
 

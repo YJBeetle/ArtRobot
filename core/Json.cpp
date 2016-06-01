@@ -5,22 +5,47 @@
 
 #include <json-glib/json-glib.h>
 
+#include "default.h"
 #include "Json.h"
 
 Json::Json()
 {
     this->inited=0;
+    this->parser=NULL;
+    this->node=NULL;
+    this->reader=NULL;
 }
 
 int8_t Json::init(const char *jsondata)
 {
     if(this->inited)return 1;
-    this->inited=1;
+    if(!jsondata)
+    {
+#ifdef DEBUG
+        fprintf(stderr,"Json::init: error: Json data is NULL!\n");
+#endif
+        return 2;
+    }
 
     parser=json_parser_new();
     json_parser_load_from_data(parser,jsondata,-1,NULL);
     node=json_parser_get_root(parser); //得到root结点
     reader=json_reader_new(node); //使用JsonReader来做解析
+
+    this->inited=1;
+    return 0;
+}
+
+int8_t Json::uninit()
+{
+    if(!this->inited)
+    {
+#ifdef DEBUG
+        fprintf(stderr,"Json::uninit: error: Repeat initialize!\n");
+#endif
+        return 1;
+    }
+
     return 0;
 }
 

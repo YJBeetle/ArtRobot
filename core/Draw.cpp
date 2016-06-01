@@ -35,14 +35,14 @@ int8_t Draw::init(const char *filename,const char *type,double width,double heig
     if(this->inited)
     {
 #ifdef DEBUG
-        fprintf(stderr,"Init: warning: Repeat initialize!\n");
+        fprintf(stderr,"Draw::Init: warning: Repeat initialize!\n");
 #endif
         return 1;
     }
     if(!type)
     {
 #ifdef DEBUG
-        fprintf(stderr,"Init: error: Unknow type , Failure to initialize!\n");
+        fprintf(stderr,"Draw::Init: error: Unknow type , Failure to initialize!\n");
 #endif
         return 3;
     }
@@ -111,7 +111,7 @@ int8_t Draw::init(const char *filename,const char *type,double width,double heig
     else
     {
 #ifdef DEBUG
-        fprintf(stderr,"Init: error: Unknow type , Failure to initialize!\n");
+        fprintf(stderr,"Draw::Init: error: Unknow type , Failure to initialize!\n");
 #endif
         this->inited=0;
         return 3;
@@ -126,7 +126,7 @@ int8_t Draw::uninit()
     if(!this->inited)
     {
 #ifdef DEBUG
-        fprintf(stderr,"Uninit: warning: not initialized!\n");
+        fprintf(stderr,"Draw::Uninit: warning: not initialized!\n");
 #endif
         return 1;
     }
@@ -151,7 +151,7 @@ int8_t Draw::nextpage()
     if(!this->inited)
     {
 #ifdef DEBUG
-        fprintf(stderr,"NextPage: warning: not initialized!\n");
+        fprintf(stderr,"Draw::NextPage: warning: not initialized!\n");
 #endif
         return 1;
     }
@@ -163,14 +163,14 @@ int8_t Draw::nextpage()
     else if(!strcasecmp(surface_type,"SVG"))
     {
 #ifdef DEBUG
-        fprintf(stderr,"NextPage: warning: SVG surface not support multi-page,!\n");
+        fprintf(stderr,"Draw::NextPage: warning: SVG surface not support multi-page,!\n");
 #endif
         return 1;
     }
     else if(!strcasecmp(surface_type,"PNG"))
     {
 #ifdef DEBUG
-        fprintf(stderr,"NextPage: warning: PNG surface not support multi-page,!\n");
+        fprintf(stderr,"Draw::NextPage: warning: PNG surface not support multi-page,!\n");
 #endif
         return 1;
     }
@@ -189,7 +189,7 @@ int8_t Draw::draw_rectangle(Color argb, double x, double y, double width, double
     if(!this->inited)
     {
 #ifdef DEBUG
-        fprintf(stderr,"DrawRectangle: warning: not initialized!\n");
+        fprintf(stderr,"Draw::DrawRectangle: warning: not initialized!\n");
 #endif
         return 1;
     }
@@ -208,21 +208,21 @@ int8_t Draw::draw_text(const char *text, const char *fontfile, long face_index, 
     if(!this->inited)
     {
 #ifdef DEBUG
-        fprintf(stderr,"DrawTEXT: warning: not initialized!\n");
+        fprintf(stderr,"Draw::DrawTEXT: warning: not initialized!\n");
 #endif
         return 1;
     }
     if(!text)
     {
 #ifdef DEBUG
-        fprintf(stderr,"DrawTEXT: warning: no text.\n");
+        fprintf(stderr,"Draw::DrawTEXT: warning: no text.\n");
 #endif
         return 2;
     }
     if(!fontfile)
     {
 #ifdef DEBUG
-        fprintf(stderr,"DrawTEXT: warning: no family.\n");
+        fprintf(stderr,"Draw::DrawTEXT: warning: no family.\n");
 #endif
         return 3;
     }
@@ -235,14 +235,14 @@ int8_t Draw::draw_text(const char *text, const char *fontfile, long face_index, 
     if (FT_Init_FreeType (&ft_library))
     {
 #ifdef DEBUG
-        fprintf(stderr,"DrawTEXT: warning: FT_Init_FreeType failed.\n");
+        fprintf(stderr,"Draw::DrawTEXT: warning: FT_Init_FreeType failed.\n");
 #endif
         return 4;
     }
     if (FT_New_Face (ft_library, fontfile, face_index, &ft_face))
     {
 #ifdef DEBUG
-        fprintf(stderr,"DrawTEXT: error: FT_New_Face failed, maybe font not found.\n");
+        fprintf(stderr,"Draw::DrawTEXT: error: FT_New_Face failed, maybe font not found.\n");
 #endif
         return 5;
     }
@@ -282,14 +282,14 @@ int8_t Draw::draw_svg (const char *svgfilename, double x, double y, double width
     if(!this->inited)
     {
 #ifdef DEBUG
-        fprintf(stderr,"DrawSVG: warning: not initialized!\n");
+        fprintf(stderr,"Draw::DrawSVG: warning: not initialized!\n");
 #endif
         return 1;
     }
     if(!this->filecheck(svgfilename))
     {
 #ifdef DEBUG
-        fprintf(stderr,"DrawSVG: warning: file not found: %s\n",svgfilename);
+        fprintf(stderr,"Draw::DrawSVG: warning: file not found: %s\n",svgfilename);
 #endif
         return 2;
     }
@@ -325,14 +325,14 @@ int8_t Draw::draw_png (const char *pngfilename, double x, double y, double width
     if(!this->inited)
     {
 #ifdef DEBUG
-        fprintf(stderr,"DrawPNG: warning: not initialized!\n");
+        fprintf(stderr,"Draw::DrawPNG: warning: not initialized!\n");
 #endif
         return 1;
     }
     if(!this->filecheck(pngfilename))
     {
 #ifdef DEBUG
-        fprintf(stderr,"DrawPNG: warning: file not found: %s\n",pngfilename);
+        fprintf(stderr,"Draw::DrawPNG: warning: file not found: %s\n",pngfilename);
 #endif
         return 2;
     }

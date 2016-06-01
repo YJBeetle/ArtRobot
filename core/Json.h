@@ -13,6 +13,7 @@ public:
     Json();
 
     int8_t init(const char *jsondata);
+    int8_t uninit();
 
     int32_t count();
 
