@@ -112,8 +112,9 @@ int Args::args_parse(int argc, char *argv[])
     }
     else
     {
-        printf("文件不存在\n");
-        exit(1);
+#ifdef DEBUG
+        fprintf(stderr,"Args: error: Json file are not found!\n");
+#endif
     }
 
     return 0;
