@@ -2,6 +2,7 @@
   "type":"SVG",
   "width":420,
   "height":297,
+  "ppi":72,
   "draw":[
     {
     "type":"rectangle",

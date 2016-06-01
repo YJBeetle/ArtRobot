@@ -1,14 +1,8 @@
 #ifndef DEFAULT_H
 #define DEFAULT_H
 
-
-#define MM2PT(mm) (mm*(1/25.4)*72)
-
-#define A4_WIDTH  210
-#define A4_HEIGHT 297
-
-#define A3_WIDTH  297
-#define A3_HEIGHT 420
+#define MM2IN(MM) ((double)MM/(double)25.4)
+#define PT2IN(PT) ((double)PT/(double)72)
 
 //typedef signed char     int8_t;
 //typedef short int       int16_t;

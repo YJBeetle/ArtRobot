@@ -42,6 +42,10 @@ if (@$_GET['type'])
         default:
     }
 }
+if (@$_GET['ppi'])
+{
+    $json->ppi=intval($_GET['ppi']);
+}
 
 //编码json数据
 $jsonrun=json_encode($json);

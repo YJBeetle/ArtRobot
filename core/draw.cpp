@@ -30,7 +30,7 @@ Draw::Draw()
     this->inited=0;
 }
 
-int8_t Draw::init(const char *filename,const char *type,double width,double height)
+int8_t Draw::init(const char *filename,const char *type,double width,double height,double ppi)
 {
     if(this->inited)
     {
@@ -62,22 +62,26 @@ int8_t Draw::init(const char *filename,const char *type,double width,double heig
     this->surface_width=width;
     this->surface_height=height;
 
+    if(!ppi)ppi=72;
+
     if(!strcasecmp(surface_type,"PDF"))
     {
-        surface = cairo_pdf_surface_create_for_stream(writeCairo,(void*)this->out_file, MM2PT(surface_width), MM2PT(surface_height));//创建介质
+        surface = cairo_pdf_surface_create_for_stream(writeCairo,(void*)this->out_file, MM2IN(surface_width)*ppi, MM2IN(surface_height)*ppi);//默认单位是mm，所以需要mm转inch
         //cairo_surface_set_fallback_resolution(surface,300,300);//设置分辨率
         cr = cairo_create (surface);//创建画笔
-        cairo_scale (cr, MM2PT(1), MM2PT(1));//缩放画笔，因PDF用mm作为最终单位故需缩放画笔
+        cairo_scale (cr, MM2IN(1)*ppi, MM2IN(1)*ppi);//缩放画笔，因PDF用mm作为最终单位故需缩放画笔
     }
     else if(!strcasecmp(surface_type,"SVG"))
     {
-        surface = cairo_svg_surface_create_for_stream(writeCairo,(void*)this->out_file, surface_width, surface_height);
+        surface = cairo_svg_surface_create_for_stream(writeCairo,(void*)this->out_file, PT2IN(surface_width)*ppi, PT2IN(surface_height)*ppi);//默认单位pt
         cr = cairo_create (surface);//创建画笔
+        cairo_scale (cr, PT2IN(1)*ppi, PT2IN(1)*ppi);
     }
     else if(!strcasecmp(surface_type,"PNG"))
     {
-        surface = cairo_image_surface_create (CAIRO_FORMAT_ARGB32, surface_width, surface_height);
+        surface = cairo_image_surface_create (CAIRO_FORMAT_ARGB32, PT2IN(surface_width)*ppi, PT2IN(surface_height)*ppi);//默认单位pt
         cr = cairo_create (surface);//创建画笔
+        cairo_scale (cr, PT2IN(1)*ppi, PT2IN(1)*ppi);
     }
     else
     {
@@ -151,7 +155,6 @@ int8_t Draw::nextpage()
 
 cairo_status_t writeCairo(void * closure, const unsigned char* data, unsigned int length)
 {
-    //cout << string((const char*)data, length) << endl;
     fwrite(data,length,1,(FILE*)closure);
     return CAIRO_STATUS_SUCCESS;
 }
