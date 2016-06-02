@@ -69,7 +69,7 @@
     },
     {
       "type":"text",
-      "text":"会议名称",
+      "text":"#TEXT|会议名称|会议",
       "font":"fonts\/Yuanti.ttc",
       "face":2,
       "size":26,
@@ -80,7 +80,7 @@
     },
     {
       "type":"text",
-      "text":"会议名称行2",
+      "text":"#TEXT|会议名称第二行|",
       "font":"fonts\/Yuanti.ttc",
       "face":2,
       "size":26,

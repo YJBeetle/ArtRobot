@@ -2,30 +2,30 @@
 //init
 session_start();
 
-if(@$_POST['submit']) {
 //常量
 //$TMPDIR=sys_get_temp_dir();
-    $TMPDIR = dirname(__FILE__) . '/tmp';
-    if (!is_dir($TMPDIR)) mkdir($TMPDIR, 0777);
+$TMPDIR = dirname(__FILE__) . '/tmp';
+if (!is_dir($TMPDIR)) mkdir($TMPDIR, 0777);
 
 //选中模板
-    $template = '1';
+$template = '1';
 
 //设置工作目录
-    $dir = "template/" . $template;
-    chdir($dir);
+$dir = "template/" . $template;
+chdir($dir);
 
 //读取json文件
-    $filename = "data.json";
-    $file = fopen($filename, "r") or die("Unable to open file!");
-    $jsontext = fread($file, filesize($filename));
-    fclose($file);
+$filename = "data.json";
+$file = fopen($filename, "r") or die("Unable to open file!");
+$jsontext = fread($file, filesize($filename));
+fclose($file);
 
-//数据处理
+if(@$_POST['submit'])
+{
+    //解析
     $json = json_decode($jsontext);
-    $json->type="SVG";
 
-//设置文字内容
+    //设置文字内容
     /*
     $json->draw[0][7]->text = $_POST['text'];
     $json->draw[0][8]->text = $_POST['text2'];
@@ -41,7 +41,7 @@ if(@$_POST['submit']) {
     $json->draw[11]->text = 'Date:' . $_POST['date-en'];
     $json->draw[12]->text = 'Location:' . $_POST['where-en'];
 
-//编码并写入
+    //编码并写入
     $jsonrun = json_encode($json);
     $_SESSION['jsondata']=$jsonrun;
 }
