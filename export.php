@@ -88,3 +88,4 @@ passthru($cmdline);
 
 //clear
 unlink($filename);
+unset($_SESSION['jsondata']);
