@@ -62,7 +62,7 @@ int main(int argc, char *argv[])
 
     //单页检测，如果是单页
     json.read_element(0);
-    if(json.get_string("type"))
+    if(json.is_object())
     {
         multipage=0;
         page_count=1;
