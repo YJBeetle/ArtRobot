@@ -79,3 +79,22 @@ if(@$_POST['submit']) {
 ?>
 </body>
 </html>
+
+<?php
+
+echo '<br>';
+echo '==============================';
+echo '<br>';
+$a=array();
+echo preg_match_all("/\<.*\>/",$jsontext,$a);
+echo '<br>';
+echo '<pre>';
+foreach ($a)
+{
+    $b=explode('|')
+}
+echo '</pre>';
+//echo '<pre>';
+//print_r(preg_split("/\<.*\>/",$jsontext));
+//echo '</pre>';
+?>
