@@ -53,6 +53,7 @@ if(@$_POST['submit'])
         {
             $title=$b[1];
             $value=$b[2];
+            if(@$_POST['TEXT'][$k][1])$value=$_POST['TEXT'][$k][1];
             echo "<p>$title<input type=\"text\" name=\"TEXT[$k][1]\" value=\"$value\"><input type=\"hidden\" name=\"TEXT[$k][0]\" value=\"$title\"></p>";
         }
     }
