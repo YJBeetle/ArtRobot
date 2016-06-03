@@ -50,6 +50,14 @@ if (@$_GET['unit'])
 {
     $json->unit=$_GET['unit'];
 }
+if (@$_GET['pageonly'])
+{
+    $page=$_GET['pageonly']-1;
+    if(is_array($json->draw[$page]))
+    {
+        $json->draw=$json->draw[$page];
+    }
+}
 
 //编码json数据
 $jsonrun=json_encode($json);

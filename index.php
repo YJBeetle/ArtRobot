@@ -24,10 +24,13 @@ if(@$_POST['submit'])
 {
     $p=array();
     $r=array();
-    foreach($_POST['TEXT'] as $v)
+    if(@$_POST['TEXT'])
     {
-        $p[]="/\<.*".$v[0].".*\>/";
-        $r[]=$v[1];
+        foreach($_POST['TEXT'] as $v)
+        {
+            $p[]="/\<.*".$v[0].".*\>/";
+            $r[]=$v[1];
+        }
     }
     $jsonrun=preg_replace($p,$r,$jsontext);
     $_SESSION['jsondata']=$jsonrun;
@@ -64,11 +67,11 @@ if(@$_POST['submit'])
 if(@$_POST['submit']) {
     ?>
     <h3>输出预览</h3>
-    <p><img src="export.php?type=svg&unit=px"></p>
+    <p><img src="export.php?type=svg&unit=px&pageonly=1"></p>
     <h3>下载</h3>
     <p><a href="export.php?type=pdf&unit=mm">下载PDF版本</a></p>
-    <p><a href="export.php?type=png&unit=mm">下载PNG版本</a></p>
-    <p><a href="export.php?type=png&unit=mm&ppi=300">下载PNG版本（300ppi）</a></p>
+    <p><a href="export.php?type=png&unit=mm&pageonly=1">下载PNG版本</a></p>
+    <p><a href="export.php?type=png&unit=mm&ppi=300&pageonly=1">下载PNG版本（300ppi）</a></p>
     <?php
 }
 ?>
