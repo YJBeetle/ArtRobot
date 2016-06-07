@@ -88,10 +88,19 @@ if(@$_POST['submit'])
                 img.onload = function() {
                     var canvas = document.getElementById("canvas");
                     var ctx = canvas.getContext("2d");
-                    var width = img.width;
-                    var height = img.height;
-                    var x = 0;
-                    var y = 0;
+                    var fwidth=canvas.width;
+                    var fheight=canvas.height;
+                    var cwidth = img.width;
+                    var cheight = img.height;
+                    var scale;
+                    if(fwidth/fheight<cwidth/cheight)
+                        scale=fwidth/cwidth;
+                    else
+                        scale=fheight/cheight;
+                    var width=cwidth*scale;
+                    var height=cheight*scale;
+                    var x = (fwidth-width)/2;
+                    var y = (fheight-height)/2;
                     ctx.drawImage(img, x, y, width, height);
                     DOMURL.revokeObjectURL(url);
                 };
