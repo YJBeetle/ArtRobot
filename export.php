@@ -96,6 +96,12 @@ switch (strtoupper($json->type))
 //date_default_timezone_set('Asia/Shanghai');
 header('Content-Disposition: attachment;filename=MYFO-Media-'.date('y-m-d_h-i-s',time()).'.'.strtolower($json->type));
 
+//禁用缓存
+header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
+header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . 'GMT');
+header('Cache-Control: no-cache, must-revalidate');
+header('Pragma: no-cache');
+
 //output
 passthru($cmdline);
 
