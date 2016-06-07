@@ -57,8 +57,8 @@ if(@$_POST['submit'])
         {
             $title=$b[1];
             $value=$b[2];
-            if(@$_POST['TEXT'][$k][1])$value=$_POST['TEXT'][$k][1];
-            echo "<p>$title<input type=\"text\" name=\"TEXT[$k][1]\" value=\"$value\"><input type=\"hidden\" name=\"TEXT[$k][0]\" value=\"$title\"></p>";
+            echo "$title<input type=\"text\" name=\"TEXT[$k][1]\" value=\"$value\"><input type=\"hidden\" name=\"TEXT[$k][0]\" value=\"$title\">";
+            echo '<br>';
         }
     }
     ?>
@@ -87,7 +87,7 @@ if(@$_POST['submit'])
     }
 </script>
 <h3>信息</h3>
-<strong><pre id="showinfo"></pre></strong>
+<strong><pre id="showinfo">请点击提交以预览</pre></strong>
 <h3>输出预览</h3>
 <p><img id="showsvg" src=""></p>
 <h3>下载</h3>
@@ -98,5 +98,8 @@ if(@$_POST['submit'])
     <br>
     <a href="export.php?type=png&unit=mm&ppi=300&pageonly=1">下载PNG版本（300ppi）</a>
 </p>
+<script>
+    sub();
+</script>
 </body>
 </html>
