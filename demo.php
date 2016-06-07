@@ -73,6 +73,9 @@ if(@$_POST['submit'])
     <input type="button" value="提交" onclick="sub()">
 </form>
 <script>
+    function getRandom(n){
+        return Math.floor(Math.random()*n+1)
+    }
     function sub() {
         $("#showinfo").html("正在绘制");
         $("#showsvg").attr("src","image/loading.svg");
@@ -85,7 +88,7 @@ if(@$_POST['submit'])
             data: $("#form").serialize(),
             success: function(result) {
                 $("#showinfo").html(result);
-                $("#showsvg").attr("src","export.php?template=<?php echo $template;?>&type=svg&unit=px&pageonly=1");
+                $("#showsvg").attr("src","export.php?template=<?php echo $template;?>&type=svg&unit=px&pageonly=1&Random="+getRandom(10086));
             },
             error: function() {
                 $("#showinfo").html("处理发生了错误");
