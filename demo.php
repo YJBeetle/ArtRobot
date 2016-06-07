@@ -75,18 +75,29 @@ if(@$_POST['submit'])
     }
 
     function draw(imgurl){
-        var img = new Image();
-        img.src = imgurl;
-        document.body.appendChild(img);
-        img.onload = function(){
-            var canvas = document.getElementById('canvas');
-            var g = canvas.getContext('2d');
-            var width = img.clientWidth;
-            var height = img.clientHeight;
-            var x = 0;
-            var y = 0;
-            g.drawImage(img, x, y, width, height);
-        };
+        htmlobj=$.ajax({
+            url:imgurl,
+            //async:true,
+            dataType: 'text',
+            success: function(result) {
+                alert(result);
+                var data=result;
+                var img = new Image();
+                img.onload = function() {
+                    var canvas = document.getElementById("canvas");
+                    var ctx = canvas.getContext("2d");
+                    var width = img.width;
+                    var height = img.height;
+                    var x = 0;
+                    var y = 0;
+                    ctx.drawImage(img, x, y, width, height);
+                };
+                img.src = 'data:image/svg+xml;base64,' + btoa(data);
+            },
+            error: function() {
+                $("#showinfo").html("处理发生了错误");
+            }
+        });
     }
 
     $(document).ready(function () {
