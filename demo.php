@@ -56,7 +56,7 @@ if(@$_POST['submit'])
 <script>
     function sub() {
         $("#showinfo").html("正在绘制");
-        //$("#showsvg").attr("src","");
+        draw('image/loading.svg');
         htmlobj=$.ajax({
             url:"demo-ajax.php?template=<?php echo $template;?>",
             //async:true,
@@ -69,6 +69,7 @@ if(@$_POST['submit'])
             },
             error: function() {
                 $("#showinfo").html("处理发生了错误");
+                draw('image/error.svg');
             }
         });
         //$("#showinfo").html(htmlobj.responseText);
@@ -101,6 +102,7 @@ if(@$_POST['submit'])
                     var height=cheight*scale;
                     var x = (fwidth-width)/2;
                     var y = (fheight-height)/2;
+                    ctx.clearRect(0,0,fwidth,fheight);
                     ctx.drawImage(img, x, y, width, height);
                     DOMURL.revokeObjectURL(url);
                 };
@@ -135,7 +137,6 @@ if(@$_POST['submit'])
     ?>
 </form>
 <input type="button" value="提交" onclick="sub()">
-<button onclick="draw('image/loading.svg')">draw</button>
 <h3>信息</h3>
 <strong><pre id="showinfo">请点击提交以预览</pre></strong>
 <h3>输出预览</h3>
