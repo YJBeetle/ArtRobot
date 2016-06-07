@@ -15,6 +15,11 @@ else
 
 //设置工作目录
 $dir = "template/" . $template;
+if(!is_dir($dir))
+{
+    echo '模板不存在';
+    exit(2);
+}
 chdir($dir);
 
 //读取json文件
@@ -72,14 +77,14 @@ if(@$_POST['submit'])
         $("#showinfo").html("正在绘制");
         //$("#showsvg").attr("src","");
         htmlobj=$.ajax({
-            url:"demo-ajax.php",
+            url:"demo-ajax.php?template=<?php echo $template;?>",
             //async:true,
             type: "POST",
             cache: false,
             data: $("#form").serialize(),
             success: function(result) {
                 $("#showinfo").html(result);
-                $("#showsvg").attr("src","export.php?type=svg&unit=px&pageonly=1");
+                $("#showsvg").attr("src","export.php?template=<?php echo $template;?>&type=svg&unit=px&pageonly=1");
             },
             error: function() {
                 $("#showinfo").html("处理发生了错误");
@@ -95,11 +100,11 @@ if(@$_POST['submit'])
 <p><img id="showsvg" src=""></p>
 <h3>下载</h3>
 <p>
-    <a href="export.php?type=pdf&unit=mm">下载PDF版本</a>
+    <a href="export.php?template=<?php echo $template;?>&type=pdf&unit=mm">下载PDF版本</a>
     <br>
-    <a href="export.php?type=png&unit=mm&pageonly=1">下载PNG版本</a>
+    <a href="export.php?template=<?php echo $template;?>&type=png&unit=mm&pageonly=1">下载PNG版本</a>
     <br>
-    <a href="export.php?type=png&unit=mm&ppi=300&pageonly=1">下载PNG版本（300ppi）</a>
+    <a href="export.php?template=<?php echo $template;?>&type=png&unit=mm&ppi=300&pageonly=1">下载PNG版本（300ppi）</a>
 </p>
 <script>
     sub();

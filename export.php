@@ -16,10 +16,15 @@ $TMPDIR=dirname(__FILE__).'/tmp';
 $jsondata=$_SESSION['jsondata'];
 
 //选中模板
-$template = '1';
+if (@$_GET['template'])
+    $template = $_GET['template'];
+else
+    exit(1);
 
 //设置工作目录
 $dir = "template/" . $template;
+if(!is_dir($dir))
+    exit(2);
 chdir($dir);
 
 //解析json数据

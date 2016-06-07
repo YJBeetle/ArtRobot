@@ -15,10 +15,21 @@ $TMPDIR = dirname(__FILE__) . '/tmp';
 if (!is_dir($TMPDIR)) mkdir($TMPDIR, 0777);
 
 //选中模板
-$template = '1';
+if (@$_GET['template'])
+    $template = $_GET['template'];
+else
+{
+    echo '未指定模板';
+    exit(1);
+}
 
 //设置工作目录
 $dir = "template/" . $template;
+if(!is_dir($dir))
+{
+    echo '模板不存在';
+    exit(2);
+}
 chdir($dir);
 
 //读取json文件
