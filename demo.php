@@ -53,6 +53,46 @@ if(@$_POST['submit'])
 </head>
 
 <body>
+<script>
+    function sub() {
+        $("#showinfo").html("正在绘制");
+        //$("#showsvg").attr("src","");
+        htmlobj=$.ajax({
+            url:"demo-ajax.php?template=<?php echo $template;?>",
+            //async:true,
+            type: "POST",
+            cache: false,
+            data: $("#form").serialize(),
+            success: function(result) {
+                $("#showinfo").html(result);
+                draw("export.php?template=<?php echo $template;?>&type=svg&unit=px&pageonly=1");
+            },
+            error: function() {
+                $("#showinfo").html("处理发生了错误");
+            }
+        });
+        //$("#showinfo").html(htmlobj.responseText);
+    }
+
+    function draw(imgurl){
+        var img = new Image();
+        img.src = imgurl;
+        document.body.appendChild(img);
+        img.onload = function(){
+            var canvas = document.getElementById('canvas');
+            var g = canvas.getContext('2d');
+            var width = img.clientWidth;
+            var height = img.clientHeight;
+            var x = 0;
+            var y = 0;
+            g.drawImage(img, x, y, width, height);
+        };
+    }
+
+    $(document).ready(function () {
+        sub();
+    })
+</script>
 <h1>Art robot测试页面-商务水牌</h1>
 <form id="form" method="post" enctype="multipart/form-data">
     <h3>设置</h3>
@@ -70,38 +110,13 @@ if(@$_POST['submit'])
         }
     }
     ?>
-    <input type="button" value="提交" onclick="sub()">
 </form>
-<script>
-    function getRandom(n){
-        return Math.floor(Math.random()*n+1)
-    }
-    function sub() {
-        $("#showinfo").html("正在绘制");
-        $("#showsvg").attr("src","image/loading.svg");
-        //$("#showsvg").attr("src","");
-        htmlobj=$.ajax({
-            url:"demo-ajax.php?template=<?php echo $template;?>",
-            //async:true,
-            type: "POST",
-            cache: false,
-            data: $("#form").serialize(),
-            success: function(result) {
-                $("#showinfo").html(result);
-                $("#showsvg").attr("src","export.php?template=<?php echo $template;?>&type=svg&unit=px&pageonly=1&Random="+getRandom(10086));
-            },
-            error: function() {
-                $("#showinfo").html("处理发生了错误");
-                $("#showsvg").attr("src","");
-            }
-        });
-        //$("#showinfo").html(htmlobj.responseText);
-    }
-</script>
+<input type="button" value="提交" onclick="sub()">
+<button onclick="draw('image/loading.svg')">draw</button>
 <h3>信息</h3>
 <strong><pre id="showinfo">请点击提交以预览</pre></strong>
 <h3>输出预览</h3>
-<p><img id="showsvg" src=""></p>
+<canvas id="canvas" width="500" height="500"></canvas>
 <h3>下载</h3>
 <p>
     <a href="export.php?template=<?php echo $template;?>&type=pdf&unit=mm">下载PDF版本</a>
@@ -110,8 +125,5 @@ if(@$_POST['submit'])
     <br>
     <a href="export.php?template=<?php echo $template;?>&type=png&unit=mm&ppi=300&pageonly=1">下载PNG版本（300ppi）</a>
 </p>
-<script>
-    sub();
-</script>
 </body>
 </html>
