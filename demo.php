@@ -80,9 +80,11 @@ if(@$_POST['submit'])
             //async:true,
             dataType: 'text',
             success: function(result) {
-                alert(result);
                 var data=result;
                 var img = new Image();
+                var DOMURL = self.URL || self.webkitURL || self;
+                var svg = new Blob([data], {type: "image/svg+xml;charset=utf-8"});
+                var url = DOMURL.createObjectURL(svg);
                 img.onload = function() {
                     var canvas = document.getElementById("canvas");
                     var ctx = canvas.getContext("2d");
@@ -91,8 +93,9 @@ if(@$_POST['submit'])
                     var x = 0;
                     var y = 0;
                     ctx.drawImage(img, x, y, width, height);
+                    DOMURL.revokeObjectURL(url);
                 };
-                img.src = 'data:image/svg+xml;base64,' + btoa(data);
+                img.src = url;
             },
             error: function() {
                 $("#showinfo").html("处理发生了错误");
