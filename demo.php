@@ -41,11 +41,12 @@ if(@$_POST['submit'])
 <head>
     <meta charset="UTF-8">
     <title>Art robot测试页面</title>
+    <script src="js/jquery-2.2.4.js"></script>
 </head>
 
 <body>
 <h1>Art robot测试页面-商务水牌</h1>
-<form name="form" method="post" enctype="multipart/form-data">
+<form id="form" method="post" enctype="multipart/form-data">
     <h3>设置</h3>
     <?php
     preg_match_all("/\<.*\>/",$jsontext,$a);
@@ -61,19 +62,41 @@ if(@$_POST['submit'])
         }
     }
     ?>
-    <p><input type="submit" name="submit" value="提交"></p>
+    <p><input type="button" value="提交" onclick="sub()"></p>
 </form>
-<?php
-if(@$_POST['submit']) {
-    ?>
-    <h3>输出预览</h3>
-    <p><img src="export.php?type=svg&unit=px&pageonly=1"></p>
-    <h3>下载</h3>
-    <p><a href="export.php?type=pdf&unit=mm">下载PDF版本</a></p>
-    <p><a href="export.php?type=png&unit=mm&pageonly=1">下载PNG版本</a></p>
-    <p><a href="export.php?type=png&unit=mm&ppi=300&pageonly=1">下载PNG版本（300ppi）</a></p>
-    <?php
-}
-?>
+<script>
+    function sub() {
+        $("#showinfo").html("正在绘制");
+        //$("#showsvg").attr("src","");
+        htmlobj=$.ajax({
+            url:"demo-ajax.php",
+            //async:true,
+            type: "POST",
+            cache: false,
+            data: $("#form").serialize(),
+            success: function(result) {
+                $("#showinfo").html(result);
+                $("#showsvg").attr("src","export.php?type=svg&unit=px&pageonly=1");
+            },
+            error: function() {
+                $("#showinfo").html("处理发生了错误");
+                $("#showsvg").attr("src","");
+            }
+        });
+        //$("#showinfo").html(htmlobj.responseText);
+    }
+</script>
+<h3>信息</h3>
+<strong><pre id="showinfo"></pre></strong>
+<h3>输出预览</h3>
+<p><img id="showsvg" src=""></p>
+<h3>下载</h3>
+<p>
+    <a href="export.php?type=pdf&unit=mm">下载PDF版本</a>
+    <br>
+    <a href="export.php?type=png&unit=mm&pageonly=1">下载PNG版本</a>
+    <br>
+    <a href="export.php?type=png&unit=mm&ppi=300&pageonly=1">下载PNG版本（300ppi）</a>
+</p>
 </body>
 </html>
