@@ -75,6 +75,7 @@ if(@$_POST['submit'])
 <script>
     function sub() {
         $("#showinfo").html("正在绘制");
+        $("#showsvg").attr("src","image/loading.svg");
         //$("#showsvg").attr("src","");
         htmlobj=$.ajax({
             url:"demo-ajax.php?template=<?php echo $template;?>",
