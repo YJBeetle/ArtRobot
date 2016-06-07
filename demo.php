@@ -8,7 +8,10 @@ $TMPDIR = dirname(__FILE__) . '/tmp';
 if (!is_dir($TMPDIR)) mkdir($TMPDIR, 0777);
 
 //选中模板
-$template = '1';
+if (@$_GET['template'])
+    $template = $_GET['template'];
+else
+    $template = '1';
 
 //设置工作目录
 $dir = "template/" . $template;
@@ -62,7 +65,7 @@ if(@$_POST['submit'])
         }
     }
     ?>
-    <p><input type="button" value="提交" onclick="sub()"></p>
+    <input type="button" value="提交" onclick="sub()">
 </form>
 <script>
     function sub() {
