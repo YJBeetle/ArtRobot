@@ -110,9 +110,7 @@ if(@$_POST['submit'])
             url:url,
             //async:true,
             dataType: 'text',
-            success: function(result) {
-                var ctx = $("#canvas")[0].getContext("2d");
-                var data=result;
+            success: function(data) {
                 var img = new Image();
                 img.onload = function() {
                     if(!(width&&height))
@@ -131,6 +129,7 @@ if(@$_POST['submit'])
                         x=(fwidth-width)/2;
                         y=(fheight-height)/2;
                     }
+                    var ctx = $("#canvas")[0].getContext("2d");
                     ctx.clearRect(x, y, width, height);
                     ctx.drawImage(img, x, y, width, height);
                     showcanvas();
