@@ -55,7 +55,9 @@ if(@$_POST['submit'])
 <body>
 <script>
     function sub() {
+        //$("#canvas")[0].height=$("#canvasdiv").height();
         $("#showinfo").html("正在绘制");
+        drawclear();
         draw('image/loading.svg');
         htmlobj=$.ajax({
             url:"demo-ajax.php?template=<?php echo $template;?>",
@@ -68,114 +70,90 @@ if(@$_POST['submit'])
                 if(status)
                 {
                     $("#showinfo").html(ret.message);
+                    drawclear();
                     draw('image/error.svg');
                 }
                 else
                 {
                     $("#showinfo").html(ret.message);
-                    var arr=new Array();
-                    for(var i=1;i<=ret.pagecount;i++)
+
+                    count=ret.pagecount;
+                    fwidth=$("#canvas")[0].width;
+                    fheight=$("#canvas")[0].height;
+                    cwidth = ret.width;
+                    cheight = ret.height;
+
+                    scale=fwidth/cwidth;
+
+                    width=cwidth*scale;
+                    height=cheight*scale;
+                    x=0;
+                    y=0;
+
+                    $("#canvas")[0].height=height*count;
+                    drawclear();
+
+                    drawclear();
+                    for(var i=0;i<count;i++)
                     {
-                        arr[i-1]="export.php?template=<?php echo $template;?>&type=svg&unit=px&pageonly="+i.toString();
+                        y=height*i;
+                        draw("export.php?template=<?php echo $template;?>&type=svg&unit=px&pageonly="+(i+1).toString(),x,y,width,height);
                     }
-                    draw(arr);
                 }
             },
             error: function() {
                 $("#showinfo").html("处理发生了错误");
+                drawclear();
                 draw('image/error.svg');
             }
         });
         //$("#showinfo").html(htmlobj.responseText);
     }
 
-    function draw(arr){
-        var ctx = $("#canvas")[0].getContext("2d");
-
-        if(arr instanceof Array)
-            length=arr.length;
-        else
-            length=1;
-        for(i=0;i<length;i++)
-        {
-            if(arr instanceof Array)
-                url=arr[i];
-            else
-                url=arr;
-            var ajaxcomplete=false;
-            ii=0;
-            $.ajax({
-                url:url,
-                //async:true,
-                dataType: 'text',
-                success: function(result) {
-                    var data=result;
-                    var img = new Image();
-                    var DOMURL = self.URL || self.webkitURL || self;
-                    var svg = new Blob([data], {type: "image/svg+xml;charset=utf-8"});
-                    var url = DOMURL.createObjectURL(svg);
-                    img.onload = function() {
-                        var width;
-                        var height;
-                        var x;
-                        var y;
-                        if(arr instanceof Array)
-                        {
-                            ffwidth=$("#canvasdiv").width();
-                            ffhetght=$("#canvasdiv").height();
-                            fwidth=$("#canvas").width();
-                            fheight=$("#canvas").height();
-                            cwidth = img.width;
-                            cheight = img.height;
-
+    function draw(url,x,y,width,height){
+        $.ajax({
+            url:url,
+            //async:true,
+            dataType: 'text',
+            success: function(result) {
+                var ctx = $("#canvas")[0].getContext("2d");
+                var data=result;
+                var img = new Image();
+                var DOMURL = self.URL || self.webkitURL || self;
+                var svg = new Blob([data], {type: "image/svg+xml;charset=utf-8"});
+                var url = DOMURL.createObjectURL(svg);
+                img.onload = function() {
+                    if(!(width&&height))
+                    {
+                        fwidth=$("#canvas")[0].width;
+                        fheight=$("#canvas")[0].height;
+                        cwidth = img.width;
+                        cheight = img.height;
+                        if(fwidth/fheight<cwidth/cheight)
                             scale=fwidth/cwidth;
-
-                            width=cwidth*scale;
-                            height=cheight*scale;
-                            x=0;
-                            y=height*ii;
-
-                            if(!ii)
-                            {
-                                $("#canvas")[0].height=cheight*length;
-                                ctx.clearRect(0,0,fwidth,fheight);
-                            }
-                            ii++;
-                        }
                         else
-                        {
-                            fwidth=$("#canvas").width();
-                            fheight=$("#canvas").height();
-                            cwidth = img.width;
-                            cheight = img.height;
+                            scale=fheight/cheight;
+                        width=cwidth*scale;
+                        height=cheight*scale;
+                        x=(fwidth-width)/2;
+                        y=(fheight-height)/2;
+                    }
+                    ctx.clearRect(x, y, width, height);
+                    ctx.drawImage(img, x, y, width, height);
+                    DOMURL.revokeObjectURL(url);
+                };
+                img.src = url;
+                $("#showinfo").html("绘制完成");
+            },
+            error: function() {
+                $("#showinfo").html("处理发生了错误");
+            }
+        });
+    }
 
-                            if(fwidth/fheight<cwidth/cheight)
-                                scale=fwidth/cwidth;
-                            else
-                                scale=fheight/cheight;
-
-                            width=cwidth*scale;
-                            height=cheight*scale;
-                            x=(fwidth-width)/2;
-                            y=(fheight-height)/2;
-
-                            $("#canvas")[0].height=$("#canvasdiv").height();
-                            ctx.clearRect(0,0,fwidth,fheight);
-                        }
-
-                        ctx.drawImage(img, x, y, width, height);
-                        DOMURL.revokeObjectURL(url);
-                    };
-                    img.src = url;
-                },
-                error: function() {
-                    $("#showinfo").html("处理发生了错误");
-                },
-                complete: function () {
-                    ajaxcomplete=true;
-                }
-            });
-        }
+    function drawclear() {
+        var ctx = $("#canvas")[0].getContext("2d");
+        ctx.clearRect(0,0,$("#canvas")[0].width,$("#canvas")[0].height);
     }
 
     $(document).ready(function () {
