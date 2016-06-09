@@ -135,7 +135,6 @@ if(@$_POST['submit'])
                             x=0;
                             y=height*ii;
 
-                            alert(ii);
                             if(!ii)
                             {
                                 $("#canvas")[0].height=cheight*length;
