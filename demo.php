@@ -64,8 +64,17 @@ if(@$_POST['submit'])
             cache: false,
             data: $("#form").serialize(),
             success: function(result) {
-                $("#showinfo").html(result);
-                draw("export.php?template=<?php echo $template;?>&type=svg&unit=px&pageonly=1");
+                ret=JSON.parse(result);
+                if(status)
+                {
+                    $("#showinfo").html(ret.message);
+                    draw('image/error.svg');
+                }
+                else
+                {
+                    $("#showinfo").html(ret.message);
+                    draw("export.php?template=<?php echo $template;?>&type=svg&unit=px&pageonly=1");
+                }
             },
             error: function() {
                 $("#showinfo").html("处理发生了错误");
