@@ -73,7 +73,12 @@ if(@$_POST['submit'])
                 else
                 {
                     $("#showinfo").html(ret.message);
-                    draw("export.php?template=<?php echo $template;?>&type=svg&unit=px&pageonly=1");
+                    var arr=new Array();
+                    for(var i=1;i<=ret.pagecount;i++)
+                    {
+                        arr[i-1]="export.php?template=<?php echo $template;?>&type=svg&unit=px&pageonly="+i.toString();
+                    }
+                    draw(arr);
                 }
             },
             error: function() {
@@ -84,43 +89,94 @@ if(@$_POST['submit'])
         //$("#showinfo").html(htmlobj.responseText);
     }
 
-    function draw(imgurl){
-        htmlobj=$.ajax({
-            url:imgurl,
-            //async:true,
-            dataType: 'text',
-            success: function(result) {
-                var data=result;
-                var img = new Image();
-                var DOMURL = self.URL || self.webkitURL || self;
-                var svg = new Blob([data], {type: "image/svg+xml;charset=utf-8"});
-                var url = DOMURL.createObjectURL(svg);
-                img.onload = function() {
-                    var canvas = document.getElementById("canvas");
-                    var ctx = canvas.getContext("2d");
-                    var fwidth=canvas.width;
-                    var fheight=canvas.height;
-                    var cwidth = img.width;
-                    var cheight = img.height;
-                    var scale;
-                    if(fwidth/fheight<cwidth/cheight)
-                        scale=fwidth/cwidth;
-                    else
-                        scale=fheight/cheight;
-                    var width=cwidth*scale;
-                    var height=cheight*scale;
-                    var x = (fwidth-width)/2;
-                    var y = (fheight-height)/2;
-                    ctx.clearRect(0,0,fwidth,fheight);
-                    ctx.drawImage(img, x, y, width, height);
-                    DOMURL.revokeObjectURL(url);
-                };
-                img.src = url;
-            },
-            error: function() {
-                $("#showinfo").html("处理发生了错误");
-            }
-        });
+    function draw(arr){
+        var ctx = $("#canvas")[0].getContext("2d");
+
+        if(arr instanceof Array)
+            length=arr.length;
+        else
+            length=1;
+        for(i=0;i<length;i++)
+        {
+            if(arr instanceof Array)
+                url=arr[i];
+            else
+                url=arr;
+            var ajaxcomplete=false;
+            ii=0;
+            $.ajax({
+                url:url,
+                //async:true,
+                dataType: 'text',
+                success: function(result) {
+                    var data=result;
+                    var img = new Image();
+                    var DOMURL = self.URL || self.webkitURL || self;
+                    var svg = new Blob([data], {type: "image/svg+xml;charset=utf-8"});
+                    var url = DOMURL.createObjectURL(svg);
+                    img.onload = function() {
+                        var width;
+                        var height;
+                        var x;
+                        var y;
+                        if(arr instanceof Array)
+                        {
+                            ffwidth=$("#canvasdiv").width();
+                            ffhetght=$("#canvasdiv").height();
+                            fwidth=$("#canvas").width();
+                            fheight=$("#canvas").height();
+                            cwidth = img.width;
+                            cheight = img.height;
+
+                            scale=fwidth/cwidth;
+
+                            width=cwidth*scale;
+                            height=cheight*scale;
+                            x=0;
+                            y=height*ii;
+
+                            alert(ii);
+                            if(!ii)
+                            {
+                                $("#canvas")[0].height=cheight*length;
+                                ctx.clearRect(0,0,fwidth,fheight);
+                            }
+                            ii++;
+                        }
+                        else
+                        {
+                            fwidth=$("#canvas").width();
+                            fheight=$("#canvas").height();
+                            cwidth = img.width;
+                            cheight = img.height;
+
+                            if(fwidth/fheight<cwidth/cheight)
+                                scale=fwidth/cwidth;
+                            else
+                                scale=fheight/cheight;
+
+                            width=cwidth*scale;
+                            height=cheight*scale;
+                            x=(fwidth-width)/2;
+                            y=(fheight-height)/2;
+
+                            $("#canvas")[0].height=$("#canvasdiv").height();
+                            ctx.clearRect(0,0,fwidth,fheight);
+                        }
+
+                        ctx.drawImage(img, x, y, width, height);
+                        DOMURL.revokeObjectURL(url);
+                    };
+                    img.src = url;
+                },
+                error: function() {
+                    $("#showinfo").html("处理发生了错误");
+                },
+                complete: function () {
+                    ajaxcomplete=true;
+                }
+            });
+        }
     }
 
     $(document).ready(function () {
@@ -149,7 +205,9 @@ if(@$_POST['submit'])
 <h3>信息</h3>
 <strong><pre id="showinfo">请点击提交以预览</pre></strong>
 <h3>输出预览</h3>
-<canvas id="canvas" width="500" height="500"></canvas>
+<div id="canvasdiv" width="500" height="500" style="width:500px; height:500px; overflow:auto">
+    <canvas id="canvas" width="500" height="500"></canvas>
+</div>
 <h3>下载</h3>
 <p>
     <a href="export.php?template=<?php echo $template;?>&type=pdf&unit=mm">下载PDF版本</a>
