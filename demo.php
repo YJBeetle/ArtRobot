@@ -114,9 +114,6 @@ if(@$_POST['submit'])
                 var ctx = $("#canvas")[0].getContext("2d");
                 var data=result;
                 var img = new Image();
-                var DOMURL = self.URL || self.webkitURL || self;
-                var svg = new Blob([data], {type: "image/svg+xml;charset=utf-8"});
-                var url = DOMURL.createObjectURL(svg);
                 img.onload = function() {
                     if(!(width&&height))
                     {
@@ -136,11 +133,10 @@ if(@$_POST['submit'])
                     }
                     ctx.clearRect(x, y, width, height);
                     ctx.drawImage(img, x, y, width, height);
-                    DOMURL.revokeObjectURL(url);
                     showcanvas();
                     $("#showinfo").html("绘制完成");
                 };
-                img.src = url;
+                img.src = 'data:image/svg+xml;base64,' + btoa(data);
             },
             error: function() {
                 $("#showinfo").html("处理发生了错误");
