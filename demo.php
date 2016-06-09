@@ -93,7 +93,7 @@ if(@$_POST['submit'])
                     for(var i=0;i<count;i++)
                     {
                         y=height*i;
-                        draw("export.php?template=<?php echo $template;?>&type=svg&unit=px&pageonly="+(i+1).toString(),x,y,width,height);
+                        draw("export.php?template=<?php echo $template;?>&type=svg&unit=px&pageonly="+i.toString(),x,y,width,height);
                     }
                 }
             },
@@ -204,9 +204,9 @@ if(@$_POST['submit'])
 <p>
     <a href="export.php?template=<?php echo $template;?>&type=pdf&unit=mm">下载PDF版本</a>
     <br>
-    <a href="export.php?template=<?php echo $template;?>&type=png&unit=mm&pageonly=1">下载PNG版本</a>
+    <a href="export.php?template=<?php echo $template;?>&type=png&unit=mm&pageonly=0">下载PNG版本</a>
     <br>
-    <a href="export.php?template=<?php echo $template;?>&type=png&unit=mm&ppi=300&pageonly=1">下载PNG版本（300ppi）</a>
+    <a href="export.php?template=<?php echo $template;?>&type=png&unit=mm&ppi=300&pageonly=0">下载PNG版本（300ppi）</a>
 </p>
 </body>
 </html>

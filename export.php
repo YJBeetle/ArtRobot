@@ -64,9 +64,9 @@ if (@$_GET['unit'])
 {
     $json->unit=$_GET['unit'];
 }
-if (@$_GET['pageonly'])
+if (isset($_GET['pageonly']))
 {
-    $page=$_GET['pageonly']-1;
+    $page=$_GET['pageonly'];
     if(is_array($json->draw[$page]))
     {
         $json->draw=$json->draw[$page];
