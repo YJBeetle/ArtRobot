@@ -138,9 +138,9 @@ if(@$_POST['submit'])
                     ctx.drawImage(img, x, y, width, height);
                     DOMURL.revokeObjectURL(url);
                     showcanvas();
+                    $("#showinfo").html("绘制完成");
                 };
                 img.src = url;
-                $("#showinfo").html("绘制完成");
             },
             error: function() {
                 $("#showinfo").html("处理发生了错误");
