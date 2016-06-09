@@ -202,6 +202,9 @@ if(@$_POST['submit'])
     <image id="loading" src="image/loading.svg" style="display: none;"></image>
     <image id="error" src="image/error.svg" style="display: none;"></image>
 </div>
+<button onclick="$('#canvas')[0].width=$('#canvasdiv').width();sub()">1X</button>
+<button onclick="$('#canvas')[0].width=$('#canvasdiv').width()*2;sub()">2X</button>
+<button onclick="$('#canvas')[0].width=$('#canvasdiv').width()*4;sub()">4X</button>
 <h3>下载</h3>
 <p>
     <a href="export.php?template=<?php echo $template;?>&type=pdf&unit=mm">下载PDF版本</a>
