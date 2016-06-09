@@ -55,10 +55,8 @@ if(@$_POST['submit'])
 <body>
 <script>
     function sub() {
-        //$("#canvas")[0].height=$("#canvasdiv").height();
         $("#showinfo").html("正在绘制");
-        drawclear();
-        draw('image/loading.svg');
+        showloading();
         htmlobj=$.ajax({
             url:"demo-ajax.php?template=<?php echo $template;?>",
             //async:true,
@@ -70,8 +68,7 @@ if(@$_POST['submit'])
                 if(status)
                 {
                     $("#showinfo").html(ret.message);
-                    drawclear();
-                    draw('image/error.svg');
+                    showerror();
                 }
                 else
                 {
@@ -91,7 +88,6 @@ if(@$_POST['submit'])
                     y=0;
 
                     $("#canvas")[0].height=height*count;
-                    drawclear();
 
                     drawclear();
                     for(var i=0;i<count;i++)
@@ -103,8 +99,7 @@ if(@$_POST['submit'])
             },
             error: function() {
                 $("#showinfo").html("处理发生了错误");
-                drawclear();
-                draw('image/error.svg');
+                showerror();
             }
         });
         //$("#showinfo").html(htmlobj.responseText);
@@ -141,6 +136,7 @@ if(@$_POST['submit'])
                     ctx.clearRect(x, y, width, height);
                     ctx.drawImage(img, x, y, width, height);
                     DOMURL.revokeObjectURL(url);
+                    showcanvas();
                 };
                 img.src = url;
                 $("#showinfo").html("绘制完成");
@@ -154,6 +150,24 @@ if(@$_POST['submit'])
     function drawclear() {
         var ctx = $("#canvas")[0].getContext("2d");
         ctx.clearRect(0,0,$("#canvas")[0].width,$("#canvas")[0].height);
+    }
+
+    function showcanvas() {
+        $("#canvas").css("display","block");
+        $("#loading").css("display","none");
+        $("#error").css("display","none");
+    }
+
+    function showloading() {
+        $("#canvas").css("display","none");
+        $("#loading").css("display","block");
+        $("#error").css("display","none");
+    }
+
+    function showerror() {
+        $("#canvas").css("display","none");
+        $("#loading").css("display","none");
+        $("#error").css("display","block");
     }
 
     $(document).ready(function () {
@@ -184,6 +198,8 @@ if(@$_POST['submit'])
 <h3>输出预览</h3>
 <div id="canvasdiv" width="500" height="500" style="width:500px; height:500px; overflow:auto">
     <canvas id="canvas" width="500" height="500"></canvas>
+    <image id="loading" src="image/loading.svg" style="display: none;"></image>
+    <image id="error" src="image/error.svg" style="display: none;"></image>
 </div>
 <h3>下载</h3>
 <p>
