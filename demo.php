@@ -120,6 +120,7 @@ if(@$_POST['submit'])
                 img.onload = function() {
                     if(!(width&&height))
                     {
+                        $("#canvas")[0].height=$("#canvasdiv").width()/$("#canvas")[0].height*$("#canvasdiv").height();
                         fwidth=$("#canvas")[0].width;
                         fheight=$("#canvas")[0].height;
                         cwidth = img.width;
