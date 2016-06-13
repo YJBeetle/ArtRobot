@@ -11,7 +11,7 @@ if (!is_dir($TMPDIR)) mkdir($TMPDIR, 0777);
 if (@$_GET['template'])
     $template = $_GET['template'];
 else
-    $template = '1';
+    $template = 'default';
 
 //设置工作目录
 $dir = "template/" . $template;
