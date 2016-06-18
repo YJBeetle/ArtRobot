@@ -52,6 +52,16 @@ if (@$_GET['template'])
                 $r[]=$v[1];
             }
         }
+        if(@$_POST['IMG'])
+        {
+            foreach($_POST['IMG'] as $v)
+            {
+                $filename=0;
+                //$file = fopen($filename, "w") or die("Unable to open file!");
+                //$p[]="/\<TEXT\|".$v[0]."\|.*\>/";
+                //$r[]=$v[1];
+            }
+        }
         $jsonrun=preg_replace($p,$r,$jsontext);
         $_SESSION['jsondata']=$jsonrun;
 

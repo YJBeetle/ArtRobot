@@ -172,6 +172,12 @@ fclose($file);
             echo "$title<input type=\"text\" name=\"TEXT[$k][1]\" value=\"$value\"><input type=\"hidden\" name=\"TEXT[$k][0]\" value=\"$title\">";
             echo '<br>';
         }
+        elseif($b[0]=='IMG')
+        {
+            $title=$b[1];
+            echo "$title<input type=\"file\" name=\"IMG[$k][1]\"><input type=\"hidden\" name=\"IMG[$k][0]\" value=\"$title\">";
+            echo '<br>';
+        }
     }
     ?>
 </form>
