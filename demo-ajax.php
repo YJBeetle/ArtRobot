@@ -26,8 +26,8 @@ if (@$_GET['template'])
     $dir = "template/" . $template;
     if(!is_dir($dir))
     {
-        $reaurn['status']=2;
-        $reaurn['message']='模板不存在';
+        $return['status']=2;
+        $return['message']='模板不存在';
 
     }
     else
