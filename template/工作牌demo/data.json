@@ -15,12 +15,12 @@
         "height":90
       },
       {
-        "type":"svgfile",
-        "filename":"img\/logo.svg",
-        "x":185,
-        "y":30,
-        "width":10,
-        "height":10
+        "type":"pngfile",
+        "filename":"img\/1.png",
+        "x":14.842,
+        "y":11.553,
+        "width":24.317,
+        "height":35.387
       },
       {
         "type":"text",
