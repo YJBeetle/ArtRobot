@@ -27,22 +27,6 @@ $filename = "data.json";
 $file = fopen($filename, "r") or die("Unable to open file!");
 $jsontext = fread($file, filesize($filename));
 fclose($file);
-
-if(@$_POST['submit'])
-{
-    $p=array();
-    $r=array();
-    if(@$_POST['TEXT'])
-    {
-        foreach($_POST['TEXT'] as $v)
-        {
-            $p[]="/\<TEXT|".$v[0]."|.*\>/";
-            $r[]=$v[1];
-        }
-    }
-    $jsonrun=preg_replace($p,$r,$jsontext);
-    $_SESSION['jsondata']=$jsonrun;
-}
 ?>
 <!doctype html>
 <html>
