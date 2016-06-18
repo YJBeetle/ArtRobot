@@ -116,7 +116,7 @@ double Json::get_double(const char *item)
 {
     if(!this->inited)return 0;
     read_member(item); //得到该元素中的成员
-    int64_t value=json_reader_get_double_value(reader);
+    double value=json_reader_get_double_value(reader);
     end_member(); //返回上一个节点
     return value;
 }
