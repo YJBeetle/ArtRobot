@@ -2,7 +2,7 @@ project(Art_robot)
 cmake_minimum_required(VERSION 2.8)
 aux_source_directory(. SRC_LIST)
 
-#OS X
+#OS X port
 include_directories(/opt/local/include)
 include_directories(/opt/local/include/cairo)
 include_directories(/opt/local/include/freetype2)
@@ -12,6 +12,16 @@ include_directories(/opt/local/lib/glib-2.0/include)
 include_directories(/opt/local/include/gdk-pixbuf-2.0)
 include_directories(/opt/local/include/json-glib-1.0)
 link_directories(/opt/local/lib/)
+
+#OS X brew
+include_directories(/usr/local/opt/cairo/include/cairo)
+include_directories(/usr/local/opt/freetype/include/freetype2)
+include_directories(/usr/local/opt/librsvg/include/librsvg-2.0)
+include_directories(/usr/local/opt/glib/include/glib-2.0)
+include_directories(/usr/local/opt/glib/lib/glib-2.0/include)
+include_directories(/usr/local/opt/gdk-pixbuf/include/gdk-pixbuf-2.0)
+include_directories(/usr/local/opt/json-glib/include/json-glib-1.0)
+link_directories(/usr/local/lib)
 
 #Win MSYS2
 include_directories(c:/opt/msys64/mingw64/include/cairo)
