@@ -7,6 +7,7 @@ Art_robot
 * cairo
 * freetype
 * librsvg
+* json-glib
 
 可用的命令行结构
 --------------
