@@ -1,13 +1,20 @@
 Art_robot
 =========
 
-可用的命令行结构：
+依赖
+---
+
+* cairo
+* freetype
+* librsvg
+
+可用的命令行结构
 --------------
 
 `Art_robot data.json`
 `Art_robot -j data.json -o a.pdf`
 
-可用的json数据结构：
+可用的json数据结构
 --------------
 
 ```
