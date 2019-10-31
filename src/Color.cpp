@@ -1,59 +1,73 @@
-#include <stdio.h>
-#include <stdint.h>
-
 #include "default.h"
 #include "Color.h"
 
-
-void Color::set()
+Color::Color() : color(0x000000FF)
 {
-    this->red=0;
-    this->green=0;
-    this->blue=0;
-    this->alpha=0;
 }
 
-void Color::set(int32_t code)
+Color::Color(uint32_t __color)
 {
-    if(code<=0xffffff)
-        this->alpha=(double)1;
-    else
-        this->alpha=(double)(code>>24&0xff)/(double)0xff;
-    this->red=(double)(code>>16&0xff)/(double)0xff;
-    this->green=(double)(code>>8&0xff)/(double)0xff;
-    this->blue=(double)(code&0xff)/(double)0xff;
+    color = __color;
 }
 
-void Color::set(const char *code)
+Color::Color(const char *__color)
 {
-    int32_t ecode=0;
-    if(code)
+    if (__color[0] == '#')
+        __color++;
+    else if (__color[0] == '0' &&
+             (__color[1] == 'x' ||
+              __color[1] == 'X'))
+        __color += 2;
+    uint32_t intColor = 0x000000FF; // 黑不透明
+    for (int i = 7; i >= 0 && *__color; i--)
     {
-        if(code[0]=='#')
-            sscanf(code,"#%x",&ecode);
-        else if(code[0]=='0'&&code[1]=='x')
-            sscanf(code,"0x%x",&ecode);
-        else if(code[0]=='0'&&code[1]=='X')
-            sscanf(code,"0X%x",&ecode);
-        else
-            sscanf(code,"%x",&ecode);
+        intColor |= ((*__color >= '0' && *__color <= '9')
+                         ? *__color - '0'
+                         : (*__color >= 'A' && *__color <= 'F')
+                               ? *__color - 'A' + 0xA
+                               : (*__color >= 'a' && *__color <= 'f')
+                                     ? *__color - 'a' + 0xA
+                                     : 0)
+                    << (4 * i);
+        __color++;
     }
-    this->set(ecode);
+    color = intColor;
 }
 
-void Color::set(uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha)
+Color &Color::operator=(uint32_t __color)
 {
-    this->red=(double)red/(double)0xff;
-    this->green=(double)green/(double)0xff;
-    this->blue=(double)blue/(double)0xff;
-    this->alpha=(double)alpha/(double)0xff;
+    Color((uint32_t)__color);
+    return *this;
 }
 
-void Color::set(double red, double green, double blue, double alpha)
+Color &Color::operator=(const char *__color)
 {
-    this->red=(red<1)?((red>0)?red:0):1;
-    this->green=(green<1)?((green>0)?green:0):1;
-    this->blue=(blue<1)?((blue>0)?blue:0):1;
-    this->alpha=(alpha<1)?((alpha>0)?alpha:0):1;
+    Color((char *)__color);
+    return *this;
 }
 
+Color &Color::operator=(const Color &__color)
+{
+    color = __color.color;
+    return *this;
+}
+
+double Color::red()
+{
+    return (double)(color >> 24 & 0xff) / (double)0xff;
+}
+
+double Color::green()
+{
+    return (double)(color >> 16 & 0xff) / (double)0xff;
+}
+
+double Color::blue()
+{
+    return (double)(color >> 8 & 0xff) / (double)0xff;
+}
+
+double Color::alpha()
+{
+    return (double)(color & 0xff) / (double)0xff;
+}

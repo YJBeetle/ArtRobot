@@ -1,19 +1,26 @@
 #ifndef DEFAULT_H
 #define DEFAULT_H
 
-#define MM2IN(MM) ((double)MM/(double)25.4)
-#define PT2IN(PT) ((double)PT/(double)72)
+#include <string>
+#include <iostream>
+#include <fstream>
+#include <cstdint>
+#include <cstdio>
+#include <cmath>
+#include <cstring>
+#ifdef TIMER
+#include <sys/time.h>
+#endif // TIMER
 
-//typedef signed char     int8_t;
-//typedef short int       int16_t;
-//typedef int             int32_t;
-//# if __WORDSIZE == 64
-//typedef long int        int64_t;
-//# else
-//__extension__
-//typedef long long int   int64_t;
-//#endif
+#include <cairo.h>
+#include <cairo-pdf.h>
+//#include <cairo-ps.h>
+#include <cairo-svg.h>
+#include <cairo-ft.h>
+#include <librsvg/rsvg.h>
+#include "3rdParty/json.hpp"
 
-#define DEBUG 1
+using namespace std;
+using Json = nlohmann::json;
 
 #endif // DEFAULT_H

@@ -4,6 +4,7 @@ set (CMAKE_CXX_STANDARD 11)
 
 # set(CMAKE_EXE_LINKER_FLAGS "-static -v")
 # set(CMAKE_CXX_FLAGS "-g")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DTIMER=1")
 
 project(Art_robot)
 
@@ -43,26 +44,11 @@ message(STATUS "    libraries: ${RSVG_LIBRARIES}")
 include_directories(${RSVG_INCLUDE_DIRS})
 link_directories(${RSVG_LIBDIR})
 
-## json-glib
-pkg_check_modules(JSON json-glib-1.0)
-if (NOT JSON_FOUND)
-message(FATAL_ERROR "json not found!")
-endif ()
-message(STATUS "json library status:")
-message(STATUS "    version: ${JSON_VERSION}")
-message(STATUS "    include path: ${JSON_INCLUDE_DIRS}")
-message(STATUS "    lib path: ${JSON_LIBDIR}")
-message(STATUS "    libraries: ${JSON_LIBRARIES}")
-include_directories(${JSON_INCLUDE_DIRS})
-link_directories(${JSON_LIBDIR})
-
 set(LIB_LIST
     ${CAIRO_LIBRARIES}
     ${FREETYPE_LIBRARIES}
     # ${RSVG_LIBRARIES}
     rsvg-2
-    # ${JSON_LIBRARIES}
-    json-glib-1.0
 )
 
 # building project
