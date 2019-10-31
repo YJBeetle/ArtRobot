@@ -1,16 +1,13 @@
-#OS X
+# macOS
 .DS_Store
 
-#Qt Creator
+# Qt Creator
 CMakeLists.txt.user
 CMakeLists.txt.user.*
 *.autosave
 
-#PHP Storm
-.idea
+# VScode
+/.vscode
 
-#Build
-/exec/*
-
-#tmpfile
-/tmp/*
+# Build
+/build
