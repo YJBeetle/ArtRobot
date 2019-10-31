@@ -23,4 +23,12 @@
 using namespace std;
 using Json = nlohmann::json;
 
+enum outputType
+{
+    outputTypeUnknow = 0,
+    outputTypeSvg,
+    outputTypePdf,
+    outputTypePng,
+};
+
 #endif // DEFAULT_H

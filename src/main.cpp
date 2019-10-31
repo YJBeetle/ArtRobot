@@ -22,15 +22,6 @@ int main(int argc, char *argv[])
     jsonFile >> json;
 
     //绘制
-    Draw::outputType type;
-    if (json["type"] == "svg")
-        type = Draw::SVG;
-    else if (json["type"] == "pdf")
-        type = Draw::PDF;
-    else if (json["type"] == "png")
-        type = Draw::PNG;
-    else if (json["type"] == "jpg")
-        type = Draw::JPG;
     Draw::unitType unit;
     if (json["unit"] == "px" || json["unit"] == "pt")
         unit = Draw::PX;
@@ -40,7 +31,7 @@ int main(int argc, char *argv[])
         unit = Draw::MM;
     else if (json["unit"] == "cm")
         unit = Draw::CM;
-    Draw draw(args.output, type, json["width"], json["height"], unit, json["ppi"]);
+    Draw draw(args.output, args.type, json["width"], json["height"], unit, json["ppi"]);
 
     //准备绘制
     int64_t page_count = json["draw"].size();

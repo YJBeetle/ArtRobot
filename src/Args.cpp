@@ -13,7 +13,8 @@ void Args::args_help(const char *argv0)
     printf("%s - \n", argv0_base);
     puts("");
     printf("  -f, --jsonfile\tjson file\n");
-    printf("  -o, --output\tout put file\n");
+    printf("  -o, --output\toutput file\n");
+    printf("  -t, --type\toutput type(pdf svg png)\n");
     puts("");
     printf("  --help\t\tGive this help list\n");
     printf("  -V, --version\t\tPrint program version\n");
@@ -34,11 +35,12 @@ void Args::args_usage(const char *argv0)
 
 Args::Args(int argc, char *argv[])
 {
-    static const char args_optstring[] = "f:o:V";
+    static const char args_optstring[] = "f:o:t:V";
     static struct option args_options[] = {
         /* name,		has_arg,	flag,	val */
         {"jsonfile", 1, 0, 'f'},
         {"output", 1, 0, 'o'},
+        {"type", 1, 0, 't'},
         {"version", 0, 0, 'V'},
         {0}};
 
@@ -59,6 +61,14 @@ Args::Args(int argc, char *argv[])
             break;
         case 'o':
             this->output = optarg;
+            break;
+        case 't':
+            if (!strcasecmp(optarg, "pdf"))
+                type = outputTypePdf;
+            else if (!strcasecmp(optarg, "svg"))
+                type = outputTypeSvg;
+            else if (!strcasecmp(optarg, "png"))
+                type = outputTypePng;
             break;
         case 'V':
             printf("version\n");

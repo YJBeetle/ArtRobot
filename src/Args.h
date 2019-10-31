@@ -12,6 +12,7 @@ public:
 
     string output;
     string jsonfile;
+    outputType type = outputTypeSvg;
 };
 
 #endif // ARGS_H

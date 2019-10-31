@@ -5,15 +5,6 @@
 class Draw
 {
 public:
-    enum outputType
-    {
-        outputTypeUnknow = 0,
-        SVG,
-        PDF,
-        PNG,
-        JPG,
-    };
-
     enum unitType
     {
         unitTypeUnknow = 0,
