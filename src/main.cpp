@@ -7,33 +7,64 @@
 int main(int argc, char *argv[])
 {
 #ifdef TIMER
-    //计时开始
+    // 计时开始
     struct timeval tpstart, tpend;
     float timeuse;
     gettimeofday(&tpstart, NULL);
 #endif // TIMER
 
-    //解析argv
+    // 解析argv
     Args args(argc, argv);
 
-    //解析Json
+    // 解析Json
     Json json;
-    ifstream jsonFile(args.jsonfile , ifstream::in);
+    ifstream jsonFile(args.jsonfile, ifstream::in);
     jsonFile >> json;
 
-    //绘制
-    Draw::unitType unit;
-    if (json["unit"] == "px" || json["unit"] == "pt")
-        unit = Draw::PX;
-    else if (json["unit"] == "in" || json["unit"] == "inch")
-        unit = Draw::INCH;
-    else if (json["unit"] == "mm")
-        unit = Draw::MM;
-    else if (json["unit"] == "cm")
-        unit = Draw::CM;
-    Draw draw(args.output, args.type, json["width"], json["height"], unit, json["ppi"]);
+    // 读取文档参数
+    double width = 200; // 默认200
+    {
+        auto widthJson = json.find("w");
+        if (widthJson != json.end())
+        { // Has "width"
+            width = *widthJson;
+        }
+    }
+    double height = 200; // 默认200
+    {
+        auto heightJson = json.find("h");
+        if (heightJson != json.end())
+        { // Has "height"
+            height = *heightJson;
+        }
+    }
+    Draw::unitType unit = Draw::PX; // 默认px
+    {
+        auto unitJson = json.find("unit");
+        if (unitJson != json.end())
+        { // Has "unit"
+            string unitStr = *unitJson;
+            if (unitStr == "px" || unitStr == "pt")
+                unit = Draw::PX;
+            else if (unitStr == "in" || unitStr == "inch")
+                unit = Draw::IN;
+            else if (unitStr == "mm")
+                unit = Draw::MM;
+            else if (unitStr == "cm")
+                unit = Draw::CM;
+        }
+    }
+    double ppi = 72; // 默认72
+    {
+        auto ppiJson = json.find("ppi");
+        if (ppiJson != json.end())
+        { // Has "ppi"
+            ppi = *ppiJson;
+        }
+    }
 
     //准备绘制
+    Draw draw(args.output, args.type, width, height, unit, ppi);
     int64_t page_count = json["draw"].size();
     int64_t page_i = 0;
     int64_t layer_count = 0;

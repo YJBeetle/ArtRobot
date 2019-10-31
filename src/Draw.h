@@ -8,8 +8,8 @@ public:
     enum unitType
     {
         unitTypeUnknow = 0,
-        PX,   // PT
-        INCH, // IN
+        PX, // PT
+        IN, // INCH
         MM,
         CM,
     };

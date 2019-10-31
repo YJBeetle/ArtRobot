@@ -41,7 +41,7 @@ Draw::Draw(const string &filename,
         this->surface_height = PT2IN(height);
         scale = PT2IN(1);
         break;
-    case INCH:
+    case IN:
         this->surface_width = width;
         this->surface_height = height;
         scale = 1;
