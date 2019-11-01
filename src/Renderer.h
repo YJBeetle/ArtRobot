@@ -16,24 +16,21 @@ public:
     };
 
 private:
-    FILE *out_file;
-    OutputType surface_type;
-    double surface_width;
-    double surface_height;
+    double surfaceWidth;
+    double surfaceHeight;
+    double ppi;
 
     cairo_surface_t *surface; //介质
     cairo_t *cr;              //画笔
 
-    int8_t filecheck(const char *filename);
-
 public:
-    Renderer(const string &filename,
-         OutputType type,
-         double width,
-         double height,
-         unitType unit,
-         double ppi);
+    Renderer(double __width,
+             double __height,
+             unitType __unit,
+             double __ppi);
     ~Renderer();
+
+    void save(string outputPath, OutputType outputType);
 
     // void nextpage(); // 换页函数，但是现在重写后多页格式还没想好
 

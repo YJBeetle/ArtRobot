@@ -115,6 +115,7 @@ void renderComponent(Renderer &renderer, Json &component)
         double lineSpacing = lineSpacingJ.is_number() ? (double)lineSpacingJ : 1;
         double wordSpacing = wordSpacingJ.is_number() ? (double)wordSpacingJ : 0;
 
+        // 此处渲染文字仅为测试 正式的排版考虑使用Pango
         renderer.draw_text(content,
                            "Lantinghei.ttc",
                            0,
@@ -190,7 +191,7 @@ int main(int argc, char *argv[])
     double ppi = ppiJ.is_number() ? (double)ppiJ : 72;
 
     // 准备渲染器
-    Renderer renderer(args.output, args.type, w, h, unit, ppi);
+    Renderer renderer(w, h, unit, ppi);
 
     // 渲染body
     auto body = json.find("body");
@@ -198,6 +199,8 @@ int main(int argc, char *argv[])
     { // Has "body"
         renderComponents(renderer, *body);
     }
+
+    renderer.save(args.output, args.type);
 
 #ifdef TIMER
     //计时结束

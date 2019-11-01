@@ -6,105 +6,46 @@
 #include "Color.h"
 #include "Renderer.h"
 
-Renderer::Renderer(const string &filename,
-                   OutputType type,
-                   double width,
-                   double height,
-                   unitType unit,
-                   double ppi)
-    : out_file(NULL),
-      surface_height(0),
-      surface_width(0)
+Renderer::Renderer(double __width,
+                   double __height,
+                   unitType __unit,
+                   double __ppi)
 {
-    if (!type)
-        assert("Renderer::Init: error: Unknow type , Failure to initialize!\n");
-
-    if (!filename.empty())
-    {
-        this->out_file = fopen(filename.c_str(), "wb");
-    }
-    else
-    {
-#ifdef WIN32
-        _setmode(_fileno(stdout), O_BINARY);
-#endif
-        this->out_file = stdout;
-    }
-
-    this->surface_type = type;
-
     double scale;
-    switch (unit)
+    switch (__unit)
     {
     case PX:
-        this->surface_width = PT2IN(width);
-        this->surface_height = PT2IN(height);
+        this->surfaceWidth = PT2IN(__width);
+        this->surfaceHeight = PT2IN(__height);
         scale = PT2IN(1);
         break;
     case IN:
-        this->surface_width = width;
-        this->surface_height = height;
+        this->surfaceWidth = __width;
+        this->surfaceHeight = __height;
         scale = 1;
         break;
     case MM:
-        this->surface_width = MM2IN(width);
-        this->surface_height = MM2IN(height);
+        this->surfaceWidth = MM2IN(__width);
+        this->surfaceHeight = MM2IN(__height);
         scale = MM2IN(1);
         break;
     case CM:
-        this->surface_width = MM2IN(width) * 10;
-        this->surface_height = MM2IN(height) * 10;
+        this->surfaceWidth = MM2IN(__width) * 10;
+        this->surfaceHeight = MM2IN(__height) * 10;
         scale = MM2IN(1) * 10;
         break;
     }
+    ppi = __ppi;
 
-    if (!ppi)
-        ppi = 72;
-
-    switch (surface_type)
-    {
-    case OutputTypePdf:
-        surface = cairo_pdf_surface_create_for_stream(writeCairo,
-                                                      (void *)this->out_file,
-                                                      surface_width * ppi,
-                                                      (surface_height)*ppi); //默认单位是mm，所以需要mm转inch
-        //cairo_surface_set_fallback_resolution(surface,300,300);//设置分辨率
-        cr = cairo_create(surface);                //创建画笔
-        cairo_scale(cr, scale * ppi, scale * ppi); //缩放画笔，因PDF用mm作为最终单位故需缩放画笔
-        break;
-
-    case OutputTypeSvg:
-        surface = cairo_svg_surface_create_for_stream(writeCairo,
-                                                      (void *)this->out_file,
-                                                      surface_width * ppi,
-                                                      surface_height * ppi); //默认单位pt
-        cr = cairo_create(surface);                                          //创建画笔
-        cairo_scale(cr, scale * ppi, scale * ppi);
-        break;
-
-    case OutputTypePng:
-        surface = cairo_image_surface_create(CAIRO_FORMAT_ARGB32,
-                                             surface_width * ppi,
-                                             surface_height * ppi); //默认单位pt
-        cr = cairo_create(surface);                                 //创建画笔
-        cairo_scale(cr, scale * ppi, scale * ppi);
-        break;
-
-    default:
-        assert("Renderer::Renderer: error: Unknow type , Failure to initialize!\n");
-        break;
-    }
+    surface = cairo_recording_surface_create(CAIRO_CONTENT_COLOR_ALPHA, NULL);
+    cr = cairo_create(surface);                //创建画笔
+    cairo_scale(cr, scale * ppi, scale * ppi); //缩放画笔，因PDF用mm作为最终单位故需缩放画笔
 }
 
 Renderer::~Renderer()
 {
-    if (surface_type == OutputTypePng)
-        cairo_surface_write_to_png_stream(surface, writeCairo, (void *)this->out_file);
-
     cairo_destroy(cr);              //回收画笔
     cairo_surface_destroy(surface); //回收介质
-
-    fclose(this->out_file);
 }
 
 // void Renderer::nextpage()
@@ -126,10 +67,78 @@ Renderer::~Renderer()
 //     }
 // }
 
+int8_t filecheck(const char *filename)
+{
+    FILE *file;
+    file = fopen(filename, "rb");
+    if (file)
+    {
+        fclose(file);
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
 cairo_status_t writeCairo(void *closure, const unsigned char *data, unsigned int length)
 {
     fwrite(data, length, 1, (FILE *)closure);
     return CAIRO_STATUS_SUCCESS;
+}
+
+void Renderer::save(string outputPath, OutputType outputType)
+{
+    FILE *outputFile;
+    if (!outputPath.empty())
+    {
+        outputFile = fopen(outputPath.c_str(), "wb");
+    }
+    else
+    {
+#ifdef WIN32
+        _setmode(_fileno(stdout), O_BINARY);
+#endif
+        outputFile = stdout;
+    }
+
+    cairo_surface_t *outputSurface;
+    switch (outputType)
+    {
+    case OutputTypePdf:
+        outputSurface = cairo_pdf_surface_create_for_stream(writeCairo,
+                                                            (void *)outputFile,
+                                                            surfaceWidth * ppi,
+                                                            (surfaceHeight)*ppi); //默认单位是mm，所以需要mm转inch
+        // cairo_surface_set_fallback_resolution(surface,300,300);//设置分辨率
+        break;
+    case OutputTypePng:
+        outputSurface = cairo_image_surface_create(CAIRO_FORMAT_ARGB32,
+                                                   surfaceWidth * ppi,
+                                                   surfaceHeight * ppi); //默认单位pt
+        break;
+    case OutputTypeSvg:
+    default:
+        outputSurface = cairo_svg_surface_create_for_stream(writeCairo,
+                                                            (void *)outputFile,
+                                                            surfaceWidth * ppi,
+                                                            surfaceHeight * ppi); //默认单位pt
+        break;
+    }
+
+    cairo_t *outputCr = cairo_create(outputSurface);
+    cairo_set_source_surface(outputCr, surface, 0.0, 0.0);
+    cairo_paint(outputCr);
+    cairo_destroy(outputCr); //回收画笔
+
+    if (outputType == OutputTypePng)
+        cairo_surface_write_to_png_stream(outputSurface, writeCairo, (void *)outputFile);
+
+    cairo_surface_destroy(outputSurface); //回收介质
+
+    if (outputFile != stdout)
+        fclose(outputFile);
 }
 
 int8_t Renderer::draw_rectangle(Color argb, double x, double y, double width, double height)
@@ -204,7 +213,7 @@ int8_t Renderer::draw_svg(const string &svgfilename,
                           double x, double y,
                           double width, double height)
 {
-    if (!this->filecheck(svgfilename.c_str()))
+    if (!filecheck(svgfilename.c_str()))
     {
         fprintf(stderr, "Renderer::RendererSVG: warning: file not found: %s\n", svgfilename.c_str());
         return 2;
@@ -240,7 +249,7 @@ int8_t Renderer::draw_png(const string &pngfilename,
                           double x, double y,
                           double width, double height)
 {
-    if (!this->filecheck(pngfilename.c_str()))
+    if (!filecheck(pngfilename.c_str()))
     {
         fprintf(stderr, "Renderer::RendererPNG: warning: file not found: %s\n", pngfilename.c_str());
         return 2;
@@ -269,19 +278,4 @@ int8_t Renderer::draw_png(const string &pngfilename,
     cairo_restore(cr);          //还原画笔
 
     return 0;
-}
-
-int8_t Renderer::filecheck(const char *filename)
-{
-    FILE *file;
-    file = fopen(filename, "rb");
-    if (file)
-    {
-        fclose(file);
-        return true;
-    }
-    else
-    {
-        return false;
-    }
 }
