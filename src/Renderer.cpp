@@ -39,7 +39,7 @@ Renderer::Renderer(double __width,
 
     surface = cairo_recording_surface_create(CAIRO_CONTENT_COLOR_ALPHA, NULL);
     cr = cairo_create(surface);                //创建画笔
-    cairo_scale(cr, scale * ppi, scale * ppi); //缩放画笔，因PDF用mm作为最终单位故需缩放画笔
+    cairo_scale(cr, scale * ppi, scale * ppi); //缩放画笔
 }
 
 Renderer::~Renderer()
@@ -48,26 +48,7 @@ Renderer::~Renderer()
     cairo_surface_destroy(surface); //回收介质
 }
 
-// void Renderer::nextpage()
-// {
-//     switch (surface_type)
-//     {
-//     case outputTypePdf:
-//         cairo_show_page(cr);
-//         break;
-//     case outputTypeSvg:
-//         fprintf(stderr, "Renderer::NextPage: warning: SVG surface not support multi-page,!\n");
-//         break;
-//     case outputTypePng:
-//         fprintf(stderr, "Renderer::NextPage: warning: PNG surface not support multi-page,!\n");
-//         break;
-//     default:
-//         fprintf(stderr, "Renderer::NextPage: error: Unknow type , Failure to initialize!\n");
-//         break;
-//     }
-// }
-
-int8_t filecheck(const char *filename)
+bool filecheck(const char *filename)
 {
     FILE *file;
     file = fopen(filename, "rb");
@@ -111,7 +92,8 @@ void Renderer::save(string outputPath, OutputType outputType)
                                                             (void *)outputFile,
                                                             surfaceWidth * ppi,
                                                             (surfaceHeight)*ppi); //默认单位是mm，所以需要mm转inch
-        // cairo_surface_set_fallback_resolution(surface,300,300);//设置分辨率
+        // cairo_surface_set_fallback_resolution(surface, 300, 300);                 //设置分辨率
+        // cairo_show_page(cr);                                                      // 多页
         break;
     case OutputTypePng:
         outputSurface = cairo_image_surface_create(CAIRO_FORMAT_ARGB32,

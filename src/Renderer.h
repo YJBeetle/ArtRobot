@@ -32,8 +32,6 @@ public:
 
     void save(string outputPath, OutputType outputType);
 
-    // void nextpage(); // 换页函数，但是现在重写后多页格式还没想好
-
     int8_t draw_rectangle(Color argb, double x, double y, double width, double height);
     int8_t draw_text(const string &text,
                      const string &fontfile,
