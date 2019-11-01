@@ -55,3 +55,6 @@ set(LIB_LIST
 add_executable(${PROJECT_NAME} ${SRC_LIST})
 target_link_libraries(${PROJECT_NAME} ${LIB_LIST})
 
+configure_file(res/fonts/Lantinghei.ttc Lantinghei.ttc COPYONLY)
+configure_file(template/demo/data.json data.json COPYONLY)
+configure_file(template/demo/bg-veins.svg bg-veins.svg COPYONLY)
