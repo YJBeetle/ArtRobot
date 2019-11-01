@@ -1,8 +1,9 @@
-#ifndef DRAW_H
-#define DRAW_H
+#ifndef RENDERER_H
+#define RENDERER_H
+
 #include "Color.h"
 
-class Draw
+class Renderer
 {
 public:
     enum unitType
@@ -26,15 +27,15 @@ private:
     int8_t filecheck(const char *filename);
 
 public:
-    Draw(const string &filename,
+    Renderer(const string &filename,
          outputType type,
          double width,
          double height,
          unitType unit,
          double ppi);
-    ~Draw();
+    ~Renderer();
 
-    void nextpage();
+    // void nextpage(); // 换页函数，但是现在重写后多页格式还没想好
 
     int8_t draw_rectangle(Color argb, double x, double y, double width, double height);
     int8_t draw_text(const string &text,
@@ -57,4 +58,4 @@ cairo_status_t writeCairo(void *closure, const unsigned char *data, unsigned int
 #define MM2IN(MM) ((double)MM / 25.4)
 #define PT2IN(PT) ((double)PT / 72)
 
-#endif // DRAW_H
+#endif // RENDERER_H

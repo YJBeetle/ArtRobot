@@ -4,9 +4,9 @@
 
 #include "default.h"
 #include "Color.h"
-#include "Draw.h"
+#include "Renderer.h"
 
-Draw::Draw(const string &filename,
+Renderer::Renderer(const string &filename,
            outputType type,
            double width,
            double height,
@@ -17,7 +17,7 @@ Draw::Draw(const string &filename,
       surface_width(0)
 {
     if (!type)
-        assert("Draw::Init: error: Unknow type , Failure to initialize!\n");
+        assert("Renderer::Init: error: Unknow type , Failure to initialize!\n");
 
     if (!filename.empty())
     {
@@ -83,12 +83,12 @@ Draw::Draw(const string &filename,
         break;
 
     default:
-        assert("Draw::Draw: error: Unknow type , Failure to initialize!\n");
+        assert("Renderer::Renderer: error: Unknow type , Failure to initialize!\n");
         break;
     }
 }
 
-Draw::~Draw()
+Renderer::~Renderer()
 {
     if (surface_type == outputTypePng)
         cairo_surface_write_to_png_stream(surface, writeCairo, (void *)this->out_file);
@@ -99,24 +99,24 @@ Draw::~Draw()
     fclose(this->out_file);
 }
 
-void Draw::nextpage()
-{
-    switch (surface_type)
-    {
-    case outputTypePdf:
-        cairo_show_page(cr);
-        break;
-    case outputTypeSvg:
-        fprintf(stderr, "Draw::NextPage: warning: SVG surface not support multi-page,!\n");
-        break;
-    case outputTypePng:
-        fprintf(stderr, "Draw::NextPage: warning: PNG surface not support multi-page,!\n");
-        break;
-    default:
-        fprintf(stderr, "Draw::NextPage: error: Unknow type , Failure to initialize!\n");
-        break;
-    }
-}
+// void Renderer::nextpage()
+// {
+//     switch (surface_type)
+//     {
+//     case outputTypePdf:
+//         cairo_show_page(cr);
+//         break;
+//     case outputTypeSvg:
+//         fprintf(stderr, "Renderer::NextPage: warning: SVG surface not support multi-page,!\n");
+//         break;
+//     case outputTypePng:
+//         fprintf(stderr, "Renderer::NextPage: warning: PNG surface not support multi-page,!\n");
+//         break;
+//     default:
+//         fprintf(stderr, "Renderer::NextPage: error: Unknow type , Failure to initialize!\n");
+//         break;
+//     }
+// }
 
 cairo_status_t writeCairo(void *closure, const unsigned char *data, unsigned int length)
 {
@@ -124,7 +124,7 @@ cairo_status_t writeCairo(void *closure, const unsigned char *data, unsigned int
     return CAIRO_STATUS_SUCCESS;
 }
 
-int8_t Draw::draw_rectangle(Color argb, double x, double y, double width, double height)
+int8_t Renderer::draw_rectangle(Color argb, double x, double y, double width, double height)
 {
     cairo_save(cr); //保存画笔
 
@@ -136,7 +136,7 @@ int8_t Draw::draw_rectangle(Color argb, double x, double y, double width, double
     return 0;
 }
 
-int8_t Draw::draw_text(const string &text,
+int8_t Renderer::draw_text(const string &text,
                        const string &fontfile,
                        long face_index,
                        double font_size,
@@ -153,12 +153,12 @@ int8_t Draw::draw_text(const string &text,
     cairo_font_face_t *cr_face;
     if (FT_Init_FreeType(&ft_library))
     {
-        fprintf(stderr, "Draw::DrawTEXT: warning: FT_Init_FreeType failed.\n");
+        fprintf(stderr, "Renderer::RendererTEXT: warning: FT_Init_FreeType failed.\n");
         return 4;
     }
     if (FT_New_Face(ft_library, fontfile.c_str(), face_index, &ft_face))
     {
-        fprintf(stderr, "Draw::DrawTEXT: error: FT_New_Face failed, maybe font not found.\n");
+        fprintf(stderr, "Renderer::RendererTEXT: error: FT_New_Face failed, maybe font not found.\n");
         return 5;
     }
     cr_face = cairo_ft_font_face_create_for_ft_face(ft_face, 0);
@@ -192,13 +192,13 @@ int8_t Draw::draw_text(const string &text,
     return 0;
 }
 
-int8_t Draw::draw_svg(const string &svgfilename,
+int8_t Renderer::draw_svg(const string &svgfilename,
                       double x, double y,
                       double width, double height)
 {
     if (!this->filecheck(svgfilename.c_str()))
     {
-        fprintf(stderr, "Draw::DrawSVG: warning: file not found: %s\n", svgfilename.c_str());
+        fprintf(stderr, "Renderer::RendererSVG: warning: file not found: %s\n", svgfilename.c_str());
         return 2;
     }
 
@@ -228,13 +228,13 @@ int8_t Draw::draw_svg(const string &svgfilename,
     return 0;
 }
 
-int8_t Draw::draw_png(const string &pngfilename,
+int8_t Renderer::draw_png(const string &pngfilename,
                       double x, double y,
                       double width, double height)
 {
     if (!this->filecheck(pngfilename.c_str()))
     {
-        fprintf(stderr, "Draw::DrawPNG: warning: file not found: %s\n", pngfilename.c_str());
+        fprintf(stderr, "Renderer::RendererPNG: warning: file not found: %s\n", pngfilename.c_str());
         return 2;
     }
 
@@ -263,7 +263,7 @@ int8_t Draw::draw_png(const string &pngfilename,
     return 0;
 }
 
-int8_t Draw::filecheck(const char *filename)
+int8_t Renderer::filecheck(const char *filename)
 {
     FILE *file;
     file = fopen(filename, "rb");

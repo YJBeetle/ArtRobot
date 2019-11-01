@@ -2,7 +2,55 @@
 
 #include "Args.h"
 #include "Color.h"
-#include "Draw.h"
+#include "Renderer.h"
+
+void render(Renderer &renderer, Json &components)
+{
+    cout << "components size: " << components.size() << endl;
+
+    for (auto &component : components) // 循环处理该成员中的元素
+    {
+        string type;
+        {
+            auto typeJson = component.find("type");
+            if (typeJson != component.end())
+            { // Has "ppi"
+                type = *typeJson;
+            }
+        }
+
+        cout << "type: " << type << endl;
+
+        if (type == "rectangle")
+        {
+            renderer.draw_rectangle(string(component["color"]).c_str(),
+                                    component["x"], component["y"],
+                                    component["w"], component["h"]);
+        }
+        else if (type == "text")
+        {
+            // renderer.draw_text(component["text"],
+            //                    component["font"],
+            //                    component["face"],
+            //                    component["size"],
+            //                    component["alignment"],
+            //                    string(component["color"]).c_str(),
+            //                    component["x"], component["y"]);
+        }
+        else if (type == "image")
+        {
+            renderer.draw_svg(component["src"],
+                              component["x"], component["y"],
+                              component["w"], component["h"]);
+        }
+        else if (type == "pngfile")
+        {
+            renderer.draw_png(component["src"],
+                              component["x"], component["y"],
+                              component["w"], component["h"]);
+        }
+    }
+}
 
 int main(int argc, char *argv[])
 {
@@ -21,7 +69,7 @@ int main(int argc, char *argv[])
     ifstream jsonFile(args.jsonfile, ifstream::in);
     jsonFile >> json;
 
-    // 读取文档参数
+    // 读取文档基本参数
     double width = 200; // 默认200
     {
         auto widthJson = json.find("w");
@@ -38,20 +86,20 @@ int main(int argc, char *argv[])
             height = *heightJson;
         }
     }
-    Draw::unitType unit = Draw::PX; // 默认px
+    Renderer::unitType unit = Renderer::PX; // 默认px
     {
         auto unitJson = json.find("unit");
         if (unitJson != json.end())
         { // Has "unit"
             string unitStr = *unitJson;
             if (unitStr == "px" || unitStr == "pt")
-                unit = Draw::PX;
+                unit = Renderer::PX;
             else if (unitStr == "in" || unitStr == "inch")
-                unit = Draw::IN;
+                unit = Renderer::IN;
             else if (unitStr == "mm")
-                unit = Draw::MM;
+                unit = Renderer::MM;
             else if (unitStr == "cm")
-                unit = Draw::CM;
+                unit = Renderer::CM;
         }
     }
     double ppi = 72; // 默认72
@@ -63,43 +111,15 @@ int main(int argc, char *argv[])
         }
     }
 
-    //准备绘制
-    Draw draw(args.output, args.type, width, height, unit, ppi);
-    int64_t page_count = json["draw"].size();
-    int64_t page_i = 0;
-    int64_t layer_count = 0;
-    int64_t layer_i = 0;
+    // 准备渲染器
+    Renderer renderer(args.output, args.type, width, height, unit, ppi);
 
-    string layer_type;
-    for (page_i = 0; page_i < page_count; page_i++)
-    {
-        auto nowPage = json["draw"][page_i];
-        layer_count = nowPage.size();                       //元素个数
-        for (layer_i = 0; layer_i < layer_count; layer_i++) //循环处理该成员中的元素
-        {
-            auto layer = nowPage[layer_i];
-
-            layer_type = layer["type"];
-            if (layer_type == "rectangle")
-            {
-                draw.draw_rectangle(string(layer["color"]).c_str(), layer["x"], layer["y"], layer["width"], layer["height"]);
-            }
-            else if (layer_type == "text")
-            {
-                draw.draw_text(layer["text"], layer["font"], layer["face"], layer["size"], layer["alignment"], string(layer["color"]).c_str(), layer["x"], layer["y"]);
-            }
-            else if (layer_type == "svgfile")
-            {
-                draw.draw_svg(layer["filename"], layer["x"], layer["y"], layer["width"], layer["height"]);
-            }
-            else if (layer_type == "pngfile")
-            {
-                draw.draw_png(layer["filename"], layer["x"], layer["y"], layer["width"], layer["height"]);
-            }
-        }
-
-        if (page_i + 1 < page_count)
-            draw.nextpage();
+    // 渲染body
+    auto body = json.find("body");
+    if (body != json.end())
+    { // Has "body"
+        if (body->is_array())
+            render(renderer, *body);
     }
 
 #ifdef TIMER
