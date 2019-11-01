@@ -3,23 +3,23 @@
 #include "Args.h"
 #include "Color.h"
 #include "Renderer.h"
+#include "Component.h"
+#include "ComponentGroup.h"
+#include "ComponentImage.h"
+#include "ComponentImageMask.h"
+#include "ComponentRectangle.h"
+#include "ComponentRepeat.h"
+#include "ComponentText.h"
 
-enum ComponentType
-{
-    ComponentTypeUnknow = 0,
-    ComponentTypeRectangle,
-    ComponentTypeImage,
-    ComponentTypeImageMask,
-    ComponentTypeText,
-    ComponentTypeRepeat,
-    ComponentTypeGroup,
-};
+using namespace Render;
 
-void renderComponent(Renderer &renderer, Json &component)
+shared_ptr<Component> renderComponents(Json &componentsJson);
+
+shared_ptr<Component> renderComponent(Json &componentJson)
 {
     ComponentType componentType = ComponentTypeUnknow;
     {
-        auto &typeJson = component["type"];
+        auto &typeJson = componentJson["type"];
         if (typeJson.is_string())
         {
             if (typeJson == "rectangle")
@@ -41,11 +41,11 @@ void renderComponent(Renderer &renderer, Json &component)
     {
     case ComponentTypeRectangle:
     {
-        auto &colorJ = component["color"];
-        auto &xJ = component["x"];
-        auto &yJ = component["y"];
-        auto &wJ = component["w"];
-        auto &hJ = component["h"];
+        auto &colorJ = componentJson["color"];
+        auto &xJ = componentJson["x"];
+        auto &yJ = componentJson["y"];
+        auto &wJ = componentJson["w"];
+        auto &hJ = componentJson["h"];
 
         string color = colorJ.is_string() ? (string)colorJ : "000000";
         double x = xJ.is_number() ? (double)xJ : 0;
@@ -53,18 +53,17 @@ void renderComponent(Renderer &renderer, Json &component)
         double w = wJ.is_number() ? (double)wJ : 100;
         double h = hJ.is_number() ? (double)hJ : 100;
 
-        renderer.draw_rectangle(color.c_str(),
-                                x, y,
-                                w, h);
+        return make_shared<ComponentRectangle>(color.c_str(),
+                                               x, y,
+                                               w, h);
     }
-    break;
     case ComponentTypeImage:
     {
-        auto &srcJ = component["src"];
-        auto &xJ = component["x"];
-        auto &yJ = component["y"];
-        auto &wJ = component["w"];
-        auto &hJ = component["h"];
+        auto &srcJ = componentJson["src"];
+        auto &xJ = componentJson["x"];
+        auto &yJ = componentJson["y"];
+        auto &wJ = componentJson["w"];
+        auto &hJ = componentJson["h"];
 
         string src = srcJ.is_string() ? (string)srcJ : "";
         double x = xJ.is_number() ? (double)xJ : 0;
@@ -72,33 +71,30 @@ void renderComponent(Renderer &renderer, Json &component)
         double w = wJ.is_number() ? (double)wJ : 100;
         double h = hJ.is_number() ? (double)hJ : 100;
 
-        renderer.draw_svg(src,
-                          x, y,
-                          w, h);
-
-        // renderer.draw_png
+        return make_shared<ComponentImage>(src,
+                                           x, y,
+                                           w, h);
     }
-    break;
     case ComponentTypeImageMask:
     {
+        return make_shared<Component>();
     }
-    break;
     case ComponentTypeText:
     {
-        auto &contentJ = component["content"];
-        auto &colorJ = component["color"];
-        auto &xJ = component["x"];
-        auto &yJ = component["y"];
-        auto &wJ = component["w"];
-        auto &hJ = component["h"];
-        auto &writingModeJ = component["writingMode"];
-        auto &wordWrapJ = component["wordWrap"];
-        auto &horizontalAlignJ = component["horizontalAlign"];
-        auto &verticalAlignJ = component["verticalAlign"];
-        auto &fontFamilyJ = component["fontFamily"];
-        auto &fontSizeJ = component["fontSize"];
-        auto &lineSpacingJ = component["lineSpacing"];
-        auto &wordSpacingJ = component["wordSpacing"];
+        auto &contentJ = componentJson["content"];
+        auto &colorJ = componentJson["color"];
+        auto &xJ = componentJson["x"];
+        auto &yJ = componentJson["y"];
+        auto &wJ = componentJson["w"];
+        auto &hJ = componentJson["h"];
+        auto &writingModeJ = componentJson["writingMode"];
+        auto &wordWrapJ = componentJson["wordWrap"];
+        auto &horizontalAlignJ = componentJson["horizontalAlign"];
+        auto &verticalAlignJ = componentJson["verticalAlign"];
+        auto &fontFamilyJ = componentJson["fontFamily"];
+        auto &fontSizeJ = componentJson["fontSize"];
+        auto &lineSpacingJ = componentJson["lineSpacing"];
+        auto &wordSpacingJ = componentJson["wordSpacing"];
 
         string content = contentJ.is_string() ? (string)contentJ : "";
         string color = colorJ.is_string() ? (string)colorJ : "000000";
@@ -115,38 +111,40 @@ void renderComponent(Renderer &renderer, Json &component)
         double lineSpacing = lineSpacingJ.is_number() ? (double)lineSpacingJ : 1;
         double wordSpacing = wordSpacingJ.is_number() ? (double)wordSpacingJ : 0;
 
-        // 此处渲染文字仅为测试 正式的排版考虑使用Pango
-        renderer.draw_text(content,
-                           "Lantinghei.ttc",
-                           0,
-                           fontSize,
-                           horizontalAlign,
-                           color.c_str(),
-                           x, y);
+        return make_shared<ComponentText>(content,
+                                          "Lantinghei.ttc",
+                                          0,
+                                          fontSize,
+                                          horizontalAlign,
+                                          color.c_str(),
+                                          x, y);
     }
-    break;
     case ComponentTypeRepeat:
     {
+        return make_shared<Component>();
     }
-    break;
     case ComponentTypeGroup:
     {
+        auto &childJson = componentJson["child"];
+        return renderComponents(childJson);
     }
-    break;
     default:
-        break;
+    {
+        return make_shared<Component>();
+    }
     }
 }
 
-void renderComponents(Renderer &renderer, Json &components)
+shared_ptr<Component> renderComponents(Json &componentsJson)
 {
-    if (components.is_array())
-    {
-        for (auto &component : components) // 循环处理该成员中的元素
+    auto componentGroup = make_shared<ComponentGroup>();
+    if (componentsJson.is_array())
+        for (auto &componentJson : componentsJson) // 循环处理该成员中的元素
         {
-            renderComponent(renderer, component);
+            auto component = renderComponent(componentJson);
+            componentGroup->addChild(component->getSurface());
         }
-    }
+    return componentGroup;
 }
 
 int main(int argc, char *argv[])
@@ -194,12 +192,11 @@ int main(int argc, char *argv[])
     Renderer renderer(w, h, unit, ppi);
 
     // 渲染body
-    auto body = json.find("body");
-    if (body != json.end())
-    { // Has "body"
-        renderComponents(renderer, *body);
-    }
+    auto &bodyJson = json["body"];
+    auto mainComponent = renderComponents(bodyJson);
+    renderer.render(mainComponent->getSurface());
 
+    // 保存
     renderer.save(args.output, args.type);
 
 #ifdef TIMER

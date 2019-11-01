@@ -1,7 +1,14 @@
-#ifndef RENDERER_H
-#define RENDERER_H
+#pragma once
+
+#include "default.h"
 
 #include "Color.h"
+
+#define MM2IN(MM) ((double)MM / 25.4)
+#define PT2IN(PT) ((double)PT / 72)
+
+namespace Render
+{
 
 class Renderer
 {
@@ -30,27 +37,9 @@ public:
              double __ppi);
     ~Renderer();
 
-    void save(string outputPath, OutputType outputType);
+void render(cairo_surface_t *__surface);
 
-    int8_t draw_rectangle(Color argb, double x, double y, double width, double height);
-    int8_t draw_text(const string &text,
-                     const string &fontfile,
-                     long face_index,
-                     double font_size,
-                     int8_t alignment,
-                     Color argb,
-                     double x, double y);
-    int8_t draw_svg(const string &svgfilename,
-                    double x, double y,
-                    double width, double height);
-    int8_t draw_png(const string &pngfilename,
-                    double x, double y,
-                    double width, double height);
+    void save(string outputPath, OutputType outputType);
 };
 
-cairo_status_t writeCairo(void *closure, const unsigned char *data, unsigned int length);
-
-#define MM2IN(MM) ((double)MM / 25.4)
-#define PT2IN(PT) ((double)PT / 72)
-
-#endif // RENDERER_H
+} // namespace Render

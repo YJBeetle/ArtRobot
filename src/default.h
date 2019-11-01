@@ -1,5 +1,4 @@
-#ifndef DEFAULT_H
-#define DEFAULT_H
+#pragma once
 
 #include <string>
 #include <iostream>
@@ -30,5 +29,3 @@ enum OutputType
     OutputTypePdf,
     OutputTypePng,
 };
-
-#endif // DEFAULT_H
