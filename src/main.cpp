@@ -4,50 +4,146 @@
 #include "Color.h"
 #include "Renderer.h"
 
-void render(Renderer &renderer, Json &components)
+enum ComponentType
 {
-    cout << "components size: " << components.size() << endl;
+    ComponentTypeUnknow = 0,
+    ComponentTypeRectangle,
+    ComponentTypeImage,
+    ComponentTypeImageMask,
+    ComponentTypeText,
+    ComponentTypeRepeat,
+    ComponentTypeGroup,
+};
 
-    for (auto &component : components) // 循环处理该成员中的元素
+void renderComponent(Renderer &renderer, Json &component)
+{
+    ComponentType componentType = ComponentTypeUnknow;
     {
-        string type;
+        auto &typeJson = component["type"];
+        if (typeJson.is_string())
         {
-            auto typeJson = component.find("type");
-            if (typeJson != component.end())
-            { // Has "ppi"
-                type = *typeJson;
-            }
+            if (typeJson == "rectangle")
+                componentType = ComponentTypeRectangle;
+            else if (typeJson == "image")
+                componentType = ComponentTypeImage;
+            else if (typeJson == "imageMask")
+                componentType = ComponentTypeImageMask;
+            else if (typeJson == "text")
+                componentType = ComponentTypeText;
+            else if (typeJson == "repeat")
+                componentType = ComponentTypeRepeat;
+            else if (typeJson == "group")
+                componentType = ComponentTypeGroup;
         }
+    }
 
-        cout << "type: " << type << endl;
+    switch (componentType)
+    {
+    case ComponentTypeRectangle:
+    {
+        auto &colorJ = component["color"];
+        auto &xJ = component["x"];
+        auto &yJ = component["y"];
+        auto &wJ = component["w"];
+        auto &hJ = component["h"];
 
-        if (type == "rectangle")
+        string color = colorJ.is_string() ? (string)colorJ : "000000";
+        double x = xJ.is_number() ? (double)xJ : 0;
+        double y = yJ.is_number() ? (double)yJ : 0;
+        double w = wJ.is_number() ? (double)wJ : 100;
+        double h = hJ.is_number() ? (double)hJ : 100;
+
+        renderer.draw_rectangle(color.c_str(),
+                                x, y,
+                                w, h);
+    }
+    break;
+    case ComponentTypeImage:
+    {
+        auto &srcJ = component["src"];
+        auto &xJ = component["x"];
+        auto &yJ = component["y"];
+        auto &wJ = component["w"];
+        auto &hJ = component["h"];
+
+        string src = srcJ.is_string() ? (string)srcJ : "";
+        double x = xJ.is_number() ? (double)xJ : 0;
+        double y = yJ.is_number() ? (double)yJ : 0;
+        double w = wJ.is_number() ? (double)wJ : 100;
+        double h = hJ.is_number() ? (double)hJ : 100;
+
+        renderer.draw_svg(src,
+                          x, y,
+                          w, h);
+                          
+        // renderer.draw_png
+    }
+    break;
+    case ComponentTypeImageMask:
+    {
+    }
+    break;
+    case ComponentTypeText:
+    {
+        auto &contentJ = component["content"];
+        auto &colorJ = component["color"];
+        auto &xJ = component["x"];
+        auto &yJ = component["y"];
+        auto &wJ = component["w"];
+        auto &hJ = component["h"];
+        auto &writingModeJ = component["writingMode"];
+        auto &wordWrapJ = component["wordWrap"];
+        auto &horizontalAlignJ = component["horizontalAlign"];
+        auto &verticalAlignJ = component["verticalAlign"];
+        auto &fontFamilyJ = component["fontFamily"];
+        auto &fontSizeJ = component["fontSize"];
+        auto &lineSpacingJ = component["lineSpacing"];
+        auto &wordSpacingJ = component["wordSpacing"];
+
+        string content = contentJ.is_string() ? (string)contentJ : "";
+        string color = colorJ.is_string() ? (string)colorJ : "000000";
+        double x = xJ.is_number() ? (double)xJ : 0;
+        double y = yJ.is_number() ? (double)yJ : 0;
+        double w = wJ.is_number() ? (double)wJ : 100;
+        double h = hJ.is_number() ? (double)hJ : 100;
+        int writingMode = writingModeJ.is_number() ? (int)writingModeJ : 0; // 书写方向，同css中writing-mode，0=horizontal-tb，1=vertical-rl，2=vertical-lr
+        bool wordWrap = wordWrapJ.is_boolean() ? (bool)wordWrapJ : true;
+        int horizontalAlign = horizontalAlignJ.is_number() ? (int)horizontalAlignJ : 0; // 水平对齐方式，-1为左对齐，0居中，1右对齐
+        int verticalAlign = verticalAlignJ.is_number() ? (int)verticalAlignJ : 0;       // 垂直对齐方式，-1为顶部对齐，0居中，1底部对齐
+        string fontFamily = fontFamilyJ.is_string() ? (string)fontFamilyJ : "";
+        double fontSize = fontSizeJ.is_number() ? (double)fontSizeJ : 14;
+        double lineSpacing = lineSpacingJ.is_number() ? (double)lineSpacingJ : 1;
+        double wordSpacing = wordSpacingJ.is_number() ? (double)wordSpacingJ : 0;
+
+        renderer.draw_text(content,
+                           "Lantinghei.ttc",
+                           0,
+                           fontSize,
+                           horizontalAlign,
+                           color.c_str(),
+                           x, y);
+    }
+    break;
+    case ComponentTypeRepeat:
+    {
+    }
+    break;
+    case ComponentTypeGroup:
+    {
+    }
+    break;
+    default:
+        break;
+    }
+}
+
+void renderComponents(Renderer &renderer, Json &components)
+{
+    if (components.is_array())
+    {
+        for (auto &component : components) // 循环处理该成员中的元素
         {
-            renderer.draw_rectangle(string(component["color"]).c_str(),
-                                    component["x"], component["y"],
-                                    component["w"], component["h"]);
-        }
-        else if (type == "text")
-        {
-            // renderer.draw_text(component["text"],
-            //                    component["font"],
-            //                    component["face"],
-            //                    component["size"],
-            //                    component["alignment"],
-            //                    string(component["color"]).c_str(),
-            //                    component["x"], component["y"]);
-        }
-        else if (type == "image")
-        {
-            renderer.draw_svg(component["src"],
-                              component["x"], component["y"],
-                              component["w"], component["h"]);
-        }
-        else if (type == "pngfile")
-        {
-            renderer.draw_png(component["src"],
-                              component["x"], component["y"],
-                              component["w"], component["h"]);
+            renderComponent(renderer, component);
         }
     }
 }
@@ -118,8 +214,7 @@ int main(int argc, char *argv[])
     auto body = json.find("body");
     if (body != json.end())
     { // Has "body"
-        if (body->is_array())
-            render(renderer, *body);
+        renderComponents(renderer, *body);
     }
 
 #ifdef TIMER

@@ -7,7 +7,7 @@
 #include "Renderer.h"
 
 Renderer::Renderer(const string &filename,
-           outputType type,
+           OutputType type,
            double width,
            double height,
            unitType unit,
@@ -63,20 +63,20 @@ Renderer::Renderer(const string &filename,
 
     switch (surface_type)
     {
-    case outputTypePdf:
+    case OutputTypePdf:
         surface = cairo_pdf_surface_create_for_stream(writeCairo, (void *)this->out_file, surface_width * ppi, (surface_height)*ppi); //默认单位是mm，所以需要mm转inch
         //cairo_surface_set_fallback_resolution(surface,300,300);//设置分辨率
         cr = cairo_create(surface);                //创建画笔
         cairo_scale(cr, scale * ppi, scale * ppi); //缩放画笔，因PDF用mm作为最终单位故需缩放画笔
         break;
 
-    case outputTypeSvg:
+    case OutputTypeSvg:
         surface = cairo_svg_surface_create_for_stream(writeCairo, (void *)this->out_file, surface_width * ppi, surface_height * ppi); //默认单位pt
         cr = cairo_create(surface);                                                                                                   //创建画笔
         cairo_scale(cr, scale * ppi, scale * ppi);
         break;
 
-    case outputTypePng:
+    case OutputTypePng:
         surface = cairo_image_surface_create(CAIRO_FORMAT_ARGB32, surface_width * ppi, surface_height * ppi); //默认单位pt
         cr = cairo_create(surface);                                                                           //创建画笔
         cairo_scale(cr, scale * ppi, scale * ppi);
@@ -90,7 +90,7 @@ Renderer::Renderer(const string &filename,
 
 Renderer::~Renderer()
 {
-    if (surface_type == outputTypePng)
+    if (surface_type == OutputTypePng)
         cairo_surface_write_to_png_stream(surface, writeCairo, (void *)this->out_file);
 
     cairo_destroy(cr);              //回收画笔

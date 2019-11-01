@@ -24,6 +24,8 @@
       "type": "text",
       "content": "喵喵喵",
       "color": "00FF00",
+      "x": 20,
+      "y": 20,
       "canedit": [
         {
           "attributes": "content",

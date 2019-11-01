@@ -64,11 +64,11 @@ Args::Args(int argc, char *argv[])
             break;
         case 't':
             if (!strcasecmp(optarg, "pdf"))
-                type = outputTypePdf;
+                type = OutputTypePdf;
             else if (!strcasecmp(optarg, "svg"))
-                type = outputTypeSvg;
+                type = OutputTypeSvg;
             else if (!strcasecmp(optarg, "png"))
-                type = outputTypePng;
+                type = OutputTypePng;
             break;
         case 'V':
             printf("version\n");

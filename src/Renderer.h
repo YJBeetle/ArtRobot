@@ -17,7 +17,7 @@ public:
 
 private:
     FILE *out_file;
-    outputType surface_type;
+    OutputType surface_type;
     double surface_width;
     double surface_height;
 
@@ -28,7 +28,7 @@ private:
 
 public:
     Renderer(const string &filename,
-         outputType type,
+         OutputType type,
          double width,
          double height,
          unitType unit,
