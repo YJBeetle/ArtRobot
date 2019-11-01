@@ -7,11 +7,11 @@
 #include "Renderer.h"
 
 Renderer::Renderer(const string &filename,
-           OutputType type,
-           double width,
-           double height,
-           unitType unit,
-           double ppi)
+                   OutputType type,
+                   double width,
+                   double height,
+                   unitType unit,
+                   double ppi)
     : out_file(NULL),
       surface_height(0),
       surface_width(0)
@@ -137,12 +137,12 @@ int8_t Renderer::draw_rectangle(Color argb, double x, double y, double width, do
 }
 
 int8_t Renderer::draw_text(const string &text,
-                       const string &fontfile,
-                       long face_index,
-                       double font_size,
-                       int8_t alignment,
-                       Color argb,
-                       double x, double y)
+                           const string &fontfile,
+                           long face_index,
+                           double font_size,
+                           int8_t alignment,
+                           Color argb,
+                           double x, double y)
 {
     if (!face_index)
         face_index = 0;
@@ -193,8 +193,8 @@ int8_t Renderer::draw_text(const string &text,
 }
 
 int8_t Renderer::draw_svg(const string &svgfilename,
-                      double x, double y,
-                      double width, double height)
+                          double x, double y,
+                          double width, double height)
 {
     if (!this->filecheck(svgfilename.c_str()))
     {
@@ -229,8 +229,8 @@ int8_t Renderer::draw_svg(const string &svgfilename,
 }
 
 int8_t Renderer::draw_png(const string &pngfilename,
-                      double x, double y,
-                      double width, double height)
+                          double x, double y,
+                          double width, double height)
 {
     if (!this->filecheck(pngfilename.c_str()))
     {

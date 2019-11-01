@@ -75,7 +75,7 @@ void renderComponent(Renderer &renderer, Json &component)
         renderer.draw_svg(src,
                           x, y,
                           w, h);
-                          
+
         // renderer.draw_png
     }
     break;
@@ -166,28 +166,16 @@ int main(int argc, char *argv[])
     jsonFile >> json;
 
     // 读取文档基本参数
-    double width = 200; // 默认200
-    {
-        auto widthJson = json.find("w");
-        if (widthJson != json.end())
-        { // Has "width"
-            width = *widthJson;
-        }
-    }
-    double height = 200; // 默认200
-    {
-        auto heightJson = json.find("h");
-        if (heightJson != json.end())
-        { // Has "height"
-            height = *heightJson;
-        }
-    }
+    auto &wJ = json["w"];
+    auto &hJ = json["h"];
+    double w = wJ.is_number() ? (double)wJ : 200;
+    double h = hJ.is_number() ? (double)hJ : 200;
     Renderer::unitType unit = Renderer::PX; // 默认px
     {
-        auto unitJson = json.find("unit");
-        if (unitJson != json.end())
+        auto &unitJ = json["unit"];
+        if (unitJ.is_string())
         { // Has "unit"
-            string unitStr = *unitJson;
+            string unitStr = unitJ;
             if (unitStr == "px" || unitStr == "pt")
                 unit = Renderer::PX;
             else if (unitStr == "in" || unitStr == "inch")
@@ -198,17 +186,11 @@ int main(int argc, char *argv[])
                 unit = Renderer::CM;
         }
     }
-    double ppi = 72; // 默认72
-    {
-        auto ppiJson = json.find("ppi");
-        if (ppiJson != json.end())
-        { // Has "ppi"
-            ppi = *ppiJson;
-        }
-    }
+    auto &ppiJ = json["ppi"];
+    double ppi = ppiJ.is_number() ? (double)ppiJ : 72;
 
     // 准备渲染器
-    Renderer renderer(args.output, args.type, width, height, unit, ppi);
+    Renderer renderer(args.output, args.type, w, h, unit, ppi);
 
     // 渲染body
     auto body = json.find("body");
