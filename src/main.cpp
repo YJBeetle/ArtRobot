@@ -137,14 +137,20 @@ shared_ptr<Component> renderComponent(Json &componentJson)
 
 shared_ptr<Component> renderComponents(Json &componentsJson)
 {
-    auto componentGroup = make_shared<ComponentGroup>();
     if (componentsJson.is_array())
+    {
+        auto componentGroup = make_shared<ComponentGroup>();
         for (auto &componentJson : componentsJson) // 循环处理该成员中的元素
         {
             auto component = renderComponent(componentJson);
             componentGroup->addChild(component->getSurface());
         }
-    return componentGroup;
+        return componentGroup;
+    }
+    else if (componentsJson.is_object())
+    {
+        return renderComponent(componentsJson);
+    }
 }
 
 int main(int argc, char *argv[])
