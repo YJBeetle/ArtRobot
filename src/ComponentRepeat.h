@@ -8,7 +8,7 @@
 namespace Render
 {
 
-class ComponentRepeat : public Component
+class ComponentRepeat : public Component // TODO
 {
 private:
 public:
