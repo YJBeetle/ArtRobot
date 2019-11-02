@@ -18,9 +18,11 @@
 #include <cairo-ft.h>
 #include <librsvg/rsvg.h>
 #include "3rdParty/json.hpp"
+#include <opencv2/opencv.hpp>
 
 using namespace std;
 using Json = nlohmann::json;
+using namespace cv;
 
 enum OutputType
 {

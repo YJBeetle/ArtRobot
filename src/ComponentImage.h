@@ -19,8 +19,11 @@ private:
 
 public:
     ComponentImage(const string &imageFilePath,
-                                   double x, double y,
-                                   double width, double height);
+                   double x, double y,
+                   double w, double h);
+    ComponentImage(const Mat &image,
+                   double x, double y,
+                   double w, double h);
     ~ComponentImage();
 };
 

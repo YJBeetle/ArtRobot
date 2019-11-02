@@ -1,14 +1,61 @@
 #include "default.h"
 
 #include "ComponentImage.h"
-#include "Jpeg.h"
 
 namespace Render
 {
 
+void drawImageSurface(cairo_t *cr, cairo_surface_t *imageSurface,
+                      int imageW, int imageH,
+                      double x, double y,
+                      double w, double h)
+{
+    cairo_translate(cr, x, y);
+    if (w || h)
+    {
+        double scaleX, scaleY;
+        scaleX = w / (double)imageW;
+        scaleY = h / (double)imageH;
+        cairo_scale(cr, scaleX, scaleY);
+    }
+    cairo_set_source_surface(cr, imageSurface, 0, 0);
+    cairo_paint(cr);
+}
+
+void drawMat(cairo_t *cr, const Mat &imageMatRead,
+             double x, double y,
+             double w, double h)
+{
+    cairo_surface_t *imageSurface;
+    if (imageMatRead.channels() == 3)
+    {
+        Mat imageMat;
+        cvtColor(imageMatRead, imageMat, COLOR_BGR2BGRA);
+        imageSurface = cairo_image_surface_create_for_data(imageMat.data,
+                                                           CAIRO_FORMAT_RGB24,
+                                                           imageMat.cols,
+                                                           imageMat.rows,
+                                                           imageMat.step);
+    }
+    else
+        imageSurface = cairo_image_surface_create_for_data(imageMatRead.data,
+                                                           CAIRO_FORMAT_ARGB32,
+                                                           imageMatRead.cols,
+                                                           imageMatRead.rows,
+                                                           imageMatRead.step);
+    // cairo_surface_finish(imageSurface);
+
+    drawImageSurface(cr, imageSurface,
+                     imageMatRead.cols, imageMatRead.rows,
+                     x, y,
+                     w, h);
+
+    cairo_surface_destroy(imageSurface); // 回收
+}
+
 ComponentImage::ComponentImage(const string &imageFilePath,
                                double x, double y,
-                               double width, double height)
+                               double w, double h)
 {
     type = ComponentTypeImage;
 
@@ -37,7 +84,7 @@ ComponentImage::ComponentImage(const string &imageFilePath,
             svg = rsvg_handle_new_from_file(imageFilePath.c_str(), NULL); // TODO 错误处理   // or rsvg_handle_new_from_data
 
             cairo_translate(cr, x, y);
-            if (width || height)
+            if (w || h)
             {
                 unsigned int svg_width, svg_height;
                 double scaleX, scaleY;
@@ -45,8 +92,8 @@ ComponentImage::ComponentImage(const string &imageFilePath,
                 rsvg_handle_get_dimensions(svg, &dimension_data);
                 svg_width = dimension_data.width;
                 svg_height = dimension_data.height;
-                scaleX = width / (double)svg_width;
-                scaleY = height / (double)svg_height;
+                scaleX = w / (double)svg_width;
+                scaleY = h / (double)svg_height;
                 cairo_scale(cr, scaleX, scaleY);
             }
             rsvg_handle_render_cairo(svg, cr);
@@ -58,55 +105,36 @@ ComponentImage::ComponentImage(const string &imageFilePath,
         {
             cairo_surface_t *img = cairo_image_surface_create_from_png(imageFilePath.c_str());
 
-            cairo_translate(cr, x, y);
-            if (width || height)
-            {
-                unsigned int png_width, png_height;
-                double scaleX, scaleY;
-                png_width = cairo_image_surface_get_width(img);
-                png_height = cairo_image_surface_get_height(img);
-                scaleX = width / (double)png_width;
-                scaleY = height / (double)png_height;
-                cairo_scale(cr, scaleX, scaleY);
-            }
-            cairo_set_source_surface(cr, img, 0, 0);
-            cairo_paint(cr);
+            drawImageSurface(cr, img,
+                             cairo_image_surface_get_width(img), cairo_image_surface_get_height(img),
+                             x, y,
+                             w, h);
 
             cairo_surface_destroy(img); // 回收PNG
         }
         break;
         case JPG:
+        default:
         {
-            auto jpg = read_JPEG_file(imageFilePath.c_str());
-            cairo_surface_t *img = cairo_image_surface_create_for_data(jpg->getBuffer(),
-                                                                       CAIRO_FORMAT_ARGB32,
-                                                                       jpg->getWidth(),
-                                                                       jpg->getHeight(),
-                                                                       jpg->getWidth() * 4);
-
-            // cout<< jpg->getBuffer()<< endl;
-
-            cairo_translate(cr, x, y);
-            if (width || height)
-            {
-                unsigned int png_width, png_height;
-                double scaleX, scaleY;
-                png_width = jpg->getWidth();
-                png_height = jpg->getHeight();
-                scaleX = width / (double)png_width;
-                scaleY = height / (double)png_height;
-                cairo_scale(cr, scaleX, scaleY);
-            }
-            cairo_set_source_surface(cr, img, 0, 0);
-            cairo_paint(cr);
-
-            cairo_surface_destroy(img); // 回收
+            auto imageMatRead = imread(imageFilePath, IMREAD_UNCHANGED);
+            drawMat(cr, imageMatRead, x, y, w, h);
         }
         break;
-        default:
-            break;
         }
     }
+
+    cairo_destroy(cr);
+}
+
+ComponentImage::ComponentImage(const Mat &imageMatRead,
+                               double x, double y,
+                               double w, double h)
+{
+    type = ComponentTypeImage;
+
+    cairo_t *cr = cairo_create(surface);
+
+    drawMat(cr, imageMatRead, x, y, w, h);
 
     cairo_destroy(cr);
 }

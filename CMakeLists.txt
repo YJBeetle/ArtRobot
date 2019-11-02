@@ -44,10 +44,6 @@ message(STATUS "    libraries: ${RSVG_LIBRARIES}")
 include_directories(${RSVG_INCLUDE_DIRS})
 link_directories(${RSVG_LIBDIR})
 
-## Jpeg
-find_package(Jpeg REQUIRED)
-include_directories(${JPEG_INCLUDE_DIR})
-
 # Find OpenCV
 find_package(OpenCV REQUIRED)
 message(STATUS "OpenCV library status:")
@@ -61,7 +57,6 @@ set(LIB_LIST
     ${FREETYPE_LIBRARIES}
     # ${RSVG_LIBRARIES}
     rsvg-2
-    ${JPEG_LIBRARIES}
     ${OpenCV_LIBS}
 )
 
