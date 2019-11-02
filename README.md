@@ -5,6 +5,7 @@
 * cairo
 * freetype
 * librsvg
+* opencv
 
 ## 格式
 
