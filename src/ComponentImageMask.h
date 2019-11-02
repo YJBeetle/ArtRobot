@@ -16,7 +16,7 @@ public:
                        double x, double y,
                        double w, double h,
                        cairo_surface_t *childSurface);
-    ComponentImageMask(const Mat &image,
+    ComponentImageMask(const Mat &imageMatRead,
                        double x, double y,
                        double w, double h,
                        cairo_surface_t *childSurface);
