@@ -1,5 +1,7 @@
 #include "default.h"
 
+// #include <magic.h>
+
 #include "ComponentImage.h"
 
 namespace Render
@@ -61,20 +63,23 @@ ComponentImage::ComponentImage(const string &imageFilePath,
 
     cairo_t *cr = cairo_create(surface);
 
-    FILE *imageFile = fopen(imageFilePath.c_str(), "rb");
+    FILE *imageFile = fopen(imageFilePath.c_str(), "rb"); // 判断文件存在
     if (imageFile)
     {
-        // TODO: 判断文件类型
+        fclose(imageFile);
+        // TODO: 判断文件类型可以考虑用magic
+        // magic_t cookie;
+        // cookie = magic_open(MAGIC_MIME_TYPE);
+        // magic_load(cookie, NULL);
+        // cout << (char *)magic_buffer(cookie, fileDataBuffer, fileDataBufferLength) << endl;
         ImageFileType imageFileType;
-        const char *ext = imageFilePath.c_str() + imageFilePath.length() - 4;
+        const char *ext = imageFilePath.c_str() + imageFilePath.length() - 4; // 目前用扩展名判断
         if (!strcasecmp(ext, ".svg"))
             imageFileType = SVG;
         else if (!strcasecmp(ext, ".png"))
             imageFileType = PNG;
         else if (!strcasecmp(ext, ".jpg"))
             imageFileType = JPG;
-
-        fclose(imageFile); // TODO
 
         switch (imageFileType)
         {
