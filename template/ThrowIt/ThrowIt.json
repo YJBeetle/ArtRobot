@@ -1,47 +1,42 @@
 {
-  "w": 200,
-  "h": 200,
+  "w": 512,
+  "h": 512,
   "unit": "px",
   "ppi": 72,
   "body": [
     {
-      "type": "rectangle",
-      "color": "FF0000",
-      "x": 0,
-      "y": 0,
-      "w": 200,
-      "h": 200
-    },
-    {
       "type": "image",
-      "src": "bg-veins.svg",
+      "src": "p.png",
       "x": 0,
       "y": 0,
-      "w": 200,
-      "h": 200
+      "w": 512,
+      "h": 512
     },
     {
-      "type": "text",
-      "content": "喵喵喵",
-      "color": "00FF00",
-      "x": 20,
-      "y": 20,
-      "canedit": [
-        {
-          "attributes": "content",
-          "id": "title",
-          "description": "文本内容"
-        },
-        {
-          "attributes": "color",
-          "id": "tColor",
-          "description": "文本颜色"
-        }
-      ]
+      "type": "imageMask",
+      "src": "p_mask.png",
+      "x": 0,
+      "y": 0,
+      "w": 512,
+      "h": 512,
+      "child": {
+        "type": "image",
+        "src": "pp.jpg",
+        "x": 0,
+        "y": 0,
+        "w": 512,
+        "h": 512,
+        "canedit": [
+          {
+            "attributes": "src",
+            "id": "pp",
+            "description": "头像"
+          }
+        ]
+      }
     }
   ],
   "data": {
-    "title": "汪汪汪",
-    "tColor": "0000FF"
+    "pp": "pp.jpg"
   }
 }
