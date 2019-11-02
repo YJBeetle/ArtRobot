@@ -77,7 +77,25 @@ shared_ptr<Component> renderComponent(Json &componentJson)
     }
     case ComponentTypeImageMask:
     {
-        return make_shared<Component>();
+        auto &srcJ = componentJson["src"];
+        auto &xJ = componentJson["x"];
+        auto &yJ = componentJson["y"];
+        auto &wJ = componentJson["w"];
+        auto &hJ = componentJson["h"];
+        auto &childJ = componentJson["child"];
+
+        string src = srcJ.is_string() ? (string)srcJ : "";
+        double x = xJ.is_number() ? (double)xJ : 0;
+        double y = yJ.is_number() ? (double)yJ : 0;
+        double w = wJ.is_number() ? (double)wJ : 100;
+        double h = hJ.is_number() ? (double)hJ : 100;
+
+        auto child = renderComponent(childJ);
+
+        return make_shared<ComponentImageMask>(src,
+                                               x, y,
+                                               w, h,
+                                               child->getSurface());
     }
     case ComponentTypeText:
     {
