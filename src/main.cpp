@@ -197,7 +197,7 @@ int main(int argc, char *argv[])
     renderer.render(mainComponent->getSurface());
 
     // 保存
-    renderer.save(args.output, args.type);
+    renderer.saveToFile(args.output, args.type);
 
 #ifdef TIMER
     //计时结束

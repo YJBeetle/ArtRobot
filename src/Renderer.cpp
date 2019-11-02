@@ -62,7 +62,7 @@ cairo_status_t writeCairo(void *closure, const unsigned char *data, unsigned int
     return CAIRO_STATUS_SUCCESS;
 }
 
-void Renderer::save(string outputPath, OutputType outputType)
+void Renderer::saveToFile(string outputPath, OutputType outputType)
 {
     FILE *outputFile;
     if (!outputPath.empty())

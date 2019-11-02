@@ -37,9 +37,9 @@ public:
              double __ppi);
     ~Renderer();
 
-void render(cairo_surface_t *__surface);
+    void render(cairo_surface_t *__surface);
 
-    void save(string outputPath, OutputType outputType);
+    void saveToFile(string outputPath, OutputType outputType);
 };
 
 } // namespace Render
