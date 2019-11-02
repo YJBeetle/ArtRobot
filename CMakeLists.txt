@@ -48,12 +48,21 @@ link_directories(${RSVG_LIBDIR})
 find_package(Jpeg REQUIRED)
 include_directories(${JPEG_INCLUDE_DIR})
 
+# Find OpenCV
+find_package(OpenCV REQUIRED)
+message(STATUS "OpenCV library status:")
+message(STATUS "    version: ${OpenCV_VERSION}")
+message(STATUS "    include path: ${OpenCV_INCLUDE_DIRS}")
+message(STATUS "    libraries: ${OpenCV_LIBS}")
+include_directories(${OpenCV_INCLUDE_DIRS})
+
 set(LIB_LIST
     ${CAIRO_LIBRARIES}
     ${FREETYPE_LIBRARIES}
-    ${JPEG_LIBRARIES}
     # ${RSVG_LIBRARIES}
     rsvg-2
+    ${JPEG_LIBRARIES}
+    ${OpenCV_LIBS}
 )
 
 # building project
