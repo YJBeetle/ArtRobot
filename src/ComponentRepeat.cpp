@@ -5,9 +5,9 @@
 namespace Render
 {
 
-ComponentRepeat::ComponentRepeat()
+ComponentRepeat::ComponentRepeat() // TODO
 {
-    type = ComponentTypeText;
+    type = ComponentTypeRepeat;
 
     cairo_t *cr = cairo_create(surface);
 
