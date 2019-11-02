@@ -12,11 +12,11 @@ class ComponentImageMask : public Component
 {
 private:
 public:
-    ComponentImageMask(const string &imageFilePath,
+    ComponentImageMask(const string &maskImageFilePath,
                        double x, double y,
                        double w, double h,
                        cairo_surface_t *childSurface);
-    ComponentImageMask(const Mat &imageMatRead,
+    ComponentImageMask(const Mat &maskImageMatRead,
                        double x, double y,
                        double w, double h,
                        cairo_surface_t *childSurface);
