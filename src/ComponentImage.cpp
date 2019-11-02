@@ -1,6 +1,7 @@
 #include "default.h"
 
 #include "ComponentImage.h"
+#include "Jpeg.h"
 
 namespace Render
 {
@@ -16,8 +17,16 @@ ComponentImage::ComponentImage(const string &imageFilePath,
     FILE *imageFile = fopen(imageFilePath.c_str(), "rb");
     if (imageFile)
     {
-        ImageFileType imageFileType = SVG;
         // TODO: 判断文件类型
+        ImageFileType imageFileType;
+        const char *ext = imageFilePath.c_str() + imageFilePath.length() - 4;
+        if (!strcasecmp(ext, ".svg"))
+            imageFileType = SVG;
+        else if (!strcasecmp(ext, ".png"))
+            imageFileType = PNG;
+        else if (!strcasecmp(ext, ".jpg"))
+            imageFileType = JPG;
+
         fclose(imageFile); // TODO
 
         switch (imageFileType)
@@ -47,8 +56,7 @@ ComponentImage::ComponentImage(const string &imageFilePath,
         break;
         case PNG:
         {
-            cairo_surface_t *img = NULL;
-            img = cairo_image_surface_create_from_png(imageFilePath.c_str());
+            cairo_surface_t *img = cairo_image_surface_create_from_png(imageFilePath.c_str());
 
             cairo_translate(cr, x, y);
             if (width || height)
@@ -64,12 +72,35 @@ ComponentImage::ComponentImage(const string &imageFilePath,
             cairo_set_source_surface(cr, img, 0, 0);
             cairo_paint(cr);
 
-            cairo_surface_destroy(img); //回收PNG介质
+            cairo_surface_destroy(img); // 回收PNG
         }
         break;
         case JPG:
         {
-            // TODO cairo_image_surface_create_for_data
+            auto jpg = read_JPEG_file(imageFilePath.c_str());
+            cairo_surface_t *img = cairo_image_surface_create_for_data(jpg->getBuffer(),
+                                                                       CAIRO_FORMAT_ARGB32,
+                                                                       jpg->getWidth(),
+                                                                       jpg->getHeight(),
+                                                                       jpg->getWidth() * 4);
+
+            // cout<< jpg->getBuffer()<< endl;
+
+            cairo_translate(cr, x, y);
+            if (width || height)
+            {
+                unsigned int png_width, png_height;
+                double scaleX, scaleY;
+                png_width = jpg->getWidth();
+                png_height = jpg->getHeight();
+                scaleX = width / (double)png_width;
+                scaleY = height / (double)png_height;
+                cairo_scale(cr, scaleX, scaleY);
+            }
+            cairo_set_source_surface(cr, img, 0, 0);
+            cairo_paint(cr);
+
+            cairo_surface_destroy(img); // 回收
         }
         break;
         default:
