@@ -36,11 +36,22 @@ void drawMat(cairo_t *cr,
                                                            imageMat.step);
     }
     else
-        imageSurface = cairo_image_surface_create_for_data(imageMatRead.data,
+    {
+        Mat imageMat = imageMatRead;
+        for (int y = 0; y < imageMat.rows; y++)
+            for (int x = 0; x < imageMat.cols; x++)
+            {
+                auto &p = imageMat.at<Vec4b>(y, x);
+                p[0] = p[0] * p[3] / 0xff;
+                p[1] = p[1] * p[3] / 0xff;
+                p[2] = p[2] * p[3] / 0xff;
+            }
+        imageSurface = cairo_image_surface_create_for_data(imageMat.data,
                                                            CAIRO_FORMAT_ARGB32,
-                                                           imageMatRead.cols,
-                                                           imageMatRead.rows,
-                                                           imageMatRead.step);
+                                                           imageMat.cols,
+                                                           imageMat.rows,
+                                                           imageMat.step);
+    }
 
     drawImageSurface(cr,
                      w, h,
