@@ -1,13 +1,19 @@
 #pragma once
 
-#include "default.h"
+#include <string>
+#include <cairo.h>
+#include <cairo-pdf.h>
+//#include <cairo-ps.h>
+#include <cairo-svg.h>
 
-#include "Color.h"
+using namespace std;
+
+#include "ArtRobot/Types/OutputType.h"
 
 #define MM2IN(MM) ((double)MM / 25.4)
 #define PT2IN(PT) ((double)PT / 72)
 
-namespace Render
+namespace ArtRobot
 {
 
 class Renderer
@@ -42,4 +48,4 @@ public:
     void saveToFile(string outputPath, OutputType outputType);
 };
 
-} // namespace Render
+} // namespace ArtRobot

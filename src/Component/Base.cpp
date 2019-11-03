@@ -1,20 +1,20 @@
-#include "default.h"
+#include "ArtRobot/Component/Base.h"
 
-#include "Component.h"
-
-namespace Render
+namespace ArtRobot
+{
+namespace Component
 {
 
-Component::Component()
+Base::Base()
 {
     surface = cairo_recording_surface_create(CAIRO_CONTENT_COLOR_ALPHA, NULL);
     cr = cairo_create(surface);
 }
 
-Component::Component(double x, double y,
-                     double w, double h,
-                     double r)
-    : Component()
+Base::Base(double x, double y,
+           double w, double h,
+           double r)
+    : Base()
 {
     cairo_translate(cr, x, y);
     cairo_translate(cr, w / 2, h / 2);
@@ -22,15 +22,16 @@ Component::Component(double x, double y,
     cairo_translate(cr, -w / 2, -h / 2);
 }
 
-Component::~Component()
+Base::~Base()
 {
     cairo_destroy(cr);
     cairo_surface_destroy(surface);
 }
 
-cairo_surface_t *Component::getSurface()
+cairo_surface_t *Base::getSurface()
 {
     return surface;
 }
 
-} // namespace Render
+} // namespace Component
+} // namespace ArtRobot

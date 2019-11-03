@@ -1,42 +1,33 @@
-#include "default.h"
+#include "CommonIncludes.h"
 
+#include "ArtRobot/ArtRobot.h"
 #include "Args.h"
-#include "Color.h"
-#include "Renderer.h"
-#include "Component.h"
-#include "ComponentGroup.h"
-#include "ComponentSvg.h"
-#include "ComponentImage.h"
-#include "ComponentImageMask.h"
-#include "ComponentRectangle.h"
-#include "ComponentRepeat.h"
-#include "ComponentText.h"
 
-using namespace Render;
+using namespace ArtRobot;
 
-shared_ptr<Component> renderComponents(Json &componentsJson);
+shared_ptr<Component::Base> renderComponents(Json &componentsJson);
 
-shared_ptr<Component> renderComponent(Json &componentJson)
+shared_ptr<Component::Base> renderComponent(Json &componentJson)
 {
-    ComponentType componentType = ComponentTypeUnknow;
+    Component::Type componentType = Component::TypeUnknow;
     {
         auto &typeJson = componentJson["type"];
         if (typeJson.is_string())
         {
             if (typeJson == "rectangle")
-                componentType = ComponentTypeRectangle;
+                componentType = Component::TypeRectangle;
             else if (typeJson == "svg")
-                componentType = ComponentTypeSvg;
+                componentType = Component::TypeSvg;
             else if (typeJson == "image")
-                componentType = ComponentTypeImage;
+                componentType = Component::TypeImage;
             else if (typeJson == "imageMask")
-                componentType = ComponentTypeImageMask;
+                componentType = Component::TypeImageMask;
             else if (typeJson == "text")
-                componentType = ComponentTypeText;
+                componentType = Component::TypeText;
             else if (typeJson == "repeat")
-                componentType = ComponentTypeRepeat;
+                componentType = Component::TypeRepeat;
             else if (typeJson == "group")
-                componentType = ComponentTypeGroup;
+                componentType = Component::TypeGroup;
         }
     }
 
@@ -53,41 +44,41 @@ shared_ptr<Component> renderComponent(Json &componentJson)
 
     switch (componentType)
     {
-    case ComponentTypeRectangle:
+    case Component::TypeRectangle:
     {
         auto &colorJ = componentJson["color"];
         string color = colorJ.is_string() ? (string)colorJ : "000000";
 
-        return make_shared<ComponentRectangle>(x, y, w, h, r,
-                                               color.c_str());
+        return make_shared<Component::Rectangle>(x, y, w, h, r,
+                                                 color.c_str());
     }
-    case ComponentTypeSvg:
+    case Component::TypeSvg:
     {
         auto &srcJ = componentJson["src"];
         string src = srcJ.is_string() ? (string)srcJ : "";
 
-        return make_shared<ComponentSvg>(x, y, w, h, r,
-                                         src);
-    }
-    case ComponentTypeImage:
-    {
-        auto &srcJ = componentJson["src"];
-        string src = srcJ.is_string() ? (string)srcJ : "";
-
-        return make_shared<ComponentImage>(x, y, w, h, r,
+        return make_shared<Component::Svg>(x, y, w, h, r,
                                            src);
     }
-    case ComponentTypeImageMask:
+    case Component::TypeImage:
+    {
+        auto &srcJ = componentJson["src"];
+        string src = srcJ.is_string() ? (string)srcJ : "";
+
+        return make_shared<Component::Image>(x, y, w, h, r,
+                                             src);
+    }
+    case Component::TypeImageMask:
     {
         auto &srcJ = componentJson["src"];
         auto &childJ = componentJson["child"];
         string src = srcJ.is_string() ? (string)srcJ : "";
         auto child = renderComponent(childJ);
 
-        return make_shared<ComponentImageMask>(x, y, w, h, r,
-                                               src, child->getSurface());
+        return make_shared<Component::ImageMask>(x, y, w, h, r,
+                                                 src, child->getSurface());
     }
-    case ComponentTypeText:
+    case Component::TypeText:
     {
         auto &contentJ = componentJson["content"];
         auto &colorJ = componentJson["color"];
@@ -111,35 +102,35 @@ shared_ptr<Component> renderComponent(Json &componentJson)
         double lineSpacing = lineSpacingJ.is_number() ? (double)lineSpacingJ : 1;
         double wordSpacing = wordSpacingJ.is_number() ? (double)wordSpacingJ : 0;
 
-        return make_shared<ComponentText>(x, y, w, h, r,
-                                          content,
-                                          "Lantinghei.ttc",
-                                          0,
-                                          fontSize,
-                                          horizontalAlign,
-                                          color.c_str());
+        return make_shared<Component::Text>(x, y, w, h, r,
+                                            content,
+                                            "Lantinghei.ttc",
+                                            0,
+                                            fontSize,
+                                            horizontalAlign,
+                                            color.c_str());
     }
-    case ComponentTypeRepeat:
+    case Component::TypeRepeat:
     {
-        return make_shared<Component>();
+        return make_shared<Component::Base>();
     }
-    case ComponentTypeGroup:
+    case Component::TypeGroup:
     {
         auto &childJson = componentJson["child"];
         return renderComponents(childJson);
     }
     default:
     {
-        return make_shared<Component>();
+        return make_shared<Component::Base>();
     }
     }
 }
 
-shared_ptr<Component> renderComponents(Json &componentsJson)
+shared_ptr<Component::Base> renderComponents(Json &componentsJson)
 {
     if (componentsJson.is_array())
     {
-        auto componentGroup = make_shared<ComponentGroup>();
+        auto componentGroup = make_shared<Component::Group>();
         for (auto &componentJson : componentsJson) // 循环处理该成员中的元素
         {
             auto component = renderComponent(componentJson);
@@ -151,6 +142,7 @@ shared_ptr<Component> renderComponents(Json &componentsJson)
     {
         return renderComponent(componentsJson);
     }
+    return make_shared<Component::Base>();
 }
 
 int main(int argc, char *argv[])

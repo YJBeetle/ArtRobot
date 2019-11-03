@@ -1,8 +1,8 @@
-#include "default.h"
+#include "ArtRobot/Component/Image.h"
 
-#include "ComponentImage.h"
-
-namespace Render
+namespace ArtRobot
+{
+namespace Component
 {
 
 void drawImageSurface(cairo_t *cr,
@@ -62,13 +62,13 @@ void drawMat(cairo_t *cr,
     cairo_surface_destroy(imageSurface); // 回收
 }
 
-ComponentImage::ComponentImage(double x, double y,
-                               double w, double h,
-                               double r,
-                               const string &src)
-    : Component(x, y, w, h, r)
+Image::Image(double x, double y,
+             double w, double h,
+             double r,
+             const string &src)
+    : Base(x, y, w, h, r)
 {
-    type = ComponentTypeImage;
+    type = TypeImage;
 
     FILE *imageFile = fopen(src.c_str(), "rb"); // 判断文件存在
     if (imageFile)
@@ -81,21 +81,22 @@ ComponentImage::ComponentImage(double x, double y,
     }
 }
 
-ComponentImage::ComponentImage(double x, double y,
-                               double w, double h,
-                               double r,
-                               const Mat &imageMatRead)
-    : Component(x, y, w, h, r)
+Image::Image(double x, double y,
+             double w, double h,
+             double r,
+             const Mat &imageMatRead)
+    : Base(x, y, w, h, r)
 {
-    type = ComponentTypeImage;
+    type = TypeImage;
 
     drawMat(cr,
             w, h,
             imageMatRead);
 }
 
-ComponentImage::~ComponentImage()
+Image::~Image()
 {
 }
 
-} // namespace Render
+} // namespace Component
+} // namespace ArtRobot

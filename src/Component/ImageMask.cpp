@@ -1,9 +1,8 @@
-#include "default.h"
+#include "ArtRobot/Component/ImageMask.h"
 
-#include "ComponentImage.h"
-#include "ComponentImageMask.h"
-
-namespace Render
+namespace ArtRobot
+{
+namespace Component
 {
 
 void drawChildSurfaceUsedMask(cairo_t *cr,
@@ -29,21 +28,20 @@ void drawChildSurfaceUsedMask(cairo_t *cr,
             p[0] = p[1] = p[2] = p[3] = MIN(a, b);
         }
 
-    ComponentImage maskImage(x, y, w, h, r, maskImageMat);
+    Image maskImage(x, y, w, h, r, maskImageMat);
 
     cairo_set_source_surface(cr, childSurface, 0.0, 0.0);
     cairo_mask_surface(cr, maskImage.getSurface(), 0, 0);
     cairo_fill(cr);
 }
 
-ComponentImageMask::ComponentImageMask(double x, double y,
-                                       double w, double h,
-                                       double r,
-                                       const string &maskImageFilePath,
-                                       cairo_surface_t *childSurface)
-    : Component()
+ImageMask::ImageMask(double x, double y,
+                     double w, double h,
+                     double r,
+                     const string &maskImageFilePath,
+                     cairo_surface_t *childSurface)
 {
-    type = ComponentTypeImageMask;
+    type = TypeImageMask;
 
     auto maskImageMatRead = imread(maskImageFilePath, IMREAD_UNCHANGED);
     drawChildSurfaceUsedMask(cr,
@@ -54,14 +52,13 @@ ComponentImageMask::ComponentImageMask(double x, double y,
                              childSurface);
 }
 
-ComponentImageMask::ComponentImageMask(double x, double y,
-                                       double w, double h,
-                                       double r,
-                                       const Mat &maskImageMatRead,
-                                       cairo_surface_t *childSurface)
-    : Component()
+ImageMask::ImageMask(double x, double y,
+                     double w, double h,
+                     double r,
+                     const Mat &maskImageMatRead,
+                     cairo_surface_t *childSurface)
 {
-    type = ComponentTypeImageMask;
+    type = TypeImageMask;
 
     drawChildSurfaceUsedMask(cr,
                              x, y,
@@ -71,8 +68,9 @@ ComponentImageMask::ComponentImageMask(double x, double y,
                              childSurface);
 }
 
-ComponentImageMask::~ComponentImageMask()
+ImageMask::~ImageMask()
 {
 }
 
-} // namespace Render
+} // namespace Component
+} // namespace ArtRobot

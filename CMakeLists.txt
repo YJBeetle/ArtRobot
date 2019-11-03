@@ -6,10 +6,22 @@ set (CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DTIMER=1")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O0")
 
-project(Art_robot)
+project(ArtRobot)
 
 # sources
-aux_source_directory(./src/ SRC_LIST)
+include_directories(include)
+set(SRC_LIST
+    src/Component/Base.cpp
+    src/Component/Group.cpp
+    src/Component/Image.cpp
+    src/Component/ImageMask.cpp
+    src/Component/Rectangle.cpp
+    src/Component/Repeat.cpp
+    src/Component/Svg.cpp
+    src/Component/Text.cpp
+    src/Types/Color.cpp
+    src/Renderer.cpp
+)
 
 # libs
 include(FindPkgConfig)
@@ -61,13 +73,25 @@ set(LIB_LIST
 )
 
 # building project
-add_executable(${PROJECT_NAME} ${SRC_LIST})
+add_library(${PROJECT_NAME} ${SRC_LIST})
 target_link_libraries(${PROJECT_NAME} ${LIB_LIST})
 
-configure_file(res/fonts/Lantinghei.ttc Lantinghei.ttc COPYONLY)
-configure_file(template/demo/demo.json demo.json COPYONLY)
-configure_file(template/demo/bg-veins.svg bg-veins.svg COPYONLY)
-configure_file(template/ThrowIt/ThrowIt.json ThrowIt.json COPYONLY)
-configure_file(template/ThrowIt/p.png p.png COPYONLY)
-configure_file(template/ThrowIt/p_mask.png p_mask.png COPYONLY)
-configure_file(template/ThrowIt/pp.jpg pp.jpg COPYONLY)
+# samples
+## octopus
+### sources
+include_directories(include)
+set(OCTOPUS_SRC_LIST
+    samples/OctopusRender/src/main.cpp
+    samples/OctopusRender/src/Args.cpp
+)
+
+add_executable(OctopusRender ${OCTOPUS_SRC_LIST} ${SRC_LIST})
+target_link_libraries(OctopusRender ${LIB_LIST})
+
+configure_file(samples/OctopusRender/fonts/Lantinghei.ttc Lantinghei.ttc COPYONLY)
+configure_file(samples/OctopusRender/template/demo/demo.json demo.json COPYONLY)
+configure_file(samples/OctopusRender/template/demo/bg-veins.svg bg-veins.svg COPYONLY)
+configure_file(samples/OctopusRender/template/ThrowIt/ThrowIt.json ThrowIt.json COPYONLY)
+configure_file(samples/OctopusRender/template/ThrowIt/p.png p.png COPYONLY)
+configure_file(samples/OctopusRender/template/ThrowIt/p_mask.png p_mask.png COPYONLY)
+configure_file(samples/OctopusRender/template/ThrowIt/pp.jpg pp.jpg COPYONLY)

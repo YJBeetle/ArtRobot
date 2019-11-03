@@ -2,10 +2,9 @@
 #include <fcntl.h>
 #endif
 
-#include "default.h"
-#include "Renderer.h"
+#include "ArtRobot/Renderer.h"
 
-namespace Render
+namespace ArtRobot
 {
 
 Renderer::Renderer(double __width,
@@ -16,6 +15,8 @@ Renderer::Renderer(double __width,
     double scale;
     switch (__unit)
     {
+    default:
+    case unitTypeUnknow:
     case PX:
         this->surfaceWidth = PT2IN(__width);
         this->surfaceHeight = PT2IN(__height);
@@ -80,6 +81,14 @@ void Renderer::saveToFile(string outputPath, OutputType outputType)
     cairo_surface_t *outputSurface;
     switch (outputType)
     {
+    default:
+    case OutputTypeUnknow:
+    case OutputTypeSvg:
+        outputSurface = cairo_svg_surface_create_for_stream(writeCairo,
+                                                            (void *)outputFile,
+                                                            surfaceWidth * ppi,
+                                                            surfaceHeight * ppi); //默认单位pt
+        break;
     case OutputTypePdf:
         outputSurface = cairo_pdf_surface_create_for_stream(writeCairo,
                                                             (void *)outputFile,
@@ -92,13 +101,6 @@ void Renderer::saveToFile(string outputPath, OutputType outputType)
         outputSurface = cairo_image_surface_create(CAIRO_FORMAT_ARGB32,
                                                    surfaceWidth * ppi,
                                                    surfaceHeight * ppi); //默认单位pt
-        break;
-    case OutputTypeSvg:
-    default:
-        outputSurface = cairo_svg_surface_create_for_stream(writeCairo,
-                                                            (void *)outputFile,
-                                                            surfaceWidth * ppi,
-                                                            surfaceHeight * ppi); //默认单位pt
         break;
     }
 
@@ -116,4 +118,4 @@ void Renderer::saveToFile(string outputPath, OutputType outputType)
         fclose(outputFile);
 }
 
-} // namespace Render
+} // namespace ArtRobot

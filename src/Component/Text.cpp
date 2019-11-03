@@ -1,22 +1,22 @@
-#include "default.h"
+#include "ArtRobot/Component/Text.h"
 
-#include "ComponentText.h"
-
-namespace Render
+namespace ArtRobot
+{
+namespace Component
 {
 
-ComponentText::ComponentText(double x, double y,
-                             double w, double h,
-                             double r,
-                             const string &text,
-                             const string &fontfile,
-                             long face_index,
-                             double font_size,
-                             int8_t alignment,
-                             Color argb) // TODO 此处渲染文字仅为测试 正式的排版考虑使用Pango
-    : Component(x, y, w, h, r)
+Text::Text(double x, double y,
+           double w, double h,
+           double r,
+           const string &text,
+           const string &fontfile,
+           long face_index,
+           double font_size,
+           int8_t alignment,
+           Color argb) // TODO 此处渲染文字仅为测试 正式的排版考虑使用Pango
+    : Base(x, y, w, h, r)
 {
-    type = ComponentTypeText;
+    type = TypeText;
 
     if (!face_index)
         face_index = 0;
@@ -43,6 +43,9 @@ ComponentText::ComponentText(double x, double y,
     cairo_text_extents_t extents;
     switch (alignment)
     {
+    default:
+    case 0:
+        break;
     case 1:
         cairo_text_extents(cr, text.c_str(), &extents);
         cairo_move_to(cr, -extents.width / 2, 0);
@@ -51,9 +54,6 @@ ComponentText::ComponentText(double x, double y,
         cairo_text_extents(cr, text.c_str(), &extents);
         cairo_move_to(cr, -extents.width, 0);
         break;
-    case 0:
-    default:
-        break;
     }
 
     //cairo_show_text (cr, text);
@@ -61,8 +61,9 @@ ComponentText::ComponentText(double x, double y,
     cairo_fill(cr);
 }
 
-ComponentText::~ComponentText()
+Text::~Text()
 {
 }
 
-} // namespace Render
+} // namespace Component
+} // namespace ArtRobot

@@ -1,6 +1,14 @@
 #ifndef ARGS_H
 #define ARGS_H
 
+#include <string>
+
+using namespace std;
+
+#include "ArtRobot/Types/OutputType.h"
+
+using namespace ArtRobot;
+
 class Args
 {
 private:

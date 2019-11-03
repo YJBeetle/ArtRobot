@@ -11,23 +11,9 @@
 #include <sys/time.h>
 #endif // TIMER
 
-#include <cairo.h>
-#include <cairo-pdf.h>
-//#include <cairo-ps.h>
-#include <cairo-svg.h>
-#include <cairo-ft.h>
-#include <librsvg/rsvg.h>
 #include "3rdParty/json.hpp"
 #include <opencv2/opencv.hpp>
 
 using namespace std;
 using Json = nlohmann::json;
 using namespace cv;
-
-enum OutputType
-{
-    OutputTypeUnknow = 0,
-    OutputTypeSvg,
-    OutputTypePdf,
-    OutputTypePng,
-};

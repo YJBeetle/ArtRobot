@@ -1,5 +1,9 @@
-#ifndef COLOR_H
-#define COLOR_H
+#pragma once
+
+#include <cstdint>
+
+namespace ArtRobot
+{
 
 class Color
 {
@@ -19,4 +23,4 @@ public:
     double alpha();
 };
 
-#endif // COLOR_H
+} // namespace ArtRobot

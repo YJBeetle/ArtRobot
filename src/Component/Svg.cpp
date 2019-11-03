@@ -1,8 +1,8 @@
-#include "default.h"
+#include "ArtRobot/Component/Svg.h"
 
-#include "ComponentSvg.h"
-
-namespace Render
+namespace ArtRobot
+{
+namespace Component
 {
 
 void drawSvg(cairo_t *cr,
@@ -21,13 +21,13 @@ void drawSvg(cairo_t *cr,
     rsvg_handle_render_cairo(svg, cr);
 }
 
-ComponentSvg::ComponentSvg(double x, double y,
-                           double w, double h,
-                           double r,
-                           const string &src)
-    : Component(x, y, w, h, r)
+Svg::Svg(double x, double y,
+         double w, double h,
+         double r,
+         const string &src)
+    : Base(x, y, w, h, r)
 {
-    type = ComponentTypeSvg;
+    type = TypeSvg;
 
     FILE *imageFile = fopen(src.c_str(), "rb"); // 判断文件存在
     if (imageFile)
@@ -44,13 +44,13 @@ ComponentSvg::ComponentSvg(double x, double y,
     }
 }
 
-ComponentSvg::ComponentSvg(double x, double y,
-                           double w, double h,
-                           double r,
-                           unsigned char *data, size_t len)
-    : Component(x, y, w, h, r)
+Svg::Svg(double x, double y,
+         double w, double h,
+         double r,
+         unsigned char *data, size_t len)
+    : Base(x, y, w, h, r)
 {
-    type = ComponentTypeSvg;
+    type = TypeSvg;
 
     RsvgHandle *svg = rsvg_handle_new_from_data(data, len, NULL); // TODO 错误处理
 
@@ -61,8 +61,9 @@ ComponentSvg::ComponentSvg(double x, double y,
     rsvg_handle_close(svg, NULL);
 }
 
-ComponentSvg::~ComponentSvg()
+Svg::~Svg()
 {
 }
 
-} // namespace Render
+} // namespace Component
+} // namespace ArtRobot

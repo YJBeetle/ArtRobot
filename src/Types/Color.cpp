@@ -1,5 +1,7 @@
-#include "default.h"
-#include "Color.h"
+#include "ArtRobot/Types/Color.h"
+
+namespace ArtRobot
+{
 
 Color::Color() : color(0x000000FF)
 {
@@ -71,3 +73,5 @@ double Color::alpha()
 {
     return (double)(color & 0xff) / (double)0xff;
 }
+
+} // namespace ArtRobot

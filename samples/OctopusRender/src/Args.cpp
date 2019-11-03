@@ -1,4 +1,3 @@
-#include "default.h"
 #include <libgen.h>
 #include <getopt.h>
 
