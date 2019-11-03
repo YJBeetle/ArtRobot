@@ -19,17 +19,15 @@ void drawChildSurfaceUsedMask(cairo_t *cr,
     else
         maskImageMat = maskImageMatRead;
 
-// 解决Ai的蒙版兼容性问题，Ai的蒙版使用的是黑白，而Acrobat中使用的是Alpha。
+    // 解决Ai的蒙版兼容性问题，Ai的蒙版使用的是黑白，而Acrobat中使用的是Alpha。
     for (int y = 0; y < maskImageMat.rows; y++)
         for (int x = 0; x < maskImageMat.cols; x++)
         {
             auto &p = maskImageMat.at<Vec4b>(y, x);
-            if (p[3] == 0xFF) // 优先使用Alpha
-                p[0] = p[1] = p[2] = p[3] = (p[2] * 30 + p[1] * 59 + p[0] * 11) / 100;
-            else
-                p[0] = p[1] = p[2] = p[3];
+            uchar a = p[3];
+            uchar b = (p[2] * 30 + p[1] * 59 + p[0] * 11) / 100;
+            p[0] = p[1] = p[2] = p[3] = MIN(a, b);
         }
-    // imwrite("Debug.png", maskImageMat); // Debug
 
     ComponentImage maskImage(x, y, w, h, r, maskImageMat);
 
