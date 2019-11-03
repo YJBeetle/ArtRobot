@@ -4,7 +4,7 @@ set (CMAKE_CXX_STANDARD 11)
 
 # set(CMAKE_EXE_LINKER_FLAGS "-static -v")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DTIMER=1")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O0")
+# set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O0")
 
 project(ArtRobot)
 
