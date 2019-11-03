@@ -6,13 +6,11 @@
 namespace Render
 {
 
-void drawMat(cairo_surface_t *surface, const Mat &maskImageMatRead,
-             double x, double y,
+void drawMat(cairo_t *cr, 
              double w, double h,
+             const Mat &maskImageMatRead,
              cairo_surface_t *childSurface)
 {
-    cairo_t *cr = cairo_create(surface);
-
     Mat maskImageMat;
     if (maskImageMatRead.channels() == 3)
         cvtColor(maskImageMatRead, maskImageMat, COLOR_BGR2BGRA);
@@ -28,8 +26,7 @@ void drawMat(cairo_surface_t *surface, const Mat &maskImageMatRead,
             else
                 p[0] = p[1] = p[2] = p[3];
         }
-
-    imwrite("Debug.png", maskImageMat); // Debug
+    // imwrite("Debug.png", maskImageMat); // Debug
 
     cairo_surface_t *maskImageSurface = cairo_image_surface_create_for_data(maskImageMat.data,
                                                                             CAIRO_FORMAT_ARGB32,
@@ -39,10 +36,10 @@ void drawMat(cairo_surface_t *surface, const Mat &maskImageMatRead,
 
     cairo_surface_t *maskSurface = cairo_recording_surface_create(CAIRO_CONTENT_COLOR_ALPHA, NULL);
     cairo_t *maskCr = cairo_create(maskSurface);
-    drawImageSurface(maskCr, maskImageSurface,
-                     maskImageMat.cols, maskImageMat.rows,
-                     x, y,
-                     w, h);
+    drawImageSurface(maskCr, 
+                     w, h,
+                     maskImageSurface,
+                     maskImageMat.cols, maskImageMat.rows);
 
     cairo_set_source_surface(cr, childSurface, 0.0, 0.0);
     cairo_mask_surface(cr, maskSurface, 0, 0);
@@ -51,33 +48,36 @@ void drawMat(cairo_surface_t *surface, const Mat &maskImageMatRead,
     cairo_surface_destroy(maskImageSurface); // 回收
     cairo_destroy(maskCr);
     cairo_surface_destroy(maskSurface);
-    cairo_destroy(cr);
 }
 
-ComponentImageMask::ComponentImageMask(const string &maskImageFilePath,
-                                       double x, double y,
+ComponentImageMask::ComponentImageMask(double x, double y,
                                        double w, double h,
+                                       double r,
+                                       const string &maskImageFilePath,
                                        cairo_surface_t *childSurface)
+    : Component(x, y, w, h, r)
 {
     type = ComponentTypeImageMask;
 
     auto maskImageMatRead = imread(maskImageFilePath, IMREAD_UNCHANGED);
-    drawMat(surface, maskImageMatRead,
-            x, y,
+    drawMat(cr,
             w, h,
+             maskImageMatRead,
             childSurface);
 }
 
-ComponentImageMask::ComponentImageMask(const Mat &maskImageMatRead,
-                                       double x, double y,
+ComponentImageMask::ComponentImageMask(double x, double y,
                                        double w, double h,
+                                       double r,
+                                       const Mat &maskImageMatRead,
                                        cairo_surface_t *childSurface)
+    : Component(x, y, w, h, r)
 {
     type = ComponentTypeImageMask;
 
-    drawMat(surface, maskImageMatRead,
-            x, y,
-            w, h,
+    drawMat(cr,
+            w, h, 
+            maskImageMatRead,
             childSurface);
 }
 

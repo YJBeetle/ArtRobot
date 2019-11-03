@@ -5,22 +5,22 @@
 namespace Render
 {
 
-ComponentText::ComponentText(const string &text,
+ComponentText::ComponentText(double x, double y,
+                             double w, double h,
+                             double r,
+                             const string &text,
                              const string &fontfile,
                              long face_index,
                              double font_size,
                              int8_t alignment,
-                             Color argb,
-                             double x, double y) // TODO 此处渲染文字仅为测试 正式的排版考虑使用Pango
+                             Color argb) // TODO 此处渲染文字仅为测试 正式的排版考虑使用Pango
+    : Component(x, y, w, h, r)
 {
     type = ComponentTypeText;
-
-    cairo_t *cr = cairo_create(surface);
 
     if (!face_index)
         face_index = 0;
 
-    cairo_save(cr); //保存画笔
     FT_Library ft_library;
     FT_Face ft_face;
     cairo_font_face_t *cr_face;
@@ -45,24 +45,20 @@ ComponentText::ComponentText(const string &text,
     {
     case 1:
         cairo_text_extents(cr, text.c_str(), &extents);
-        cairo_move_to(cr, x - extents.width / 2, y);
+        cairo_move_to(cr, -extents.width / 2, 0);
         break;
     case 2:
         cairo_text_extents(cr, text.c_str(), &extents);
-        cairo_move_to(cr, x - extents.width, y);
+        cairo_move_to(cr, -extents.width, 0);
         break;
     case 0:
     default:
-        cairo_move_to(cr, x, y);
         break;
     }
 
     //cairo_show_text (cr, text);
     cairo_text_path(cr, text.c_str());
     cairo_fill(cr);
-    cairo_restore(cr); //还原画笔
-
-    cairo_destroy(cr);
 }
 
 ComponentText::~ComponentText()

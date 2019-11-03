@@ -12,9 +12,10 @@ class ComponentRectangle : public Component
 {
 private:
 public:
-    ComponentRectangle(Color color,
-                       double x, double y,
-                       double w, double h);
+    ComponentRectangle(double x, double y,
+                       double w, double h,
+                       double r,
+                       Color color);
     ~ComponentRectangle();
 };
 

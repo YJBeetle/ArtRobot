@@ -7,10 +7,10 @@
 namespace Render
 {
 
-void drawImageSurface(cairo_t *cr, cairo_surface_t *imageSurface,
-                      int imageW, int imageH,
-                      double x, double y,
-                      double w, double h);
+void drawImageSurface(cairo_t *cr,
+                      double w, double h,
+                      cairo_surface_t *imageSurface,
+                      int imageW, int imageH);
 
 class ComponentImage : public Component
 {
@@ -23,12 +23,14 @@ private:
     };
 
 public:
-    ComponentImage(const string &imageFilePath,
-                   double x, double y,
-                   double w, double h);
-    ComponentImage(const Mat &imageMatRead,
-                   double x, double y,
-                   double w, double h);
+    ComponentImage(double x, double y,
+                   double w, double h,
+                   double r,
+                   const string &imageFilePath);
+    ComponentImage(double x, double y,
+                   double w, double h,
+                   double r,
+                   const Mat &imageMatRead);
     ~ComponentImage();
 };
 

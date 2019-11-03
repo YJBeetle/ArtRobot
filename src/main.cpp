@@ -37,74 +37,49 @@ shared_ptr<Component> renderComponent(Json &componentJson)
         }
     }
 
+    auto &xJ = componentJson["x"];
+    auto &yJ = componentJson["y"];
+    auto &wJ = componentJson["w"];
+    auto &hJ = componentJson["h"];
+    auto &rJ = componentJson["r"];
+    double x = xJ.is_number() ? (double)xJ : 0;
+    double y = yJ.is_number() ? (double)yJ : 0;
+    double w = wJ.is_number() ? (double)wJ : 100;
+    double h = hJ.is_number() ? (double)hJ : 100;
+    double r = rJ.is_number() ? (double)rJ : 0;
+
     switch (componentType)
     {
     case ComponentTypeRectangle:
     {
         auto &colorJ = componentJson["color"];
-        auto &xJ = componentJson["x"];
-        auto &yJ = componentJson["y"];
-        auto &wJ = componentJson["w"];
-        auto &hJ = componentJson["h"];
-
         string color = colorJ.is_string() ? (string)colorJ : "000000";
-        double x = xJ.is_number() ? (double)xJ : 0;
-        double y = yJ.is_number() ? (double)yJ : 0;
-        double w = wJ.is_number() ? (double)wJ : 100;
-        double h = hJ.is_number() ? (double)hJ : 100;
 
-        return make_shared<ComponentRectangle>(color.c_str(),
-                                               x, y,
-                                               w, h);
+        return make_shared<ComponentRectangle>(x, y, w, h, r,
+                                               color.c_str());
     }
     case ComponentTypeImage:
     {
         auto &srcJ = componentJson["src"];
-        auto &xJ = componentJson["x"];
-        auto &yJ = componentJson["y"];
-        auto &wJ = componentJson["w"];
-        auto &hJ = componentJson["h"];
-
         string src = srcJ.is_string() ? (string)srcJ : "";
-        double x = xJ.is_number() ? (double)xJ : 0;
-        double y = yJ.is_number() ? (double)yJ : 0;
-        double w = wJ.is_number() ? (double)wJ : 100;
-        double h = hJ.is_number() ? (double)hJ : 100;
 
-        return make_shared<ComponentImage>(src,
-                                           x, y,
-                                           w, h);
+        return make_shared<ComponentImage>(x, y, w, h, r,
+                                           src);
     }
     case ComponentTypeImageMask:
     {
         auto &srcJ = componentJson["src"];
-        auto &xJ = componentJson["x"];
-        auto &yJ = componentJson["y"];
-        auto &wJ = componentJson["w"];
-        auto &hJ = componentJson["h"];
         auto &childJ = componentJson["child"];
-
         string src = srcJ.is_string() ? (string)srcJ : "";
-        double x = xJ.is_number() ? (double)xJ : 0;
-        double y = yJ.is_number() ? (double)yJ : 0;
-        double w = wJ.is_number() ? (double)wJ : 100;
-        double h = hJ.is_number() ? (double)hJ : 100;
-
         auto child = renderComponent(childJ);
 
-        return make_shared<ComponentImageMask>(src,
-                                               x, y,
-                                               w, h,
-                                               child->getSurface());
+        return make_shared<ComponentImageMask>(x, y, w, h, r,
+                                               src, child->getSurface());
     }
     case ComponentTypeText:
     {
         auto &contentJ = componentJson["content"];
         auto &colorJ = componentJson["color"];
-        auto &xJ = componentJson["x"];
-        auto &yJ = componentJson["y"];
-        auto &wJ = componentJson["w"];
-        auto &hJ = componentJson["h"];
         auto &writingModeJ = componentJson["writingMode"];
         auto &wordWrapJ = componentJson["wordWrap"];
         auto &horizontalAlignJ = componentJson["horizontalAlign"];
@@ -116,10 +91,6 @@ shared_ptr<Component> renderComponent(Json &componentJson)
 
         string content = contentJ.is_string() ? (string)contentJ : "";
         string color = colorJ.is_string() ? (string)colorJ : "000000";
-        double x = xJ.is_number() ? (double)xJ : 0;
-        double y = yJ.is_number() ? (double)yJ : 0;
-        double w = wJ.is_number() ? (double)wJ : 100;
-        double h = hJ.is_number() ? (double)hJ : 100;
         int writingMode = writingModeJ.is_number() ? (int)writingModeJ : 0; // 书写方向，同css中writing-mode，0=horizontal-tb，1=vertical-rl，2=vertical-lr
         bool wordWrap = wordWrapJ.is_boolean() ? (bool)wordWrapJ : true;
         int horizontalAlign = horizontalAlignJ.is_number() ? (int)horizontalAlignJ : 0; // 水平对齐方式，-1为左对齐，0居中，1右对齐
@@ -129,13 +100,13 @@ shared_ptr<Component> renderComponent(Json &componentJson)
         double lineSpacing = lineSpacingJ.is_number() ? (double)lineSpacingJ : 1;
         double wordSpacing = wordSpacingJ.is_number() ? (double)wordSpacingJ : 0;
 
-        return make_shared<ComponentText>(content,
+        return make_shared<ComponentText>(x, y, w, h, r,
+                                          content,
                                           "Lantinghei.ttc",
                                           0,
                                           fontSize,
                                           horizontalAlign,
-                                          color.c_str(),
-                                          x, y);
+                                          color.c_str());
     }
     case ComponentTypeRepeat:
     {

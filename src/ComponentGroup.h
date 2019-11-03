@@ -11,8 +11,6 @@ namespace Render
 class ComponentGroup : public Component
 {
 private:
-    cairo_t *cr = nullptr;
-
 public:
     ComponentGroup();
     ~ComponentGroup();

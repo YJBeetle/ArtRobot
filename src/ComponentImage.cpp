@@ -7,12 +7,11 @@
 namespace Render
 {
 
-void drawImageSurface(cairo_t *cr, cairo_surface_t *imageSurface,
-                      int imageW, int imageH,
-                      double x, double y,
-                      double w, double h)
+void drawImageSurface(cairo_t *cr,
+                      double w, double h,
+                      cairo_surface_t *imageSurface,
+                      int imageW, int imageH)
 {
-    cairo_translate(cr, x, y);
     if (w || h)
     {
         double scaleX, scaleY;
@@ -24,9 +23,9 @@ void drawImageSurface(cairo_t *cr, cairo_surface_t *imageSurface,
     cairo_paint(cr);
 }
 
-void drawMat(cairo_t *cr, const Mat &imageMatRead,
-             double x, double y,
-             double w, double h)
+void drawMat(cairo_t *cr,
+             double w, double h,
+             const Mat &imageMatRead)
 {
     cairo_surface_t *imageSurface;
     if (imageMatRead.channels() == 3)
@@ -47,21 +46,21 @@ void drawMat(cairo_t *cr, const Mat &imageMatRead,
                                                            imageMatRead.step);
     // cairo_surface_finish(imageSurface);
 
-    drawImageSurface(cr, imageSurface,
-                     imageMatRead.cols, imageMatRead.rows,
-                     x, y,
-                     w, h);
+    drawImageSurface(cr,
+                     w, h,
+                     imageSurface,
+                     imageMatRead.cols, imageMatRead.rows);
 
     cairo_surface_destroy(imageSurface); // 回收
 }
 
-ComponentImage::ComponentImage(const string &imageFilePath,
-                               double x, double y,
-                               double w, double h)
+ComponentImage::ComponentImage(double x, double y,
+                               double w, double h,
+                               double r,
+                               const string &imageFilePath)
+    : Component(x, y, w, h, r)
 {
     type = ComponentTypeImage;
-
-    cairo_t *cr = cairo_create(surface);
 
     FILE *imageFile = fopen(imageFilePath.c_str(), "rb"); // 判断文件存在
     if (imageFile)
@@ -85,10 +84,8 @@ ComponentImage::ComponentImage(const string &imageFilePath,
         {
         case SVG:
         {
-            RsvgHandle *svg;
-            svg = rsvg_handle_new_from_file(imageFilePath.c_str(), NULL); // TODO 错误处理   // or rsvg_handle_new_from_data
+            RsvgHandle *svg = rsvg_handle_new_from_file(imageFilePath.c_str(), NULL); // TODO 错误处理   // or rsvg_handle_new_from_data
 
-            cairo_translate(cr, x, y);
             if (w || h)
             {
                 unsigned int svg_width, svg_height;
@@ -110,10 +107,10 @@ ComponentImage::ComponentImage(const string &imageFilePath,
         {
             cairo_surface_t *img = cairo_image_surface_create_from_png(imageFilePath.c_str());
 
-            drawImageSurface(cr, img,
-                             cairo_image_surface_get_width(img), cairo_image_surface_get_height(img),
-                             x, y,
-                             w, h);
+            drawImageSurface(cr,
+                             w, h,
+                             img,
+                             cairo_image_surface_get_width(img), cairo_image_surface_get_height(img));
 
             cairo_surface_destroy(img); // 回收PNG
         }
@@ -122,26 +119,26 @@ ComponentImage::ComponentImage(const string &imageFilePath,
         default:
         {
             auto imageMatRead = imread(imageFilePath, IMREAD_UNCHANGED);
-            drawMat(cr, imageMatRead, x, y, w, h);
+            drawMat(cr,
+                    w, h,
+                    imageMatRead);
         }
         break;
         }
     }
-
-    cairo_destroy(cr);
 }
 
-ComponentImage::ComponentImage(const Mat &imageMatRead,
-                               double x, double y,
-                               double w, double h)
+ComponentImage::ComponentImage(double x, double y,
+                               double w, double h,
+                               double r,
+                               const Mat &imageMatRead)
+    : Component(x, y, w, h, r)
 {
     type = ComponentTypeImage;
 
-    cairo_t *cr = cairo_create(surface);
-
-    drawMat(cr, imageMatRead, x, y, w, h);
-
-    cairo_destroy(cr);
+    drawMat(cr,
+            w, h,
+            imageMatRead);
 }
 
 ComponentImage::~ComponentImage()

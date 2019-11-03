@@ -12,13 +12,15 @@ class ComponentText : public Component
 {
 private:
 public:
-    ComponentText(const string &text,
-                           const string &fontfile,
-                           long face_index,
-                           double font_size,
-                           int8_t alignment,
-                           Color argb,
-                           double x, double y);
+    ComponentText(double x, double y,
+                  double w, double h,
+                  double r,
+                  const string &text,
+                  const string &fontfile,
+                  long face_index,
+                  double font_size,
+                  int8_t alignment,
+                  Color argb);
     ~ComponentText();
 };
 

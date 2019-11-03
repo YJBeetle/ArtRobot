@@ -19,11 +19,15 @@ enum ComponentType
 class Component
 {
 protected:
-    ComponentType type;
-    cairo_surface_t *surface;
+    ComponentType type = ComponentTypeUnknow;
+    cairo_surface_t *surface = nullptr;
+    cairo_t *cr = nullptr;
 
 public:
     Component();
+    Component(double x, double y,
+              double w, double h,
+              double r);
     ~Component();
 
     cairo_surface_t *getSurface();
