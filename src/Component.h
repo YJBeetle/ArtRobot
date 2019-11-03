@@ -9,6 +9,7 @@ enum ComponentType
 {
     ComponentTypeUnknow = 0,
     ComponentTypeRectangle,
+    ComponentTypeSvg,
     ComponentTypeImage,
     ComponentTypeImageMask,
     ComponentTypeText,

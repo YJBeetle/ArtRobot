@@ -5,6 +5,7 @@
 #include "Renderer.h"
 #include "Component.h"
 #include "ComponentGroup.h"
+#include "ComponentSvg.h"
 #include "ComponentImage.h"
 #include "ComponentImageMask.h"
 #include "ComponentRectangle.h"
@@ -24,6 +25,8 @@ shared_ptr<Component> renderComponent(Json &componentJson)
         {
             if (typeJson == "rectangle")
                 componentType = ComponentTypeRectangle;
+            else if (typeJson == "svg")
+                componentType = ComponentTypeSvg;
             else if (typeJson == "image")
                 componentType = ComponentTypeImage;
             else if (typeJson == "imageMask")
@@ -57,6 +60,14 @@ shared_ptr<Component> renderComponent(Json &componentJson)
 
         return make_shared<ComponentRectangle>(x, y, w, h, r,
                                                color.c_str());
+    }
+    case ComponentTypeSvg:
+    {
+        auto &srcJ = componentJson["src"];
+        string src = srcJ.is_string() ? (string)srcJ : "";
+
+        return make_shared<ComponentSvg>(x, y, w, h, r,
+                                         src);
     }
     case ComponentTypeImage:
     {

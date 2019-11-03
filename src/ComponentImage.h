@@ -9,19 +9,11 @@ namespace Render
 
 void drawImageSurface(cairo_t *cr,
                       double w, double h,
-                      cairo_surface_t *imageSurface,
-                      int imageW, int imageH);
+                      cairo_surface_t *imageSurface);
 
 class ComponentImage : public Component
 {
 private:
-    enum ImageFileType
-    {
-        PNG,
-        SVG,
-        JPG,
-    };
-
 public:
     ComponentImage(double x, double y,
                    double w, double h,

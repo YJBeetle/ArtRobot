@@ -6,7 +6,7 @@
 namespace Render
 {
 
-void drawMat(cairo_t *cr, 
+void drawMat(cairo_t *cr,
              double w, double h,
              const Mat &maskImageMatRead,
              cairo_surface_t *childSurface)
@@ -36,10 +36,9 @@ void drawMat(cairo_t *cr,
 
     cairo_surface_t *maskSurface = cairo_recording_surface_create(CAIRO_CONTENT_COLOR_ALPHA, NULL);
     cairo_t *maskCr = cairo_create(maskSurface);
-    drawImageSurface(maskCr, 
+    drawImageSurface(maskCr,
                      w, h,
-                     maskImageSurface,
-                     maskImageMat.cols, maskImageMat.rows);
+                     maskImageSurface);
 
     cairo_set_source_surface(cr, childSurface, 0.0, 0.0);
     cairo_mask_surface(cr, maskSurface, 0, 0);
@@ -62,7 +61,7 @@ ComponentImageMask::ComponentImageMask(double x, double y,
     auto maskImageMatRead = imread(maskImageFilePath, IMREAD_UNCHANGED);
     drawMat(cr,
             w, h,
-             maskImageMatRead,
+            maskImageMatRead,
             childSurface);
 }
 
@@ -76,7 +75,7 @@ ComponentImageMask::ComponentImageMask(double x, double y,
     type = ComponentTypeImageMask;
 
     drawMat(cr,
-            w, h, 
+            w, h,
             maskImageMatRead,
             childSurface);
 }
