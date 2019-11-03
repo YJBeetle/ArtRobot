@@ -17,6 +17,9 @@ Component::Component(double x, double y,
     : Component()
 {
     cairo_translate(cr, x, y);
+    cairo_translate(cr, w / 2, h / 2);
+    cairo_rotate(cr, r * M_PI / 180);
+    cairo_translate(cr, -w / 2, -h / 2);
 }
 
 Component::~Component()

@@ -13,6 +13,15 @@
       "h": 200
     },
     {
+      "type": "rectangle",
+      "color": "FFFF00",
+      "x": 50,
+      "y": 50,
+      "w": 100,
+      "h": 100,
+      "r": 45
+    },
+    {
       "type": "image",
       "src": "bg-veins.svg",
       "x": 0,
