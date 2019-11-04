@@ -68,6 +68,7 @@ Renderer::Renderer(OutputType __outputType,
         // cairo_show_page(cr);                                             // 多页
         break;
     case OutputTypePng:
+    case OutputTypePixmap:
         surface = cairo_image_surface_create(CAIRO_FORMAT_ARGB32,
                                              surfaceWidth * ppi,
                                              surfaceHeight * ppi); //默认单位pt
@@ -89,8 +90,18 @@ void Renderer::render(cairo_surface_t *__surface)
     cairo_set_source_surface(cr, __surface, 0.0, 0.0);
     cairo_paint(cr);
     cairo_surface_finish(surface);
-    if (outputType == OutputTypePng) // PNG需要在渲染完成之后再写入data
+
+    switch (outputType)
+    {
+    case OutputTypePng: // PNG需要在渲染完成之后再写入data
         cairo_surface_write_to_png_stream(surface, writeStreamToData, (void *)&data);
+        break;
+    case OutputTypePixmap:
+        auto pixdata = cairo_image_surface_get_data(surface);
+        data.clear();
+        data.insert(data.end(), pixdata, pixdata + cairo_image_surface_get_stride(surface) * cairo_image_surface_get_height(surface));
+        break;
+    }
 }
 
 void Renderer::saveToFile(string outputPath)

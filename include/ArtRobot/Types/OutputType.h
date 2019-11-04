@@ -9,5 +9,6 @@ enum OutputType
     OutputTypeSvg,
     OutputTypePdf,
     OutputTypePng,
+    OutputTypePixmap,
 };
 }
