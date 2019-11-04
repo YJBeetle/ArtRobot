@@ -125,4 +125,9 @@ void Renderer::saveToFile(string outputPath)
         fclose(outputFile);
 }
 
+const vector<unsigned char> &Renderer::getData()
+{
+    return data;
+}
+
 } // namespace ArtRobot

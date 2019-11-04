@@ -51,6 +51,7 @@ public:
     void render(cairo_surface_t *__surface);
 
     void saveToFile(string outputPath);
+    const vector<unsigned char> &getData();
 };
 
 } // namespace ArtRobot
