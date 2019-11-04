@@ -186,16 +186,16 @@ int main(int argc, char *argv[])
     auto &ppiJ = json["ppi"];
     double ppi = ppiJ.is_number() ? (double)ppiJ : 72;
 
-    // 准备渲染器
-    Renderer renderer(w, h, unit, ppi);
-
-    // 渲染body
+    // 绘制body
     auto &bodyJson = json["body"];
-    auto mainComponent = renderComponents(bodyJson);
-    renderer.render(mainComponent->getSurface());
+    auto body = renderComponents(bodyJson);
+
+    // 渲染
+    Renderer renderer(args.type, w, h, unit, ppi);
+    renderer.render(body->getSurface());
 
     // 保存
-    renderer.saveToFile(args.output, args.type);
+    renderer.saveToFile(args.output);
 
 #ifdef TIMER
     //计时结束

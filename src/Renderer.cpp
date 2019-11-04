@@ -7,10 +7,20 @@
 namespace ArtRobot
 {
 
-Renderer::Renderer(double __width,
+cairo_status_t writeStreamToData(void *closure, const unsigned char *data, unsigned int length)
+{
+    auto *vecData = (vector<unsigned char> *)closure;
+    vecData->insert(vecData->end(), data, data + length);
+    return CAIRO_STATUS_SUCCESS;
+}
+
+Renderer::Renderer(OutputType __outputType,
+                   double __width,
                    double __height,
                    unitType __unit,
                    double __ppi)
+    : outputType(__outputType),
+      ppi(__ppi)
 {
     double scale;
     switch (__unit)
@@ -18,9 +28,9 @@ Renderer::Renderer(double __width,
     default:
     case unitTypeUnknow:
     case PX:
-        this->surfaceWidth = PT2IN(__width);
-        this->surfaceHeight = PT2IN(__height);
-        scale = PT2IN(1);
+        this->surfaceWidth = PX2IN(__width, ppi);
+        this->surfaceHeight = PX2IN(__height, ppi);
+        scale = PX2IN(1, ppi);
         break;
     case IN:
         this->surfaceWidth = __width;
@@ -38,9 +48,32 @@ Renderer::Renderer(double __width,
         scale = MM2IN(1) * 10;
         break;
     }
-    ppi = __ppi;
 
-    surface = cairo_recording_surface_create(CAIRO_CONTENT_COLOR_ALPHA, NULL);
+    switch (outputType)
+    {
+    default:
+    case OutputTypeUnknow:
+    case OutputTypeSvg:
+        surface = cairo_svg_surface_create_for_stream(writeStreamToData,
+                                                      (void *)&data,
+                                                      surfaceWidth * ppi,
+                                                      surfaceHeight * ppi); //默认单位pt
+        break;
+    case OutputTypePdf:
+        surface = cairo_pdf_surface_create_for_stream(writeStreamToData,
+                                                      (void *)&data,
+                                                      surfaceWidth * ppi,
+                                                      surfaceHeight * ppi); //默认单位是mm，所以需要mm转inch
+        cairo_surface_set_fallback_resolution(surface, ppi, ppi);           //设置分辨率
+        // cairo_show_page(cr);                                             // 多页
+        break;
+    case OutputTypePng:
+        surface = cairo_image_surface_create(CAIRO_FORMAT_ARGB32,
+                                             surfaceWidth * ppi,
+                                             surfaceHeight * ppi); //默认单位pt
+        break;
+    }
+
     cr = cairo_create(surface);                //创建画笔
     cairo_scale(cr, scale * ppi, scale * ppi); //缩放画笔
 }
@@ -55,15 +88,12 @@ void Renderer::render(cairo_surface_t *__surface)
 {
     cairo_set_source_surface(cr, __surface, 0.0, 0.0);
     cairo_paint(cr);
+    cairo_surface_finish(surface);
+    if (outputType == OutputTypePng) // PNG需要在渲染完成之后再写入data
+        cairo_surface_write_to_png_stream(surface, writeStreamToData, (void *)&data);
 }
 
-cairo_status_t writeCairo(void *closure, const unsigned char *data, unsigned int length)
-{
-    fwrite(data, length, 1, (FILE *)closure);
-    return CAIRO_STATUS_SUCCESS;
-}
-
-void Renderer::saveToFile(string outputPath, OutputType outputType)
+void Renderer::saveToFile(string outputPath)
 {
     FILE *outputFile;
     if (!outputPath.empty())
@@ -78,41 +108,7 @@ void Renderer::saveToFile(string outputPath, OutputType outputType)
         outputFile = stdout;
     }
 
-    cairo_surface_t *outputSurface;
-    switch (outputType)
-    {
-    default:
-    case OutputTypeUnknow:
-    case OutputTypeSvg:
-        outputSurface = cairo_svg_surface_create_for_stream(writeCairo,
-                                                            (void *)outputFile,
-                                                            surfaceWidth * ppi,
-                                                            surfaceHeight * ppi); //默认单位pt
-        break;
-    case OutputTypePdf:
-        outputSurface = cairo_pdf_surface_create_for_stream(writeCairo,
-                                                            (void *)outputFile,
-                                                            surfaceWidth * ppi,
-                                                            (surfaceHeight)*ppi); //默认单位是mm，所以需要mm转inch
-        // cairo_surface_set_fallback_resolution(surface, 300, 300);                 //设置分辨率
-        // cairo_show_page(cr);                                                      // 多页
-        break;
-    case OutputTypePng:
-        outputSurface = cairo_image_surface_create(CAIRO_FORMAT_ARGB32,
-                                                   surfaceWidth * ppi,
-                                                   surfaceHeight * ppi); //默认单位pt
-        break;
-    }
-
-    cairo_t *outputCr = cairo_create(outputSurface);
-    cairo_set_source_surface(outputCr, surface, 0.0, 0.0);
-    cairo_paint(outputCr);
-    cairo_destroy(outputCr); //回收画笔
-
-    if (outputType == OutputTypePng)
-        cairo_surface_write_to_png_stream(outputSurface, writeCairo, (void *)outputFile);
-
-    cairo_surface_destroy(outputSurface); //回收介质
+    fwrite(data.data(), data.size(), 1, outputFile);
 
     if (outputFile != stdout)
         fclose(outputFile);
