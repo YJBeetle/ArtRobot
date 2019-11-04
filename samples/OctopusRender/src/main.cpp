@@ -76,7 +76,7 @@ shared_ptr<Component::Base> renderComponent(Json &componentJson)
         auto child = renderComponent(childJ);
 
         return make_shared<Component::ImageMask>(x, y, w, h, r,
-                                                 src, child->getSurface());
+                                                 src, child);
     }
     case Component::TypeText:
     {
@@ -134,7 +134,7 @@ shared_ptr<Component::Base> renderComponents(Json &componentsJson)
         for (auto &componentJson : componentsJson) // 循环处理该成员中的元素
         {
             auto component = renderComponent(componentJson);
-            componentGroup->addChild(component->getSurface());
+            componentGroup->addChild(component);
         }
         return componentGroup;
     }

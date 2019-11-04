@@ -11,17 +11,19 @@ namespace Component
 class ImageMask : public Base
 {
 private:
+shared_ptr<Base> child;
+
 public:
     ImageMask(double x, double y,
               double w, double h,
               double r,
               const string &maskImageFilePath,
-              cairo_surface_t *childSurface);
+              shared_ptr<Base> child);
     ImageMask(double x, double y,
               double w, double h,
               double r,
               const Mat &maskImageMatRead,
-              cairo_surface_t *childSurface);
+              shared_ptr<Base> child);
     ~ImageMask();
 };
 

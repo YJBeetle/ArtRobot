@@ -1,5 +1,8 @@
 #pragma once
 
+#include <vector>
+
+using namespace std;
 
 #include "ArtRobot/Component/Base.h"
 
@@ -11,11 +14,13 @@ namespace Component
 class Group : public Base
 {
 private:
+    vector<shared_ptr<Base>> childs;
+
 public:
     Group();
     ~Group();
 
-    void addChild(cairo_surface_t *childSurface);
+    void addChild(shared_ptr<Base> child);
 };
 
 } // namespace Component

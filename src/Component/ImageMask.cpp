@@ -39,9 +39,11 @@ ImageMask::ImageMask(double x, double y,
                      double w, double h,
                      double r,
                      const string &maskImageFilePath,
-                     cairo_surface_t *childSurface)
+                     shared_ptr<Base> __child)
 {
     type = TypeImageMask;
+
+    child = __child;
 
     auto maskImageMatRead = imread(maskImageFilePath, IMREAD_UNCHANGED);
     drawChildSurfaceUsedMask(cr,
@@ -49,23 +51,25 @@ ImageMask::ImageMask(double x, double y,
                              w, h,
                              r,
                              maskImageMatRead,
-                             childSurface);
+                             child->getSurface());
 }
 
 ImageMask::ImageMask(double x, double y,
                      double w, double h,
                      double r,
                      const Mat &maskImageMatRead,
-                     cairo_surface_t *childSurface)
+                     shared_ptr<Base> __child)
 {
     type = TypeImageMask;
+
+    child = __child;
 
     drawChildSurfaceUsedMask(cr,
                              x, y,
                              w, h,
                              r,
                              maskImageMatRead,
-                             childSurface);
+                             child->getSurface());
 }
 
 ImageMask::~ImageMask()
