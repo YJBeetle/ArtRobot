@@ -38,9 +38,9 @@ private:
     cairo_surface_t *surface; //介质
     cairo_t *cr;              //画笔
 
-public:
     vector<unsigned char> data;
 
+public:
     Renderer(OutputType __outputType,
              double __width,
              double __height,
@@ -51,6 +51,10 @@ public:
     void render(cairo_surface_t *__surface);
 
     void saveToFile(string outputPath);
+    vector<unsigned char> getData();
+    unsigned char *getDataC();
+    size_t getDataCSize();
+    string getDataString();
 };
 
 } // namespace ArtRobot

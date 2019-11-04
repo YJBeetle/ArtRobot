@@ -99,7 +99,7 @@ void Renderer::render(cairo_surface_t *__surface)
     case OutputTypePixmap:
         auto pixdata = cairo_image_surface_get_data(surface);
         data.clear();
-        data.insert(data.end(), pixdata, pixdata + cairo_image_surface_get_stride(surface) * cairo_image_surface_get_height(surface));
+        data.insert(data.begin(), pixdata, pixdata + cairo_image_surface_get_stride(surface) * cairo_image_surface_get_height(surface));
         break;
     }
 }
@@ -123,6 +123,27 @@ void Renderer::saveToFile(string outputPath)
 
     if (outputFile != stdout)
         fclose(outputFile);
+}
+
+vector<unsigned char> Renderer::getData()
+{
+    return data;
+}
+
+unsigned char *Renderer::getDataC()
+{
+    return data.data();
+}
+
+size_t Renderer::getDataCSize()
+{
+    return data.size();
+}
+
+string Renderer::getDataString()
+{
+    string ret;
+    ret.insert(ret.begin(), data.begin(), data.end());
 }
 
 } // namespace ArtRobot
