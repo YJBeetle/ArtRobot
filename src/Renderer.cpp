@@ -89,10 +89,13 @@ void Renderer::render(cairo_surface_t *__surface)
 {
     cairo_set_source_surface(cr, __surface, 0.0, 0.0);
     cairo_paint(cr);
-    cairo_surface_finish(surface);
 
     switch (outputType)
     {
+    case OutputTypeSvg:
+    case OutputTypePdf:
+        cairo_surface_finish(surface);
+        break;
     case OutputTypePng: // PNG需要在渲染完成之后再写入data
         cairo_surface_write_to_png_stream(surface, writeStreamToData, (void *)&data);
         break;
@@ -142,8 +145,8 @@ size_t Renderer::getDataCSize()
 
 string Renderer::getDataString()
 {
-    string ret;
-    ret.insert(ret.begin(), data.begin(), data.end());
+    return string((const char *)&(*data.begin()),
+                  data.size());
 }
 
 } // namespace ArtRobot
