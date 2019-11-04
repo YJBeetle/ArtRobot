@@ -57,8 +57,6 @@ void drawMat(cairo_t *cr,
                      w, h,
                      imageSurface);
 
-    cairo_surface_finish(imageSurface);
-
     cairo_surface_destroy(imageSurface); // 回收
 }
 
