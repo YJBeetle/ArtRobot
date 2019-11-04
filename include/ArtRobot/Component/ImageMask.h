@@ -1,5 +1,9 @@
 #pragma once
 
+#include <memory>
+
+using namespace std;
+
 #include "ArtRobot/Component/Base.h"
 #include "ArtRobot/Component/Image.h"
 
