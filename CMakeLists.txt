@@ -85,8 +85,8 @@ set(OCTOPUS_SRC_LIST
     samples/OctopusRender/src/Args.cpp
 )
 
-add_executable(OctopusRender ${OCTOPUS_SRC_LIST} ${SRC_LIST})
-target_link_libraries(OctopusRender ${LIB_LIST})
+add_executable(OctopusRender ${OCTOPUS_SRC_LIST})
+target_link_libraries(OctopusRender ${LIB_LIST} ArtRobot)
 
 configure_file(samples/OctopusRender/fonts/Lantinghei.ttc Lantinghei.ttc COPYONLY)
 configure_file(samples/OctopusRender/template/demo/demo.json demo.json COPYONLY)
