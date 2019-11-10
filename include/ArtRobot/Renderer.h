@@ -7,8 +7,6 @@
 //#include <cairo-ps.h>
 #include <cairo-svg.h>
 
-using namespace std;
-
 #include "ArtRobot/Types/OutputType.h"
 
 #define MM2IN(MM) ((double)MM / 25.4)
@@ -38,7 +36,7 @@ private:
     cairo_surface_t *surface; //介质
     cairo_t *cr;              //画笔
 
-    vector<unsigned char> data;
+    std::vector<unsigned char> data;
 
 public:
     Renderer(OutputType __outputType,
@@ -50,11 +48,11 @@ public:
 
     void render(cairo_surface_t *__surface);
 
-    void saveToFile(string outputPath);
-    vector<unsigned char> getData();
+    void saveToFile(std::string outputPath);
+    std::vector<unsigned char> getData();
     unsigned char *getDataC();
     size_t getDataCSize();
-    string getDataString();
+    std::string getDataString();
 };
 
 } // namespace ArtRobot

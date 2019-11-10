@@ -3,40 +3,47 @@
   "h": 512,
   "unit": "px",
   "ppi": 72,
-  "body": [
-    {
-      "type": "image",
-      "src": "p.png",
-      "x": 0,
-      "y": 0,
-      "w": 512,
-      "h": 512
-    },
-    {
-      "type": "imageMask",
-      "src": "p_mask.png",
-      "x": 0,
-      "y": 0,
-      "w": 512,
-      "h": 512,
-      "child": {
+  "body": {
+    "type": "group",
+    "name": "body",
+		"child": [
+      {
         "type": "image",
-        "src": "pp.jpg",
-        "x": 18.56,
-        "y": 180.98,
-        "w": 135.53,
-        "h": 135.53,
-        "r": -160,
-        "canedit": [
-          {
-            "attributes": "src",
-            "id": "pp",
-            "description": "头像"
-          }
-        ]
+        "name": "bg",
+        "src": "p.png",
+        "x": 0,
+        "y": 0,
+        "w": 512,
+        "h": 512
+      },
+      {
+        "type": "imageMask",
+        "name": "mask",
+        "src": "p_mask.png",
+        "x": 0,
+        "y": 0,
+        "w": 512,
+        "h": 512,
+        "child": {
+          "type": "image",
+          "name": "userPhoto",
+          "src": "pp.jpg",
+          "x": 18.56,
+          "y": 180.98,
+          "w": 135.53,
+          "h": 135.53,
+          "r": -160,
+          "canedit": [
+            {
+              "attributes": "src",
+              "id": "pp",
+              "description": "头像"
+            }
+          ]
+        }
       }
-    }
-  ],
+    ]
+  },
   "data": {
     "pp": "pp.jpg"
   }

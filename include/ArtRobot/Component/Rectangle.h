@@ -12,9 +12,10 @@ class Rectangle : public Base
 {
 private:
 public:
-    Rectangle(double x, double y,
-              double w, double h,
-              double r,
+    Rectangle(std::string __name, 
+              double __x, double __y,
+              double __w, double __h,
+              double __r,
               Color color);
     ~Rectangle();
 };

@@ -2,8 +2,6 @@
 
 #include <memory>
 
-using namespace std;
-
 #include "ArtRobot/Component/Base.h"
 #include "ArtRobot/Component/Image.h"
 
@@ -15,19 +13,24 @@ namespace Component
 class ImageMask : public Base
 {
 private:
-shared_ptr<Base> child;
+    cv::Mat maskImageMat;
+    std::shared_ptr<Base> child;
+
+    void drawChildSurfaceUsedMask(const cv::Mat &maskImageMatRead);
 
 public:
-    ImageMask(double x, double y,
-              double w, double h,
-              double r,
-              const string &maskImageFilePath,
-              shared_ptr<Base> child);
-    ImageMask(double x, double y,
-              double w, double h,
-              double r,
-              const Mat &maskImageMatRead,
-              shared_ptr<Base> child);
+    ImageMask(std::string __name, 
+              double __x, double __y,
+              double __w, double __h,
+              double __r,
+              const std::string &maskImageFilePath,
+              std::shared_ptr<Base> child);
+    ImageMask(std::string __name, 
+              double __x, double __y,
+              double __w, double __h,
+              double __r,
+              const cv::Mat &maskImageMatRead,
+              std::shared_ptr<Base> child);
     ~ImageMask();
 };
 

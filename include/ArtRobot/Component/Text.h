@@ -3,8 +3,6 @@
 #include <string>
 #include <cairo-ft.h>
 
-using namespace std;
-
 #include "ArtRobot/Types/Color.h"
 #include "ArtRobot/Component/Base.h"
 
@@ -17,11 +15,12 @@ class Text : public Base
 {
 private:
 public:
-    Text(double x, double y,
-         double w, double h,
-         double r,
-         const string &text,
-         const string &fontfile,
+    Text(std::string __name, 
+         double __x, double __y,
+         double __w, double __h,
+         double __r,
+         const std::string &text,
+         const std::string &fontfile,
          long face_index,
          double font_size,
          int8_t alignment,

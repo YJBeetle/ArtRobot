@@ -9,7 +9,7 @@ namespace ArtRobot
 
 cairo_status_t writeStreamToData(void *closure, const unsigned char *data, unsigned int length)
 {
-    auto *vecData = (vector<unsigned char> *)closure;
+    auto *vecData = (std::vector<unsigned char> *)closure;
     vecData->insert(vecData->end(), data, data + length);
     return CAIRO_STATUS_SUCCESS;
 }
@@ -107,7 +107,7 @@ void Renderer::render(cairo_surface_t *__surface)
     }
 }
 
-void Renderer::saveToFile(string outputPath)
+void Renderer::saveToFile(std::string outputPath)
 {
     FILE *outputFile;
     if (!outputPath.empty())
@@ -128,7 +128,7 @@ void Renderer::saveToFile(string outputPath)
         fclose(outputFile);
 }
 
-vector<unsigned char> Renderer::getData()
+std::vector<unsigned char> Renderer::getData()
 {
     return data;
 }
@@ -143,10 +143,10 @@ size_t Renderer::getDataCSize()
     return data.size();
 }
 
-string Renderer::getDataString()
+std::string Renderer::getDataString()
 {
-    return string((const char *)&(*data.begin()),
-                  data.size());
+    return std::string((const char *)&(*data.begin()),
+                       data.size());
 }
 
 } // namespace ArtRobot

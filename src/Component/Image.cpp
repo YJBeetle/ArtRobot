@@ -20,15 +20,12 @@ void drawImageSurface(cairo_t *cr,
     cairo_paint(cr);
 }
 
-void drawMat(cairo_t *cr,
-             double w, double h,
-             const Mat &imageMatRead)
+void Image::drawMat(const cv::Mat &imageMatRead)
 {
     cairo_surface_t *imageSurface;
     if (imageMatRead.channels() == 3)
     {
-        Mat imageMat;
-        cvtColor(imageMatRead, imageMat, COLOR_BGR2BGRA);
+        cvtColor(imageMatRead, imageMat, cv::COLOR_BGR2BGRA);
         imageSurface = cairo_image_surface_create_for_data(imageMat.data,
                                                            CAIRO_FORMAT_RGB24,
                                                            imageMat.cols,
@@ -37,11 +34,11 @@ void drawMat(cairo_t *cr,
     }
     else
     {
-        Mat imageMat = imageMatRead;
+        imageMat = std::move(imageMatRead);
         for (int y = 0; y < imageMat.rows; y++)
             for (int x = 0; x < imageMat.cols; x++)
             {
-                auto &p = imageMat.at<Vec4b>(y, x);
+                auto &p = imageMat.at<cv::Vec4b>(y, x);
                 p[0] = p[0] * p[3] / 0xff;
                 p[1] = p[1] * p[3] / 0xff;
                 p[2] = p[2] * p[3] / 0xff;
@@ -60,36 +57,30 @@ void drawMat(cairo_t *cr,
     cairo_surface_destroy(imageSurface); // 回收
 }
 
-Image::Image(double x, double y,
-             double w, double h,
-             double r,
-             const string &src)
-    : Base(x, y, w, h, r)
+Image::Image(std::string __name, 
+             double __x, double __y,
+             double __w, double __h,
+             double __r,
+             const std::string &src)
+    : Base(TypeImage, __name, __x, __y, __w, __h, __r)
 {
-    type = TypeImage;
-
     FILE *imageFile = fopen(src.c_str(), "rb"); // 判断文件存在
     if (imageFile)
     {
         fclose(imageFile);
-        auto imageMatRead = imread(src, IMREAD_UNCHANGED);
-        drawMat(cr,
-                w, h,
-                imageMatRead);
+        auto imageMatRead = cv::imread(src, cv::IMREAD_UNCHANGED);
+        drawMat(imageMatRead);
     }
 }
 
-Image::Image(double x, double y,
-             double w, double h,
-             double r,
-             const Mat &imageMatRead)
-    : Base(x, y, w, h, r)
+Image::Image(std::string __name,
+             double __x, double __y,
+             double __w, double __h,
+             double __r,
+             const cv::Mat &imageMatRead)
+    : Base(TypeImage, __name, __x, __y, __w, __h, __r)
 {
-    type = TypeImage;
-
-    drawMat(cr,
-            w, h,
-            imageMatRead);
+    drawMat(imageMatRead);
 }
 
 Image::~Image()

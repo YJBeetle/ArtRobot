@@ -4,8 +4,6 @@
 #include <string>
 #include <cstring>
 
-using namespace std;
-
 #include "ArtRobot/Types/OutputType.h"
 
 using namespace ArtRobot;

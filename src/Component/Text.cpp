@@ -5,19 +5,18 @@ namespace ArtRobot
 namespace Component
 {
 
-Text::Text(double x, double y,
-           double w, double h,
-           double r,
-           const string &text,
-           const string &fontfile,
+Text::Text(std::string __name, 
+           double __x, double __y,
+           double __w, double __h,
+           double __r,
+           const std::string &text,
+           const std::string &fontfile,
            long face_index,
            double font_size,
            int8_t alignment,
            Color argb) // TODO 此处渲染文字仅为测试 正式的排版考虑使用Pango
-    : Base(x, y, w, h, r)
+    : Base(TypeText, __name, __x, __y, __w, __h, __r)
 {
-    type = TypeText;
-
     if (!face_index)
         face_index = 0;
 

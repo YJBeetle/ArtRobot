@@ -1,5 +1,6 @@
 #pragma once
 
+#include <string>
 #include <cmath>
 #include <cairo.h>
 
@@ -24,14 +25,22 @@ class Base
 {
 protected:
     Type type = TypeUnknow;
+    std::string name;
+    double x = 0;
+    double y = 0;
+    double w = 100;
+    double h = 100;
+    double r = 0;
     cairo_surface_t *surface = nullptr;
     cairo_t *cr = nullptr;
 
 public:
     Base();
-    Base(double x, double y,
-         double w, double h,
-         double r);
+    Base(Type __type, std::string __name);
+    Base(Type __type, std::string __name,
+         double __x, double __y,
+         double __w, double __h,
+         double __r);
     ~Base();
 
     cairo_surface_t *getSurface();

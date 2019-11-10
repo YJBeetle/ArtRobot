@@ -5,8 +5,6 @@
 
 using namespace ArtRobot;
 
-shared_ptr<Component::Base> renderComponents(Json &componentsJson);
-
 shared_ptr<Component::Base> renderComponent(Json &componentJson)
 {
     Component::Type componentType = Component::TypeUnknow;
@@ -31,11 +29,13 @@ shared_ptr<Component::Base> renderComponent(Json &componentJson)
         }
     }
 
+    auto &nameJ = componentJson["name"];
     auto &xJ = componentJson["x"];
     auto &yJ = componentJson["y"];
     auto &wJ = componentJson["w"];
     auto &hJ = componentJson["h"];
     auto &rJ = componentJson["r"];
+    std::string name = nameJ.is_string() ? (std::string)nameJ : "";
     double x = xJ.is_number() ? (double)xJ : 0;
     double y = yJ.is_number() ? (double)yJ : 0;
     double w = wJ.is_number() ? (double)wJ : 100;
@@ -49,7 +49,7 @@ shared_ptr<Component::Base> renderComponent(Json &componentJson)
         auto &colorJ = componentJson["color"];
         string color = colorJ.is_string() ? (string)colorJ : "000000";
 
-        return make_shared<Component::Rectangle>(x, y, w, h, r,
+        return make_shared<Component::Rectangle>(name, x, y, w, h, r,
                                                  color.c_str());
     }
     case Component::TypeSvg:
@@ -57,7 +57,7 @@ shared_ptr<Component::Base> renderComponent(Json &componentJson)
         auto &srcJ = componentJson["src"];
         string src = srcJ.is_string() ? (string)srcJ : "";
 
-        return make_shared<Component::Svg>(x, y, w, h, r,
+        return make_shared<Component::Svg>(name, x, y, w, h, r,
                                            src);
     }
     case Component::TypeImage:
@@ -65,7 +65,7 @@ shared_ptr<Component::Base> renderComponent(Json &componentJson)
         auto &srcJ = componentJson["src"];
         string src = srcJ.is_string() ? (string)srcJ : "";
 
-        return make_shared<Component::Image>(x, y, w, h, r,
+        return make_shared<Component::Image>(name, x, y, w, h, r,
                                              src);
     }
     case Component::TypeImageMask:
@@ -75,7 +75,7 @@ shared_ptr<Component::Base> renderComponent(Json &componentJson)
         string src = srcJ.is_string() ? (string)srcJ : "";
         auto child = renderComponent(childJ);
 
-        return make_shared<Component::ImageMask>(x, y, w, h, r,
+        return make_shared<Component::ImageMask>(name, x, y, w, h, r,
                                                  src, child);
     }
     case Component::TypeText:
@@ -102,7 +102,7 @@ shared_ptr<Component::Base> renderComponent(Json &componentJson)
         double lineSpacing = lineSpacingJ.is_number() ? (double)lineSpacingJ : 1;
         double wordSpacing = wordSpacingJ.is_number() ? (double)wordSpacingJ : 0;
 
-        return make_shared<Component::Text>(x, y, w, h, r,
+        return make_shared<Component::Text>(name, x, y, w, h, r,
                                             content,
                                             "Lantinghei.ttc",
                                             0,
@@ -112,37 +112,27 @@ shared_ptr<Component::Base> renderComponent(Json &componentJson)
     }
     case Component::TypeRepeat:
     {
-        return make_shared<Component::Base>();
+        return make_shared<Component::Repeat>(name, x, y, w, h, r);
     }
     case Component::TypeGroup:
     {
         auto &childJson = componentJson["child"];
-        return renderComponents(childJson);
+        if(childJson.is_array())
+        {
+            auto componentGroup = make_shared<Component::Group>(name);
+            for (auto &componentJson : childJson) // 循环处理该成员中的元素
+            {
+                auto component = renderComponent(componentJson);
+                componentGroup->addChild(component);
+            }
+            return componentGroup;
+        }
+        else
+            return make_shared<Component::Base>();
     }
     default:
-    {
         return make_shared<Component::Base>();
     }
-    }
-}
-
-shared_ptr<Component::Base> renderComponents(Json &componentsJson)
-{
-    if (componentsJson.is_array())
-    {
-        auto componentGroup = make_shared<Component::Group>();
-        for (auto &componentJson : componentsJson) // 循环处理该成员中的元素
-        {
-            auto component = renderComponent(componentJson);
-            componentGroup->addChild(component);
-        }
-        return componentGroup;
-    }
-    else if (componentsJson.is_object())
-    {
-        return renderComponent(componentsJson);
-    }
-    return make_shared<Component::Base>();
 }
 
 int main(int argc, char *argv[])
@@ -188,7 +178,7 @@ int main(int argc, char *argv[])
 
     // 绘制body
     auto &bodyJson = json["body"];
-    auto body = renderComponents(bodyJson);
+    auto body = renderComponent(bodyJson);
 
     // 渲染
     Renderer renderer(args.type, w, h, unit, ppi);

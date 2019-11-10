@@ -3,52 +3,55 @@
   "h": 200,
   "unit": "px",
   "ppi": 72,
-  "body": [
-    {
-      "type": "rectangle",
-      "color": "FF0000",
-      "x": 0,
-      "y": 0,
-      "w": 200,
-      "h": 200
-    },
-    {
-      "type": "rectangle",
-      "color": "FFFF00",
-      "x": 50,
-      "y": 50,
-      "w": 100,
-      "h": 100,
-      "r": 45
-    },
-    {
-      "type": "svg",
-      "src": "bg-veins.svg",
-      "x": 0,
-      "y": 0,
-      "w": 200,
-      "h": 200
-    },
-    {
-      "type": "text",
-      "content": "喵喵喵",
-      "color": "00FF00",
-      "x": 20,
-      "y": 20,
-      "canedit": [
-        {
-          "attributes": "content",
-          "id": "title",
-          "description": "文本内容"
-        },
-        {
-          "attributes": "color",
-          "id": "tColor",
-          "description": "文本颜色"
-        }
-      ]
-    }
-  ],
+  "body": {
+		"type": "group",
+		"child": [
+      {
+        "type": "rectangle",
+        "color": "FF0000",
+        "x": 0,
+        "y": 0,
+        "w": 200,
+        "h": 200
+      },
+      {
+        "type": "rectangle",
+        "color": "FFFF00",
+        "x": 50,
+        "y": 50,
+        "w": 100,
+        "h": 100,
+        "r": 45
+      },
+      {
+        "type": "svg",
+        "src": "bg-veins.svg",
+        "x": 0,
+        "y": 0,
+        "w": 200,
+        "h": 200
+      },
+      {
+        "type": "text",
+        "content": "喵喵喵",
+        "color": "00FF00",
+        "x": 20,
+        "y": 20,
+        "canedit": [
+          {
+            "attributes": "content",
+            "id": "title",
+            "description": "文本内容"
+          },
+          {
+            "attributes": "color",
+            "id": "tColor",
+            "description": "文本颜色"
+          }
+        ]
+      }
+    ]
+  },
   "data": {
     "title": "汪汪汪",
     "tColor": "0000FF"

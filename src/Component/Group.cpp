@@ -5,16 +5,16 @@ namespace ArtRobot
 namespace Component
 {
 
-Group::Group()
+Group::Group(std::string __name)
+    : Base(TypeGroup, __name)
 {
-    type = TypeGroup;
 }
 
 Group::~Group()
 {
 }
 
-void Group::addChild(shared_ptr<Base> child)
+void Group::addChild(std::shared_ptr<Base> child)
 {
     childs.insert(childs.end(), child);
 

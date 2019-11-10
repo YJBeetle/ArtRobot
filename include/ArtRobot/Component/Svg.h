@@ -3,8 +3,6 @@
 #include <string>
 #include <librsvg/rsvg.h>
 
-using namespace std;
-
 #include "ArtRobot/Component/Base.h"
 
 namespace ArtRobot
@@ -16,13 +14,15 @@ class Svg : public Base
 {
 private:
 public:
-    Svg(double x, double y,
-        double w, double h,
-        double r,
-        const string &src);
-    Svg(double x, double y,
-        double w, double h,
-        double r,
+    Svg(std::string __name, 
+        double __x, double __y,
+        double __w, double __h,
+        double __r,
+        const std::string &src);
+    Svg(std::string __name, 
+        double __x, double __y,
+        double __w, double __h,
+        double __r,
         unsigned char *data, size_t len);
     ~Svg();
 };
