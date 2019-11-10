@@ -57,20 +57,13 @@ void Image::drawMat(const cv::Mat &imageMatRead)
     cairo_surface_destroy(imageSurface); // 回收
 }
 
-Image::Image(std::string __name, 
+Image::Image(std::string __name,
              double __x, double __y,
              double __w, double __h,
              double __r,
              const std::string &src)
-    : Base(TypeImage, __name, __x, __y, __w, __h, __r)
+    : Image(__name, __x, __y, __w, __h, __r, cv::imread(src, cv::IMREAD_UNCHANGED))
 {
-    FILE *imageFile = fopen(src.c_str(), "rb"); // 判断文件存在
-    if (imageFile)
-    {
-        fclose(imageFile);
-        auto imageMatRead = cv::imread(src, cv::IMREAD_UNCHANGED);
-        drawMat(imageMatRead);
-    }
 }
 
 Image::Image(std::string __name,
