@@ -13,19 +13,19 @@ namespace Component
 class ImageMask : public Base
 {
 private:
-    cv::Mat maskImageMat;
+    Image *maskImage = nullptr;
     std::shared_ptr<Base> child;
 
     void drawChildSurfaceUsedMask(const cv::Mat &maskImageMatRead);
 
 public:
-    ImageMask(std::string __name, 
+    ImageMask(std::string __name,
               double __x, double __y,
               double __w, double __h,
               double __r,
               const std::string &maskImageFilePath,
               std::shared_ptr<Base> child);
-    ImageMask(std::string __name, 
+    ImageMask(std::string __name,
               double __x, double __y,
               double __w, double __h,
               double __r,

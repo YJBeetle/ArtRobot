@@ -7,6 +7,7 @@ namespace Component
 
 void ImageMask::drawChildSurfaceUsedMask(const cv::Mat &maskImageMatRead)
 {
+    cv::Mat maskImageMat;
     if (maskImageMatRead.channels() == 3)
         cvtColor(maskImageMatRead, maskImageMat, cv::COLOR_BGR2BGRA);
     else
@@ -22,28 +23,24 @@ void ImageMask::drawChildSurfaceUsedMask(const cv::Mat &maskImageMatRead)
             p[0] = p[1] = p[2] = p[3] = MIN(a, b);
         }
 
-    Image maskImage(name, x, y, w, h, r, maskImageMat);
+    maskImage = new Image(name, x, y, w, h, r, maskImageMat);
 
     cairo_set_source_surface(cr, child->getSurface(), 0.0, 0.0);
-    cairo_mask_surface(cr, maskImage.getSurface(), 0, 0);
+    cairo_mask_surface(cr, maskImage->getSurface(), 0, 0);
     cairo_fill(cr);
 }
 
-ImageMask::ImageMask(std::string __name, 
+ImageMask::ImageMask(std::string __name,
                      double __x, double __y,
                      double __w, double __h,
                      double __r,
                      const std::string &maskImageFilePath,
                      std::shared_ptr<Base> __child)
-    : Base(TypeImageMask, __name)
+    : ImageMask(__name, __x, __y, __w, __h, __r, cv::imread(maskImageFilePath, cv::IMREAD_UNCHANGED), __child)
 {
-    child = __child;
-
-    auto maskImageMatRead = cv::imread(maskImageFilePath, cv::IMREAD_UNCHANGED);
-    drawChildSurfaceUsedMask(maskImageMatRead);
 }
 
-ImageMask::ImageMask(std::string __name, 
+ImageMask::ImageMask(std::string __name,
                      double __x, double __y,
                      double __w, double __h,
                      double __r,
@@ -51,6 +48,11 @@ ImageMask::ImageMask(std::string __name,
                      std::shared_ptr<Base> __child)
     : Base(TypeImageMask, __name)
 {
+    x = __x;
+    y = __y;
+    w = __w;
+    h = __h;
+    r = __r;
     child = __child;
 
     drawChildSurfaceUsedMask(maskImageMatRead);
@@ -58,6 +60,8 @@ ImageMask::ImageMask(std::string __name,
 
 ImageMask::~ImageMask()
 {
+    if (maskImage)
+        delete maskImage;
 }
 
 } // namespace Component
