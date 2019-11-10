@@ -6,6 +6,7 @@ namespace Component
 {
 
 Base::Base()
+    : type(TypeUnknow)
 {
 }
 
@@ -13,7 +14,7 @@ Base::Base(Type __type, std::string __name)
     : type(__type),
       name(__name)
 {
-    if(type != TypeUnknow)
+    if (type != TypeUnknow)
     {
         surface = cairo_recording_surface_create(CAIRO_CONTENT_COLOR_ALPHA, NULL);
         cr = cairo_create(surface);
@@ -32,7 +33,7 @@ Base::Base(Type __type, std::string __name,
       h(__h),
       r(__r)
 {
-    if(type != TypeUnknow)
+    if (type != TypeUnknow)
     {
         surface = cairo_recording_surface_create(CAIRO_CONTENT_COLOR_ALPHA, NULL);
         cr = cairo_create(surface);
@@ -45,7 +46,7 @@ Base::Base(Type __type, std::string __name,
 
 Base::~Base()
 {
-    if(type != TypeUnknow)
+    if (type != TypeUnknow)
     {
         cairo_destroy(cr);
         cairo_surface_destroy(surface);
@@ -55,8 +56,8 @@ Base::~Base()
 cairo_surface_t *Base::getSurface()
 {
     return (type != TypeUnknow)
-        ? surface
-        : nullptr;
+               ? surface
+               : nullptr;
 }
 
 } // namespace Component
