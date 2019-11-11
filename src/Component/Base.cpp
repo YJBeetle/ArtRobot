@@ -46,11 +46,7 @@ Base::Base(Type __type, std::string __name,
 
 Base::~Base()
 {
-    if (type != TypeUnknow)
-    {
-        cairo_destroy(cr);
-        cairo_surface_destroy(surface);
-    }
+
 }
 
 cairo_surface_t *Base::getSurface()

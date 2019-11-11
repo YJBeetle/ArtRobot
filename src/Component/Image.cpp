@@ -76,8 +76,13 @@ Image::Image(std::string __name,
     drawMat(imageMatRead);
 }
 
-Image::~Image()
-{
+Image::~Image() {
+//	cairo_surface_finish(surface);
+	if (type != TypeUnknow)
+	{
+		cairo_destroy(cr);
+		cairo_surface_destroy(surface);
+	}
 }
 
 } // namespace Component

@@ -41,7 +41,7 @@ public:
          double __x, double __y,
          double __w, double __h,
          double __r);
-    ~Base();
+    virtual ~Base();
 
     cairo_surface_t *getSurface();
 };
