@@ -62,6 +62,7 @@ Text::Text(std::string __name,
 
 Text::~Text()
 {
+    finish();
 }
 
 } // namespace Component

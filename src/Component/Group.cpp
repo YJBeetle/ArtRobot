@@ -1,5 +1,7 @@
 #include "ArtRobot/Component/Group.h"
 
+#include <iostream>
+
 namespace ArtRobot
 {
 namespace Component
@@ -12,6 +14,7 @@ Group::Group(std::string __name)
 
 Group::~Group()
 {
+    finish();
 }
 
 void Group::addChild(std::shared_ptr<Base> child)

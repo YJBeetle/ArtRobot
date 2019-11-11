@@ -15,6 +15,7 @@ Repeat::Repeat(std::string __name,
 
 Repeat::~Repeat()
 {
+    finish();
 }
 
 } // namespace Component

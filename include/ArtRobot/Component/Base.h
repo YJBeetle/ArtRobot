@@ -43,6 +43,7 @@ public:
          double __r);
     virtual ~Base();
 
+    void finish();
     cairo_surface_t *getSurface();
 };
 

@@ -61,6 +61,7 @@ Svg::Svg(std::string __name,
 
 Svg::~Svg()
 {
+        finish();
 }
 
 } // namespace Component

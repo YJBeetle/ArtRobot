@@ -1,5 +1,7 @@
 #include "ArtRobot/Component/Image.h"
 
+#include <iostream>
+
 namespace ArtRobot
 {
 namespace Component
@@ -20,7 +22,21 @@ void drawImageSurface(cairo_t *cr,
     cairo_paint(cr);
 }
 
-void Image::drawMat(const cv::Mat &imageMatRead)
+Image::Image(std::string __name,
+             double __x, double __y,
+             double __w, double __h,
+             double __r,
+             const std::string &src)
+    : Image(__name, __x, __y, __w, __h, __r, cv::imread(src, cv::IMREAD_UNCHANGED))
+{
+}
+
+Image::Image(std::string __name,
+             double __x, double __y,
+             double __w, double __h,
+             double __r,
+             const cv::Mat &imageMatRead)
+    : Base(TypeImage, __name, __x, __y, __w, __h, __r)
 {
     cairo_surface_t *imageSurface;
     if (imageMatRead.channels() == 3)
@@ -57,32 +73,8 @@ void Image::drawMat(const cv::Mat &imageMatRead)
     cairo_surface_destroy(imageSurface); // 回收
 }
 
-Image::Image(std::string __name,
-             double __x, double __y,
-             double __w, double __h,
-             double __r,
-             const std::string &src)
-    : Image(__name, __x, __y, __w, __h, __r, cv::imread(src, cv::IMREAD_UNCHANGED))
-{
-}
-
-Image::Image(std::string __name,
-             double __x, double __y,
-             double __w, double __h,
-             double __r,
-             const cv::Mat &imageMatRead)
-    : Base(TypeImage, __name, __x, __y, __w, __h, __r)
-{
-    drawMat(imageMatRead);
-}
-
 Image::~Image() {
-//	cairo_surface_finish(surface);
-	if (type != TypeUnknow)
-	{
-		cairo_destroy(cr);
-		cairo_surface_destroy(surface);
-	}
+    finish();
 }
 
 } // namespace Component

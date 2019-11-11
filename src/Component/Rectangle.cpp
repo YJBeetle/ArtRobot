@@ -19,6 +19,7 @@ Rectangle::Rectangle(std::string __name,
 
 Rectangle::~Rectangle()
 {
+    finish();
 }
 
 } // namespace Component

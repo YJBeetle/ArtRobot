@@ -46,7 +46,18 @@ Base::Base(Type __type, std::string __name,
 
 Base::~Base()
 {
+    if(cr)
+        cairo_destroy(cr);
+    if(surface)
+        cairo_surface_destroy(surface);
+}
 
+void Base::finish()
+{
+    if(cr)
+        cairo_destroy(cr);
+    cr = nullptr;
+    // cairo_surface_finish(surface);
 }
 
 cairo_surface_t *Base::getSurface()
