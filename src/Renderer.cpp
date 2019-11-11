@@ -106,7 +106,36 @@ void Renderer::render(cairo_surface_t *__surface)
         data.clear();
         {
             uint8_t *output = nullptr;
-            auto outputSize = WebPEncodeBGRA(cairo_image_surface_get_data(surface), cairo_image_surface_get_width(surface), cairo_image_surface_get_height(surface), cairo_image_surface_get_stride(surface), 100, &output);
+            auto pixData = cairo_image_surface_get_data(surface);
+            auto pixWidth = cairo_image_surface_get_width(surface);
+            auto pixHeight = cairo_image_surface_get_height(surface);
+            auto pixStride = cairo_image_surface_get_stride(surface);
+            auto pixLength = pixHeight * pixStride;
+            // auto pixDataNew = new uint8_t[pixLength];
+            // memcpy(pixDataNew, pixData, pixLength);
+            // auto pixDataP = pixDataNew;
+            auto pixDataP = pixData;
+            for (size_t y = 0; y < pixHeight; y++) // 反预乘
+            {
+                for (size_t x = 0; x < pixWidth; x++)
+                {
+                    auto p = pixDataP + x * 4;
+                    if (p[3])
+                    {
+                        p[0] = p[0] * 0xff / p[3];
+                        p[1] = p[1] * 0xff / p[3];
+                        p[2] = p[2] * 0xff / p[3];
+                    }
+                    else
+                    {
+                        p[0] = p[1] = p[2] = 0xff;
+                    }
+                }
+                pixDataP += pixStride;
+            }
+            auto outputSize = WebPEncodeBGRA(pixData, pixWidth, pixHeight, pixStride, 100, &output);
+            // if (pixDataNew)
+            //     delete pixDataNew;
             if (outputSize && output)
             {
                 data.insert(data.begin(), output, output + outputSize);
@@ -117,8 +146,8 @@ void Renderer::render(cairo_surface_t *__surface)
     case OutputTypePixmap:
         data.clear();
         {
-            auto pixdata = cairo_image_surface_get_data(surface);
-            data.insert(data.begin(), pixdata, pixdata + cairo_image_surface_get_stride(surface) * cairo_image_surface_get_height(surface));
+            auto pixData = cairo_image_surface_get_data(surface);
+            data.insert(data.begin(), pixData, pixData + cairo_image_surface_get_stride(surface) * cairo_image_surface_get_height(surface));
         }
         break;
     case OutputTypeUnknow:

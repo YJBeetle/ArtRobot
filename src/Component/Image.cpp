@@ -51,7 +51,7 @@ Image::Image(std::string __name,
     else
     {
         imageMat = std::move(imageMatRead);
-        for (int y = 0; y < imageMat.rows; y++)
+        for (int y = 0; y < imageMat.rows; y++) // 预乘
             for (int x = 0; x < imageMat.cols; x++)
             {
                 auto &p = imageMat.at<cv::Vec4b>(y, x);
