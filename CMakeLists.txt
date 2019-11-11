@@ -64,12 +64,26 @@ message(STATUS "    include path: ${OpenCV_INCLUDE_DIRS}")
 message(STATUS "    libraries: ${OpenCV_LIBS}")
 include_directories(${OpenCV_INCLUDE_DIRS})
 
+## libwebp
+pkg_check_modules(WEBP libwebp)
+if (NOT WEBP_FOUND)
+message(FATAL_ERROR "libwebp not found!")
+endif ()
+message(STATUS "libwebp library status:")
+message(STATUS "    version: ${WEBP_VERSION}")
+message(STATUS "    include path: ${WEBP_INCLUDE_DIRS}")
+message(STATUS "    lib path: ${WEBP_LIBDIR}")
+message(STATUS "    libraries: ${WEBP_LIBRARIES}")
+include_directories(${WEBP_INCLUDE_DIRS})
+link_directories(${WEBP_LIBDIR})
+
 set(LIB_LIST
     ${CAIRO_LIBRARIES}
     ${FREETYPE_LIBRARIES}
     # ${RSVG_LIBRARIES}
     rsvg-2
     ${OpenCV_LIBS}
+    ${WEBP_LIBRARIES}
 )
 
 # building project

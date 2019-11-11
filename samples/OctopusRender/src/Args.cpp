@@ -70,6 +70,8 @@ Args::Args(int argc, char *argv[])
                 type = OutputTypeSvg;
             else if (!strcasecmp(optarg, "png"))
                 type = OutputTypePng;
+            else if (!strcasecmp(optarg, "webp"))
+                type = OutputTypeWebp;
             break;
         case 'V':
             printf("version\n");

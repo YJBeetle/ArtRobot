@@ -1,6 +1,7 @@
 #ifdef WIN32
 #include <fcntl.h>
 #endif
+#include <webp/encode.h>
 
 #include "ArtRobot/Renderer.h"
 
@@ -68,6 +69,7 @@ Renderer::Renderer(OutputType __outputType,
         // cairo_show_page(cr);                                             // 多页
         break;
     case OutputTypePng:
+    case OutputTypeWebp:
     case OutputTypePixmap:
         surface = cairo_image_surface_create(CAIRO_FORMAT_ARGB32,
                                              surfaceWidth * ppi,
@@ -97,12 +99,29 @@ void Renderer::render(cairo_surface_t *__surface)
         cairo_surface_finish(surface);
         break;
     case OutputTypePng: // PNG需要在渲染完成之后再写入data
+        data.clear();   // 防止重复渲染
         cairo_surface_write_to_png_stream(surface, writeStreamToData, (void *)&data);
         break;
-    case OutputTypePixmap:
-        auto pixdata = cairo_image_surface_get_data(surface);
+    case OutputTypeWebp:
         data.clear();
-        data.insert(data.begin(), pixdata, pixdata + cairo_image_surface_get_stride(surface) * cairo_image_surface_get_height(surface));
+        {
+            uint8_t *output = nullptr;
+            auto outputSize = WebPEncodeBGRA(cairo_image_surface_get_data(surface), cairo_image_surface_get_width(surface), cairo_image_surface_get_height(surface), cairo_image_surface_get_stride(surface), 100, &output);
+            if (outputSize && output)
+            {
+                data.insert(data.begin(), output, output + outputSize);
+                free(output);
+            }
+        }
+        break;
+    case OutputTypePixmap:
+        data.clear();
+        {
+            auto pixdata = cairo_image_surface_get_data(surface);
+            data.insert(data.begin(), pixdata, pixdata + cairo_image_surface_get_stride(surface) * cairo_image_surface_get_height(surface));
+        }
+        break;
+    case OutputTypeUnknow:
         break;
     }
 }

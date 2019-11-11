@@ -6,6 +6,7 @@
 * freetype
 * librsvg
 * opencv
+* webp
 
 ## 格式
 
