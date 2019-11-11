@@ -73,7 +73,8 @@ Image::Image(std::string __name,
     cairo_surface_destroy(imageSurface); // 回收
 }
 
-Image::~Image() {
+Image::~Image()
+{
     finish();
 }
 

@@ -5,7 +5,7 @@ namespace ArtRobot
 namespace Component
 {
 
-Repeat::Repeat(std::string __name, 
+Repeat::Repeat(std::string __name,
                double __x, double __y,
                double __w, double __h,
                double __r) // TODO

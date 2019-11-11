@@ -51,7 +51,6 @@ ImageMask::ImageMask(std::string __name,
     cairo_set_source_surface(cr, child->getSurface(), 0.0, 0.0);
     cairo_mask_surface(cr, maskImage->getSurface(), 0, 0);
     cairo_fill(cr);
-    
 }
 
 ImageMask::~ImageMask()

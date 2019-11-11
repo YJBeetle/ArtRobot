@@ -12,7 +12,7 @@ class Rectangle : public Base
 {
 private:
 public:
-    Rectangle(std::string __name, 
+    Rectangle(std::string __name,
               double __x, double __y,
               double __w, double __h,
               double __r,

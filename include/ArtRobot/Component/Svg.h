@@ -14,12 +14,12 @@ class Svg : public Base
 {
 private:
 public:
-    Svg(std::string __name, 
+    Svg(std::string __name,
         double __x, double __y,
         double __w, double __h,
         double __r,
         const std::string &src);
-    Svg(std::string __name, 
+    Svg(std::string __name,
         double __x, double __y,
         double __w, double __h,
         double __r,

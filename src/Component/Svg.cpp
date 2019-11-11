@@ -21,7 +21,7 @@ void drawSvg(cairo_t *cr,
     rsvg_handle_render_cairo(svg, cr);
 }
 
-Svg::Svg(std::string __name, 
+Svg::Svg(std::string __name,
          double __x, double __y,
          double __w, double __h,
          double __r,
@@ -43,7 +43,7 @@ Svg::Svg(std::string __name,
     }
 }
 
-Svg::Svg(std::string __name, 
+Svg::Svg(std::string __name,
          double __x, double __y,
          double __w, double __h,
          double __r,
@@ -61,7 +61,7 @@ Svg::Svg(std::string __name,
 
 Svg::~Svg()
 {
-        finish();
+    finish();
 }
 
 } // namespace Component

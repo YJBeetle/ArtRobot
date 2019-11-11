@@ -5,7 +5,7 @@ namespace ArtRobot
 namespace Component
 {
 
-Text::Text(std::string __name, 
+Text::Text(std::string __name,
            double __x, double __y,
            double __w, double __h,
            double __r,

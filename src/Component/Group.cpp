@@ -15,6 +15,7 @@ Group::Group(std::string __name)
 Group::~Group()
 {
     finish();
+    childs.clear();
 }
 
 void Group::addChild(std::shared_ptr<Base> child)

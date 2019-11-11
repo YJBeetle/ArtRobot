@@ -15,7 +15,7 @@ class Text : public Base
 {
 private:
 public:
-    Text(std::string __name, 
+    Text(std::string __name,
          double __x, double __y,
          double __w, double __h,
          double __r,
