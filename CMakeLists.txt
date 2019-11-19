@@ -90,6 +90,13 @@ set(LIB_LIST
 add_library(${PROJECT_NAME} ${SRC_LIST})
 target_link_libraries(${PROJECT_NAME} ${LIB_LIST})
 
+#install
+install(TARGETS ${PROJECT_NAME}
+        RUNTIME DESTINATION bin
+        LIBRARY DESTINATION lib
+        ARCHIVE DESTINATION lib)
+install(DIRECTORY include/ DESTINATION include)
+
 # samples
 ## octopus
 ### sources
