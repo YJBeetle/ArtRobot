@@ -8,6 +8,7 @@
 #include "ArtRobot/Component/Image.h"
 #include "ArtRobot/Component/ImageMask.h"
 #include "ArtRobot/Component/Rectangle.h"
+#include "ArtRobot/Component/RectangleRound.h"
 #include "ArtRobot/Component/Repeat.h"
 #include "ArtRobot/Component/Svg.h"
 #include "ArtRobot/Component/Text.h"

@@ -13,6 +13,7 @@ enum Type
 {
     TypeUnknow = 0,
     TypeRectangle,
+    TypeRectangleRound,
     TypeSvg,
     TypeImage,
     TypeImageMask,

@@ -14,6 +14,8 @@ shared_ptr<Component::Base> renderComponent(Json &componentJson)
         {
             if (typeJson == "rectangle")
                 componentType = Component::TypeRectangle;
+            if (typeJson == "rectangleRound")
+                componentType = Component::TypeRectangleRound;
             else if (typeJson == "svg")
                 componentType = Component::TypeSvg;
             else if (typeJson == "image")
@@ -51,6 +53,23 @@ shared_ptr<Component::Base> renderComponent(Json &componentJson)
 
         return make_shared<Component::Rectangle>(name, x, y, w, h, r,
                                                  color.c_str());
+    }
+    case Component::TypeRectangleRound:
+    {
+        auto &colorJ = componentJson["color"];
+        auto &angleJ = componentJson["angle"];
+        auto &angleTLJ = componentJson["angleTL"];
+        auto &angleTRJ = componentJson["angleTR"];
+        auto &angleBLJ = componentJson["angleBR"];
+        auto &angleBRJ = componentJson["angleBL"];
+        string color = colorJ.is_string() ? (string)colorJ : "000000";
+        double angleTL = angleTLJ.is_number() ? (double)angleTLJ : angleJ.is_number() ? (double)angleJ : 10;
+        double angleTR = angleTRJ.is_number() ? (double)angleTRJ : angleJ.is_number() ? (double)angleJ : 10;
+        double angleBR = angleBLJ.is_number() ? (double)angleBLJ : angleJ.is_number() ? (double)angleJ : 10;
+        double angleBL = angleBRJ.is_number() ? (double)angleBRJ : angleJ.is_number() ? (double)angleJ : 10;
+
+        return make_shared<Component::RectangleRound>(name, x, y, w, h, r,
+                                                      angleTL, angleTR, angleBR, angleBL, color.c_str());
     }
     case Component::TypeSvg:
     {
@@ -117,7 +136,7 @@ shared_ptr<Component::Base> renderComponent(Json &componentJson)
     case Component::TypeGroup:
     {
         auto &childJson = componentJson["child"];
-        if(childJson.is_array())
+        if (childJson.is_array())
         {
             auto componentGroup = make_shared<Component::Group>(name);
             for (auto &componentJson : childJson) // 循环处理该成员中的元素
