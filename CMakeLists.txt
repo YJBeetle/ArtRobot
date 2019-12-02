@@ -117,3 +117,6 @@ configure_file(samples/OctopusRender/template/ThrowIt/ThrowIt.json ThrowIt.json 
 configure_file(samples/OctopusRender/template/ThrowIt/p.png p.png COPYONLY)
 configure_file(samples/OctopusRender/template/ThrowIt/p_mask.png p_mask.png COPYONLY)
 configure_file(samples/OctopusRender/template/ThrowIt/pp.jpg pp.jpg COPYONLY)
+configure_file(samples/OctopusRender/template/SaySticker/SaySticker.json SaySticker.json COPYONLY)
+configure_file(samples/OctopusRender/template/SaySticker/SaySticker_userPhotoMask.png SaySticker_userPhotoMask.png COPYONLY)
+configure_file(samples/OctopusRender/template/SaySticker/SaySticker_messageX.png SaySticker_messageX.png COPYONLY)
