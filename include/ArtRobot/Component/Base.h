@@ -18,9 +18,10 @@ enum Type
     TypeSvg,
     TypeImage,
     TypeImageMask,
-    TypeText,
-    TypeRepeat, // 重复对象
-    TypeGroup,  // 群组对象
+    TypeText,     // 点状文字
+    TypeTextArea, // 区域文字
+    TypeRepeat,   // 重复对象
+    TypeGroup,    // 群组对象
 };
 
 class Base

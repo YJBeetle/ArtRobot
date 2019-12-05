@@ -57,6 +57,13 @@
             "description": "文本颜色"
           }
         ]
+      },
+      {
+        "type": "textArea",
+        "content": "喵喵喵喵喵喵喵喵喵喵喵喵",
+        "color": "FFFFFF",
+        "x": 20,
+        "y": 40
       }
     ]
   },

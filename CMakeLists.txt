@@ -21,6 +21,7 @@ set(SRC_LIST
     src/Component/Repeat.cpp
     src/Component/Svg.cpp
     src/Component/Text.cpp
+    src/Component/TextArea.cpp
     src/Types/Color.cpp
     src/Renderer.cpp
 )

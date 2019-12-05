@@ -33,6 +33,8 @@ shared_ptr<Component::Base> renderComponent(Json &componentJson)
                 componentType = Component::TypeImageMask;
             else if (lowercaseEq(typeJson, "text"))
                 componentType = Component::TypeText;
+            else if (lowercaseEq(typeJson, "textArea"))
+                componentType = Component::TypeTextArea;
             else if (lowercaseEq(typeJson, "repeat"))
                 componentType = Component::TypeRepeat;
             else if (lowercaseEq(typeJson, "group"))
@@ -145,6 +147,38 @@ shared_ptr<Component::Base> renderComponent(Json &componentJson)
                                             fontSize,
                                             horizontalAlign,
                                             color.c_str());
+    }
+    case Component::TypeTextArea:
+    {
+        auto &contentJ = componentJson["content"];
+        auto &colorJ = componentJson["color"];
+        auto &writingModeJ = componentJson["writingMode"];
+        auto &wordWrapJ = componentJson["wordWrap"];
+        auto &horizontalAlignJ = componentJson["horizontalAlign"];
+        auto &verticalAlignJ = componentJson["verticalAlign"];
+        auto &fontFamilyJ = componentJson["fontFamily"];
+        auto &fontSizeJ = componentJson["fontSize"];
+        auto &lineSpacingJ = componentJson["lineSpacing"];
+        auto &wordSpacingJ = componentJson["wordSpacing"];
+
+        string content = contentJ.is_string() ? (string)contentJ : "";
+        string color = colorJ.is_string() ? (string)colorJ : "000000";
+        int writingMode = writingModeJ.is_number() ? (int)writingModeJ : 0; // 书写方向，同css中writing-mode，0=horizontal-tb，1=vertical-rl，2=vertical-lr
+        bool wordWrap = wordWrapJ.is_boolean() ? (bool)wordWrapJ : true;
+        int horizontalAlign = horizontalAlignJ.is_number() ? (int)horizontalAlignJ : 0; // 水平对齐方式，-1为左对齐，0居中，1右对齐
+        int verticalAlign = verticalAlignJ.is_number() ? (int)verticalAlignJ : 0;       // 垂直对齐方式，-1为顶部对齐，0居中，1底部对齐
+        string fontFamily = fontFamilyJ.is_string() ? (string)fontFamilyJ : "";
+        double fontSize = fontSizeJ.is_number() ? (double)fontSizeJ : 14;
+        double lineSpacing = lineSpacingJ.is_number() ? (double)lineSpacingJ : 1;
+        double wordSpacing = wordSpacingJ.is_number() ? (double)wordSpacingJ : 0;
+
+        return make_shared<Component::TextArea>(name, x, y, w, h, r,
+                                                content,
+                                                "Lantinghei.ttc",
+                                                0,
+                                                fontSize,
+                                                horizontalAlign,
+                                                color.c_str());
     }
     case Component::TypeRepeat:
     {

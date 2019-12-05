@@ -13,3 +13,4 @@
 #include "ArtRobot/Component/Repeat.h"
 #include "ArtRobot/Component/Svg.h"
 #include "ArtRobot/Component/Text.h"
+#include "ArtRobot/Component/TextArea.h"
