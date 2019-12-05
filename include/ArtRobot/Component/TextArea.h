@@ -1,7 +1,6 @@
 #pragma once
 
 #include <string>
-#include <cairo-ft.h>
 #include <pango/pangocairo.h>
 
 #include "ArtRobot/Types/Color.h"

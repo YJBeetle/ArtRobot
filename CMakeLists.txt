@@ -42,10 +42,6 @@ message(STATUS "    libraries: ${CAIRO_LIBRARIES}")
 include_directories(${CAIRO_INCLUDE_DIRS})
 link_directories(${CAIRO_LIBDIR})
 
-## Freetype
-find_package(Freetype REQUIRED)
-include_directories(${FREETYPE_INCLUDE_DIRS})
-
 ## pango
 pkg_check_modules(PANGO pangocairo)
 if (NOT CAIRO_FOUND)
@@ -99,7 +95,6 @@ link_directories(${WEBP_LIBDIR})
 
 set(LIB_LIST
     ${CAIRO_LIBRARIES}
-    ${FREETYPE_LIBRARIES}
     ${PANGO_LIBRARIES}
     ${RSVG_LIBRARIES}
     ${OpenCV_LIBS}
