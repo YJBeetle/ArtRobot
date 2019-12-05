@@ -4,6 +4,7 @@
 
 * cairo
 * freetype
+* pango
 * librsvg
 * opencv
 * webp

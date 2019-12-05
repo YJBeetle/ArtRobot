@@ -46,6 +46,19 @@ link_directories(${CAIRO_LIBDIR})
 find_package(Freetype REQUIRED)
 include_directories(${FREETYPE_INCLUDE_DIRS})
 
+## pango
+pkg_check_modules(PANGO pango)
+if (NOT CAIRO_FOUND)
+message(FATAL_ERROR "Pango not found!")
+endif ()
+message(STATUS "Pango library status:")
+message(STATUS "    version: ${PANGO_VERSION}")
+message(STATUS "    include path: ${PANGO_INCLUDE_DIRS}")
+message(STATUS "    lib path: ${PANGO_LIBDIR}")
+message(STATUS "    libraries: ${PANGO_LIBRARIES}")
+include_directories(${PANGO_INCLUDE_DIRS})
+link_directories(${PANGO_LIBDIR})
+
 ## rsvg
 pkg_check_modules(RSVG librsvg-2.0)
 if (NOT RSVG_FOUND)
