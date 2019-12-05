@@ -25,12 +25,12 @@ Text::Text(std::string __name,
     cairo_font_face_t *cr_face;
     if (FT_Init_FreeType(&ft_library))
     {
-        fprintf(stderr, "Renderer::RendererTEXT: warning: FT_Init_FreeType failed.\n");
+        fprintf(stderr, "Text::Text: warning: FT_Init_FreeType failed.\n");
         return;
     }
     if (FT_New_Face(ft_library, fontfile.c_str(), face_index, &ft_face))
     {
-        fprintf(stderr, "Renderer::RendererTEXT: error: FT_New_Face failed, maybe font not found.\n");
+        fprintf(stderr, "Text::Text: error: FT_New_Face failed, maybe font not found.\n");
         return;
     }
     cr_face = cairo_ft_font_face_create_for_ft_face(ft_face, 0);
