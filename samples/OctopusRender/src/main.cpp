@@ -5,6 +5,13 @@
 
 using namespace ArtRobot;
 
+inline bool lowercaseEq(string str1, string str2)
+{
+    transform(str1.begin(), str1.end(), str1.begin(), ::tolower);
+    transform(str2.begin(), str2.end(), str2.begin(), ::tolower);
+    return str1 == str2;
+}
+
 shared_ptr<Component::Base> renderComponent(Json &componentJson)
 {
     Component::Type componentType = Component::TypeUnknow;
@@ -12,23 +19,23 @@ shared_ptr<Component::Base> renderComponent(Json &componentJson)
         auto &typeJson = componentJson["type"];
         if (typeJson.is_string())
         {
-            if (typeJson == "rectangle")
+            if (lowercaseEq(typeJson, "rectangle"))
                 componentType = Component::TypeRectangle;
-            else if (typeJson == "rectangleRound")
+            else if (lowercaseEq(typeJson, "rectangleRound"))
                 componentType = Component::TypeRectangleRound;
-            else if (typeJson == "circle")
+            else if (lowercaseEq(typeJson, "circle"))
                 componentType = Component::TypeCircle;
-            else if (typeJson == "svg")
+            else if (lowercaseEq(typeJson, "svg"))
                 componentType = Component::TypeSvg;
-            else if (typeJson == "image")
+            else if (lowercaseEq(typeJson, "image"))
                 componentType = Component::TypeImage;
-            else if (typeJson == "imageMask")
+            else if (lowercaseEq(typeJson, "imageMask"))
                 componentType = Component::TypeImageMask;
-            else if (typeJson == "text")
+            else if (lowercaseEq(typeJson, "text"))
                 componentType = Component::TypeText;
-            else if (typeJson == "repeat")
+            else if (lowercaseEq(typeJson, "repeat"))
                 componentType = Component::TypeRepeat;
-            else if (typeJson == "group")
+            else if (lowercaseEq(typeJson, "group"))
                 componentType = Component::TypeGroup;
         }
     }
