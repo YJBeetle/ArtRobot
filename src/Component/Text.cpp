@@ -9,55 +9,46 @@ Text::Text(std::string __name,
            double __x, double __y,
            double __w, double __h,
            double __r,
-           const std::string &text,
-           const std::string &fontfile,
-           long face_index,
-           double font_size,
+           const std::string &content,
+           const std::string &fontFamily,
+           int fontWeight,
+           double fontSize,
            int8_t alignment,
-           Color argb) // TODO 此处渲染文字仅为测试 正式的排版考虑使用Pango
+           Color color) // TODO 此处渲染文字仅为测试 正式的排版考虑使用Pango
     : Base(TypeText, __name, __x, __y, __w, __h, __r)
 {
-    if (!face_index)
-        face_index = 0;
+    cairo_set_source_rgba(cr, color.red(), color.green(), color.blue(), color.alpha());
 
-    FT_Library ft_library;
-    FT_Face ft_face;
-    cairo_font_face_t *cr_face;
-    if (FT_Init_FreeType(&ft_library))
-    {
-        fprintf(stderr, "Text::Text: warning: FT_Init_FreeType failed.\n");
-        return;
-    }
-    if (FT_New_Face(ft_library, fontfile.c_str(), face_index, &ft_face))
-    {
-        fprintf(stderr, "Text::Text: error: FT_New_Face failed, maybe font not found.\n");
-        return;
-    }
-    cr_face = cairo_ft_font_face_create_for_ft_face(ft_face, 0);
-    cairo_set_font_face(cr, cr_face);
-    //cairo_select_font_face (cr, family, CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_NORMAL);
-    cairo_set_font_size(cr, font_size);
-    cairo_set_source_rgba(cr, argb.red(), argb.green(), argb.blue(), argb.alpha());
+    PangoLayout *layout;
+    PangoFontDescription *desc;
 
-    cairo_text_extents_t extents;
-    switch (alignment)
-    {
-    default:
-    case 0:
-        break;
-    case 1:
-        cairo_text_extents(cr, text.c_str(), &extents);
-        cairo_move_to(cr, -extents.width / 2, 0);
-        break;
-    case 2:
-        cairo_text_extents(cr, text.c_str(), &extents);
-        cairo_move_to(cr, -extents.width, 0);
-        break;
-    }
+    layout = pango_cairo_create_layout(cr);
+    pango_layout_set_text(layout, content.c_str(), -1);
+    desc = pango_font_description_new();
+    pango_font_description_set_family(desc, fontFamily.c_str());
+    pango_font_description_set_weight(desc, (PangoWeight)fontWeight);
+    pango_font_description_set_size(desc, fontSize * PANGO_SCALE * 72 / 96);
+    pango_layout_set_font_description(layout, desc);
+    pango_font_description_free(desc);
 
-    //cairo_show_text (cr, text);
-    cairo_text_path(cr, text.c_str());
-    cairo_fill(cr);
+    pango_cairo_update_layout(cr, layout);
+
+    // 基线
+    int baseline = pango_layout_get_baseline(layout);
+    cairo_move_to(cr, 0, -(double)baseline / PANGO_SCALE);
+
+    // 居中
+    // int width, height;
+    // pango_layout_get_size(layout, &width, &height);
+    // cairo_move_to(cr, -((double)width / PANGO_SCALE) / 2, 0);
+
+    pango_cairo_show_layout(cr, layout);
+
+    g_object_unref(layout);
+
+    // cairo_show_text (cr, text);
+    // cairo_text_path(cr, text.c_str());
+    // cairo_fill(cr);
 }
 
 Text::~Text()

@@ -124,8 +124,8 @@ shared_ptr<Component::Base> renderComponent(Json &componentJson)
         auto &wordWrapJ = componentJson["wordWrap"];
         auto &horizontalAlignJ = componentJson["horizontalAlign"];
         auto &verticalAlignJ = componentJson["verticalAlign"];
-        auto &fontFileJ = componentJson["fontFile"];
         auto &fontFamilyJ = componentJson["fontFamily"];
+        auto &fontWeightJ = componentJson["fontWeight"];
         auto &fontSizeJ = componentJson["fontSize"];
         auto &lineSpacingJ = componentJson["lineSpacing"];
         auto &wordSpacingJ = componentJson["wordSpacing"];
@@ -136,16 +136,16 @@ shared_ptr<Component::Base> renderComponent(Json &componentJson)
         bool wordWrap = wordWrapJ.is_boolean() ? (bool)wordWrapJ : true;
         int horizontalAlign = horizontalAlignJ.is_number() ? (int)horizontalAlignJ : 0; // 水平对齐方式，-1为左对齐，0居中，1右对齐
         int verticalAlign = verticalAlignJ.is_number() ? (int)verticalAlignJ : 0;       // 垂直对齐方式，-1为顶部对齐，0居中，1底部对齐
-        string fontFile = fontFileJ.is_string() ? (string)fontFileJ : "Lantinghei.ttc";
         string fontFamily = fontFamilyJ.is_string() ? (string)fontFamilyJ : "";
+        int fontWeight = fontFamilyJ.is_number() ? (int)fontWeightJ : 400;
         double fontSize = fontSizeJ.is_number() ? (double)fontSizeJ : 14;
         double lineSpacing = lineSpacingJ.is_number() ? (double)lineSpacingJ : 1;
         double wordSpacing = wordSpacingJ.is_number() ? (double)wordSpacingJ : 0;
 
         return make_shared<Component::Text>(name, x, y, w, h, r,
                                             content,
-                                            fontFile,
-                                            0,
+                                            fontFamily,
+                                            fontWeight,
                                             fontSize,
                                             horizontalAlign,
                                             color.c_str());
