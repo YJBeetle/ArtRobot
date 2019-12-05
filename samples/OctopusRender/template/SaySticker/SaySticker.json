@@ -54,13 +54,19 @@
         "color": "FFFFFF"
       },
       {
-        "type": "text",
+        "type": "TextArea",
         "name": "text",
         "content": "喵喵喵喵",
         "color": "000000",
+        "fontFamily": "Lantinghei SC",
+        "fontWeight": 400,
         "fontSize": 34,
+        "horizontalAlign": 0,
+        "verticalAlign": 1,
         "x": 149,
-        "y": 85
+        "y": 56,
+        "w": 136,
+        "h": 38
       }
     ]
   }
