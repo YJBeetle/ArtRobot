@@ -39,7 +39,7 @@
         "name": "messageX",
         "src": "SaySticker_messageX.png",
         "x": 115,
-        "y": 40,
+        "y": 40, 
         "w": 19,
         "h": 19
       },
@@ -54,10 +54,13 @@
         "color": "FFFFFF"
       },
       {
-        "type": "textxxx",
+        "type": "text",
         "name": "text",
+        "content": "喵喵喵喵",
+        "color": "000000",
+        "fontSize": 34,
         "x": 149,
-        "y": 56
+        "y": 85
       }
     ]
   }
