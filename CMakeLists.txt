@@ -124,8 +124,6 @@ set(OCTOPUS_SRC_LIST
 add_executable(OctopusRender ${OCTOPUS_SRC_LIST})
 target_link_libraries(OctopusRender ${LIB_LIST} ArtRobot)
 
-configure_file(samples/OctopusRender/fonts/Lantinghei.ttc Lantinghei.ttc COPYONLY)
-configure_file(samples/OctopusRender/fonts/Yuanti.ttc Yuanti.ttc COPYONLY)
 configure_file(samples/OctopusRender/template/demo/demo.json demo.json COPYONLY)
 configure_file(samples/OctopusRender/template/demo/bg-veins.svg bg-veins.svg COPYONLY)
 configure_file(samples/OctopusRender/template/ThrowIt/ThrowIt.json ThrowIt.json COPYONLY)
