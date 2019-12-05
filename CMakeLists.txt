@@ -47,7 +47,7 @@ find_package(Freetype REQUIRED)
 include_directories(${FREETYPE_INCLUDE_DIRS})
 
 ## pango
-pkg_check_modules(PANGO pango)
+pkg_check_modules(PANGO pangocairo)
 if (NOT CAIRO_FOUND)
 message(FATAL_ERROR "Pango not found!")
 endif ()
