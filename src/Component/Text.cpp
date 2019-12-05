@@ -9,12 +9,13 @@ Text::Text(std::string __name,
            double __x, double __y,
            double __w, double __h,
            double __r,
-           const std::string &content,
-           const std::string &fontFamily,
-           int fontWeight,
-           double fontSize,
-           int8_t alignment,
-           Color color) // TODO 此处渲染文字仅为测试 正式的排版考虑使用Pango
+           const std::string &content,    // 内容
+           Color color,                   // 颜色
+           const std::string &fontFamily, // 字体
+           int fontWeight,                // 粗细
+           double fontSize,               // 字号
+           int8_t horizontalAlign,        // 水平对齐方式，0为左对齐，1居中，2右对齐
+           int8_t verticalAlign)          // 垂直对齐方式，0为第一行基线对齐，1为顶部对齐，2垂直居中对齐，3底部对齐
     : Base(TypeText, __name, __x, __y, __w, __h, __r)
 {
     cairo_set_source_rgba(cr, color.red(), color.green(), color.blue(), color.alpha());
@@ -33,14 +34,44 @@ Text::Text(std::string __name,
 
     pango_cairo_update_layout(cr, layout);
 
-    // 基线
-    int baseline = pango_layout_get_baseline(layout);
-    cairo_move_to(cr, 0, -(double)baseline / PANGO_SCALE);
-
-    // 居中
-    // int width, height;
-    // pango_layout_get_size(layout, &width, &height);
-    // cairo_move_to(cr, -((double)width / PANGO_SCALE) / 2, 0);
+    // 对齐
+    int width, height;
+    pango_layout_get_size(layout, &width, &height);
+    // 水平对齐
+    int xMove = 0;
+    switch (horizontalAlign)
+    {
+    default:
+    case 0: // 左对齐
+        xMove = 0;
+        break;
+    case 1: // 居中
+        xMove = -((double)width / PANGO_SCALE) / 2;
+        break;
+    case 2: // 右对齐
+        xMove = -((double)width / PANGO_SCALE);
+        break;
+    }
+    // 垂直对齐
+    int yMove = 0;
+    switch (verticalAlign)
+    {
+    default:
+    case 0: // 基线对齐
+        yMove = -(double)pango_layout_get_baseline(layout) / PANGO_SCALE;
+        break;
+    case 1: // 上对齐
+        yMove = 0;
+        break;
+    case 2: // 中对齐
+        yMove = -((double)height / PANGO_SCALE) / 2;
+        break;
+    case 3: // 下对齐
+        yMove = -((double)height / PANGO_SCALE);
+        break;
+    }
+    // 移动
+    cairo_move_to(cr, xMove, yMove);
 
     pango_cairo_show_layout(cr, layout);
 

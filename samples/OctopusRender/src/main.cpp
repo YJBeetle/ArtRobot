@@ -120,35 +120,35 @@ shared_ptr<Component::Base> renderComponent(Json &componentJson)
     {
         auto &contentJ = componentJson["content"];
         auto &colorJ = componentJson["color"];
-        auto &writingModeJ = componentJson["writingMode"];
-        auto &wordWrapJ = componentJson["wordWrap"];
-        auto &horizontalAlignJ = componentJson["horizontalAlign"];
-        auto &verticalAlignJ = componentJson["verticalAlign"];
         auto &fontFamilyJ = componentJson["fontFamily"];
         auto &fontWeightJ = componentJson["fontWeight"];
         auto &fontSizeJ = componentJson["fontSize"];
-        auto &lineSpacingJ = componentJson["lineSpacing"];
-        auto &wordSpacingJ = componentJson["wordSpacing"];
+        auto &horizontalAlignJ = componentJson["horizontalAlign"];
+        auto &verticalAlignJ = componentJson["verticalAlign"];
+        auto &lineSpacingJ = componentJson["lineSpacing"]; // 待实现
+        auto &wordSpacingJ = componentJson["wordSpacing"]; // 待实现
+        auto &writingModeJ = componentJson["writingMode"]; // 待议
+        auto &wordWrapJ = componentJson["wordWrap"];       // 待议
 
         string content = contentJ.is_string() ? (string)contentJ : "";
         string color = colorJ.is_string() ? (string)colorJ : "000000";
-        int writingMode = writingModeJ.is_number() ? (int)writingModeJ : 0; // 书写方向，同css中writing-mode，0=horizontal-tb，1=vertical-rl，2=vertical-lr
-        bool wordWrap = wordWrapJ.is_boolean() ? (bool)wordWrapJ : true;
-        int horizontalAlign = horizontalAlignJ.is_number() ? (int)horizontalAlignJ : 0; // 水平对齐方式，-1为左对齐，0居中，1右对齐
-        int verticalAlign = verticalAlignJ.is_number() ? (int)verticalAlignJ : 0;       // 垂直对齐方式，-1为顶部对齐，0居中，1底部对齐
         string fontFamily = fontFamilyJ.is_string() ? (string)fontFamilyJ : "";
         int fontWeight = fontFamilyJ.is_number() ? (int)fontWeightJ : 400;
         double fontSize = fontSizeJ.is_number() ? (double)fontSizeJ : 14;
+        int horizontalAlign = horizontalAlignJ.is_number() ? (int)horizontalAlignJ : 0;
+        int verticalAlign = verticalAlignJ.is_number() ? (int)verticalAlignJ : 0;
         double lineSpacing = lineSpacingJ.is_number() ? (double)lineSpacingJ : 1;
         double wordSpacing = wordSpacingJ.is_number() ? (double)wordSpacingJ : 0;
+        int writingMode = writingModeJ.is_number() ? (int)writingModeJ : 0;
+        bool wordWrap = wordWrapJ.is_boolean() ? (bool)wordWrapJ : true;
 
         return make_shared<Component::Text>(name, x, y, w, h, r,
-                                            content,
+                                            content, color.c_str(),
                                             fontFamily,
                                             fontWeight,
                                             fontSize,
                                             horizontalAlign,
-                                            color.c_str());
+                                            verticalAlign);
     }
     case Component::TypeTextArea:
     {
