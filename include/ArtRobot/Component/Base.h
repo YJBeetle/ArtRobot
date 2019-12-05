@@ -12,14 +12,15 @@ namespace Component
 enum Type
 {
     TypeUnknow = 0,
-    TypeRectangle,
-    TypeRectangleRound,
+    TypeRectangle,      // 方形
+    TypeRectangleRound, // 圆角方形
+    TypeCircle,         // 圆形
     TypeSvg,
     TypeImage,
     TypeImageMask,
     TypeText,
-    TypeRepeat,
-    TypeGroup,
+    TypeRepeat, // 重复对象
+    TypeGroup,  // 群组对象
 };
 
 class Base

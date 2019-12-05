@@ -14,8 +14,10 @@ shared_ptr<Component::Base> renderComponent(Json &componentJson)
         {
             if (typeJson == "rectangle")
                 componentType = Component::TypeRectangle;
-            if (typeJson == "rectangleRound")
+            else if (typeJson == "rectangleRound")
                 componentType = Component::TypeRectangleRound;
+            else if (typeJson == "circle")
+                componentType = Component::TypeCircle;
             else if (typeJson == "svg")
                 componentType = Component::TypeSvg;
             else if (typeJson == "image")
@@ -70,6 +72,14 @@ shared_ptr<Component::Base> renderComponent(Json &componentJson)
 
         return make_shared<Component::RectangleRound>(name, x, y, w, h, r,
                                                       angleTL, angleTR, angleBR, angleBL, color.c_str());
+    }
+    case Component::TypeCircle:
+    {
+        auto &colorJ = componentJson["color"];
+        string color = colorJ.is_string() ? (string)colorJ : "000000";
+
+        return make_shared<Component::Circle>(name, x, y, w, h, r,
+                                              color.c_str());
     }
     case Component::TypeSvg:
     {

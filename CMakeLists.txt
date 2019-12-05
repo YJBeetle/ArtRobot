@@ -17,6 +17,7 @@ set(SRC_LIST
     src/Component/ImageMask.cpp
     src/Component/Rectangle.cpp
     src/Component/RectangleRound.cpp
+    src/Component/Circle.cpp
     src/Component/Repeat.cpp
     src/Component/Svg.cpp
     src/Component/Text.cpp
