@@ -37,7 +37,6 @@ Base::Base(Type __type, std::string __name,
     {
         surface = cairo_recording_surface_create(CAIRO_CONTENT_COLOR_ALPHA, NULL);
         cr = cairo_create(surface);
-        cairo_translate(cr, _x, _y);
         cairo_translate(cr, _w / 2, _h / 2);
         cairo_rotate(cr, _r * M_PI / 180);
         cairo_translate(cr, -_w / 2, -_h / 2);
