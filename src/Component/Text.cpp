@@ -32,12 +32,13 @@ Text::Text(std::string __name,
     pango_font_description_free(desc);
 
     pango_cairo_update_layout(cr, layout);
+    int layoutWidth, layoutHeight;
+    pango_layout_get_size(layout, &layoutWidth, &layoutHeight); // 获取实际大小
+    realW = (double)layoutWidth / PANGO_SCALE;
+    realH = (double)layoutHeight / PANGO_SCALE;
 
-    // 对齐
-    int width, height;
-    pango_layout_get_size(layout, &width, &height);
     // 水平对齐
-    int xMove = 0;
+    double xMove = 0;
     switch (horizontalAlign)
     {
     default:
@@ -45,14 +46,14 @@ Text::Text(std::string __name,
         xMove = 0;
         break;
     case 1: // 居中
-        xMove = -((double)width / PANGO_SCALE) / 2;
+        xMove = -realW / 2;
         break;
     case 2: // 右对齐
-        xMove = -((double)width / PANGO_SCALE);
+        xMove = -realW;
         break;
     }
     // 垂直对齐
-    int yMove = 0;
+    double yMove = 0;
     switch (verticalAlign)
     {
     default:
@@ -63,10 +64,10 @@ Text::Text(std::string __name,
         yMove = 0;
         break;
     case 2: // 中对齐
-        yMove = -((double)height / PANGO_SCALE) / 2;
+        yMove = -realH / 2;
         break;
     case 3: // 下对齐
-        yMove = -((double)height / PANGO_SCALE);
+        yMove = -realH;
         break;
     }
     // 移动
