@@ -37,29 +37,29 @@ TextArea::TextArea(std::string __name,
 
     pango_layout_set_wrap(layout, PANGO_WRAP_WORD_CHAR); // 换行方式
 
+    // 水平对齐
+    switch (horizontalAlign)
+    {
+    default:
+    case 0: // 左对齐
+        pango_layout_set_alignment(layout, PANGO_ALIGN_LEFT);
+        break;
+    case 1: // 居中
+        pango_layout_set_alignment(layout, PANGO_ALIGN_CENTER);
+        break;
+    case 2: // 右对齐
+        pango_layout_set_alignment(layout, PANGO_ALIGN_RIGHT);
+        break;
+    }
+
     pango_cairo_update_layout(cr, layout);
     int layoutWidth, layoutHeight;
     pango_layout_get_size(layout, &layoutWidth, &layoutHeight); // 获取实际大小
     realW = (double)layoutWidth / PANGO_SCALE;
     realH = (double)layoutHeight / PANGO_SCALE;
 
-    // 水平对齐
-    int xMove = 0;
-    switch (horizontalAlign)
-    {
-    default:
-    case 0: // 左对齐
-        xMove = 0;
-        break;
-    case 1: // 居中
-        xMove = -realW / 2;
-        break;
-    case 2: // 右对齐
-        xMove = -realW;
-        break;
-    }
     // 垂直对齐
-    int yMove = 0;
+    double yMove = 0;
     switch (verticalAlign)
     {
     default:
@@ -67,14 +67,14 @@ TextArea::TextArea(std::string __name,
         yMove = 0;
         break;
     case 1: // 中对齐
-        yMove = -realH / 2;
+        yMove = (_h - realH) / 2;
         break;
     case 2: // 下对齐
-        yMove = -realH;
+        yMove = _h - realH;
         break;
     }
     // 移动
-    cairo_move_to(cr, xMove, yMove);
+    cairo_move_to(cr, 0, yMove);
 
     pango_cairo_show_layout(cr, layout);
 
