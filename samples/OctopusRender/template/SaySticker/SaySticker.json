@@ -58,15 +58,16 @@
         "name": "text",
         "content": "喵喵喵喵",
         "color": "000000",
-        "fontFamily": "Lantinghei SC",
+        "fontFamily": "Noto Sans CJK SC",
         "fontWeight": 400,
         "fontSize": 34,
         "horizontalAlign": 0,
-        "verticalAlign": 1,
+        "verticalAlign": 0,
         "x": 149,
         "y": 56,
         "w": 136,
-        "h": 38
+        "h": 38,
+        "r": 0
       }
     ]
   }
