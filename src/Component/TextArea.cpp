@@ -24,13 +24,16 @@ TextArea::TextArea(std::string __name,
     PangoFontDescription *desc;
 
     layout = pango_cairo_create_layout(cr);
-    pango_layout_set_text(layout, content.c_str(), -1);
-    desc = pango_font_description_new();
+    pango_layout_set_text(layout, content.c_str(), -1); // 文字
+    desc = pango_font_description_new();                // 字体
     pango_font_description_set_family(desc, fontFamily.c_str());
     pango_font_description_set_weight(desc, (PangoWeight)fontWeight);
     pango_font_description_set_size(desc, fontSize * PANGO_SCALE * 72 / 96);
-    pango_layout_set_font_description(layout, desc);
+    pango_layout_set_font_description(layout, desc); // 字体
     pango_font_description_free(desc);
+
+    pango_layout_set_width(layout, w * PANGO_SCALE);
+    pango_layout_set_height(layout, h * PANGO_SCALE);
 
     pango_cairo_update_layout(cr, layout);
 
@@ -57,16 +60,13 @@ TextArea::TextArea(std::string __name,
     switch (verticalAlign)
     {
     default:
-    case 0: // 基线对齐
-        yMove = -(double)pango_layout_get_baseline(layout) / PANGO_SCALE;
-        break;
-    case 1: // 上对齐
+    case 0: // 上对齐
         yMove = 0;
         break;
-    case 2: // 中对齐
+    case 1: // 中对齐
         yMove = -((double)height / PANGO_SCALE) / 2;
         break;
-    case 3: // 下对齐
+    case 2: // 下对齐
         yMove = -((double)height / PANGO_SCALE);
         break;
     }
