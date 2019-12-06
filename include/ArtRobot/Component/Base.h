@@ -48,6 +48,27 @@ public:
 
     void finish();
     cairo_surface_t *getSurface();
+
+    inline double x()
+    {
+        return _x;
+    }
+    inline double y()
+    {
+        return _y;
+    }
+    inline double w()
+    {
+        return _w;
+    }
+    inline double h()
+    {
+        return _h;
+    }
+    inline double r()
+    {
+        return _r;
+    }
 };
 
 } // namespace Component
