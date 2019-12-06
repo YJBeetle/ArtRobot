@@ -7,7 +7,6 @@ namespace Component
 
 Text::Text(std::string __name,
            double __x, double __y,
-           double __w, double __h,
            double __r,
            const std::string &content,    // 内容
            Color color,                   // 颜色
@@ -16,7 +15,7 @@ Text::Text(std::string __name,
            double fontSize,               // 字号
            int8_t horizontalAlign,        // 水平对齐方式，0为左对齐，1居中，2右对齐
            int8_t verticalAlign)          // 垂直对齐方式，0为第一行基线对齐，1为顶部对齐，2垂直居中对齐，3底部对齐
-    : Base(TypeText, __name, __x, __y, __w, __h, __r)
+    : Base(TypeText, __name, __x, __y, 0, 0, __r)
 {
     cairo_set_source_rgba(cr, color.red(), color.green(), color.blue(), color.alpha());
 
