@@ -31,7 +31,7 @@ public:
              int8_t verticalAlign);         // 垂直对齐方式，0为第一行基线对齐，1为顶部对齐，2垂直居中对齐，3底部对齐
     ~TextArea();
 
-    inline std::tuple<double, double> realSize() const
+    inline std::tuple<double, double> getRealSize() const
     {
         return {realW, realH};
     }
