@@ -31,8 +31,8 @@ protected:
     std::string name;
     double x = 0;
     double y = 0;
-    double w = 100;
-    double h = 100;
+    double w = 0;
+    double h = 0;
     double r = 0;
     cairo_surface_t *surface = nullptr;
     cairo_t *cr = nullptr;
