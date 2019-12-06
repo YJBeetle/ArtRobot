@@ -23,11 +23,11 @@ ImageMask::ImageMask(std::string __name,
                      std::shared_ptr<Base> __child)
     : Base(TypeImageMask, __name)
 {
-    x = __x;
-    y = __y;
-    w = __w;
-    h = __h;
-    r = __r;
+    _x = __x;
+    _y = __y;
+    _w = __w;
+    _h = __h;
+    _r = __r;
     child = __child;
 
     cv::Mat maskImageMat;
@@ -46,7 +46,7 @@ ImageMask::ImageMask(std::string __name,
             p[0] = p[1] = p[2] = p[3] = MIN(a, b);
         }
 
-    maskImage = new Image(name, x, y, w, h, r, maskImageMat);
+    maskImage = new Image(name, _x, _y, _w, _h, _r, maskImageMat);
 
     cairo_set_source_surface(cr, child->getSurface(), 0.0, 0.0);
     cairo_mask_surface(cr, maskImage->getSurface(), 0, 0);

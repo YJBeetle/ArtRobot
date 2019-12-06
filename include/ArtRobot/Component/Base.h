@@ -29,11 +29,11 @@ class Base
 protected:
     Type type = TypeUnknow;
     std::string name;
-    double x = 0;
-    double y = 0;
-    double w = 0;
-    double h = 0;
-    double r = 0;
+    double _x = 0;
+    double _y = 0;
+    double _w = 0;
+    double _h = 0;
+    double _r = 0;
     cairo_surface_t *surface = nullptr;
     cairo_t *cr = nullptr;
 

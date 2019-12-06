@@ -32,8 +32,8 @@ TextArea::TextArea(std::string __name,
     pango_layout_set_font_description(layout, desc); // 字体
     pango_font_description_free(desc);
 
-    pango_layout_set_width(layout, w * PANGO_SCALE);  // 设置界定框
-    pango_layout_set_height(layout, h * PANGO_SCALE); // 设置界定框
+    pango_layout_set_width(layout, _w * PANGO_SCALE);  // 设置界定框
+    pango_layout_set_height(layout, _h * PANGO_SCALE); // 设置界定框
 
     pango_layout_set_wrap(layout, PANGO_WRAP_WORD_CHAR); // 换行方式
 

@@ -67,7 +67,7 @@ Image::Image(std::string __name,
     }
 
     drawImageSurface(cr,
-                     w, h,
+                     _w, _h,
                      imageSurface);
 
     cairo_surface_destroy(imageSurface); // 回收

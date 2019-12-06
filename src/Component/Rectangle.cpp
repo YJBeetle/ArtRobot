@@ -13,7 +13,7 @@ Rectangle::Rectangle(std::string __name,
     : Base(TypeRectangle, __name, __x, __y, __w, __h, __r)
 {
     cairo_set_source_rgba(cr, color.red(), color.green(), color.blue(), color.alpha());
-    cairo_rectangle(cr, 0, 0, w, h);
+    cairo_rectangle(cr, 0, 0, _w, _h);
     cairo_fill(cr);
 }
 

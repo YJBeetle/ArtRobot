@@ -36,7 +36,7 @@ Svg::Svg(std::string __name,
         RsvgHandle *svg = rsvg_handle_new_from_file(src.c_str(), NULL); // TODO 错误处理
 
         drawSvg(cr,
-                w, h,
+                _w, _h,
                 svg);
 
         rsvg_handle_close(svg, NULL); // 释放handle
@@ -53,7 +53,7 @@ Svg::Svg(std::string __name,
     RsvgHandle *svg = rsvg_handle_new_from_data(data, len, NULL); // TODO 错误处理
 
     drawSvg(cr,
-            w, h,
+            _w, _h,
             svg);
 
     rsvg_handle_close(svg, NULL);
