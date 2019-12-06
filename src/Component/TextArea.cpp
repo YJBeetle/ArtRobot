@@ -35,6 +35,8 @@ TextArea::TextArea(std::string __name,
     pango_layout_set_width(layout, w * PANGO_SCALE);
     pango_layout_set_height(layout, h * PANGO_SCALE);
 
+    pango_layout_set_wrap(layout, PANGO_WRAP_WORD_CHAR);
+
     pango_cairo_update_layout(cr, layout);
 
     // 对齐
