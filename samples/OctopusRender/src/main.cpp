@@ -142,7 +142,7 @@ shared_ptr<Component::Base> renderComponent(Json &componentJson)
         int writingMode = writingModeJ.is_number() ? (int)writingModeJ : 0;
         bool wordWrap = wordWrapJ.is_boolean() ? (bool)wordWrapJ : true;
 
-        return make_shared<Component::Text>(name, x, y, w, h, r,
+        return make_shared<Component::Text>(name, x, y, r,
                                             content, color.c_str(),
                                             fontFamily,
                                             fontWeight,
