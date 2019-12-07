@@ -126,8 +126,8 @@ shared_ptr<Component::Base> renderComponent(Json &componentJson)
         auto &horizontalAlignJ = componentJson["horizontalAlign"];
         auto &verticalAlignJ = componentJson["verticalAlign"];
         auto &maxWidthJ = componentJson["maxWidth"];
-        auto &lineSpacingJ = componentJson["lineSpacing"]; // 待实现
-        auto &wordSpacingJ = componentJson["wordSpacing"]; // 待实现
+        auto &lineSpacingJ = componentJson["lineSpacing"];
+        auto &wordSpacingJ = componentJson["wordSpacing"];
         auto &writingModeJ = componentJson["writingMode"]; // 待议
         auto &wordWrapJ = componentJson["wordWrap"];       // 待议
 
@@ -139,7 +139,7 @@ shared_ptr<Component::Base> renderComponent(Json &componentJson)
         int horizontalAlign = horizontalAlignJ.is_number() ? (int)horizontalAlignJ : 0;
         int verticalAlign = verticalAlignJ.is_number() ? (int)verticalAlignJ : 0;
         int maxWidth = maxWidthJ.is_number() ? (int)maxWidthJ : 0;
-        double lineSpacing = lineSpacingJ.is_number() ? (double)lineSpacingJ : 1;
+        double lineSpacing = lineSpacingJ.is_number() ? (double)lineSpacingJ : 0;
         double wordSpacing = wordSpacingJ.is_number() ? (double)wordSpacingJ : 0;
         int writingMode = writingModeJ.is_number() ? (int)writingModeJ : 0;
         bool wordWrap = wordWrapJ.is_boolean() ? (bool)wordWrapJ : true;
@@ -151,7 +151,9 @@ shared_ptr<Component::Base> renderComponent(Json &componentJson)
                                             fontSize,
                                             horizontalAlign,
                                             verticalAlign,
-                                            maxWidth);
+                                            maxWidth,
+                                            lineSpacing,
+                                            wordSpacing);
     }
     case Component::TypeTextArea:
     {
@@ -162,8 +164,8 @@ shared_ptr<Component::Base> renderComponent(Json &componentJson)
         auto &fontSizeJ = componentJson["fontSize"];
         auto &horizontalAlignJ = componentJson["horizontalAlign"];
         auto &verticalAlignJ = componentJson["verticalAlign"];
-        auto &lineSpacingJ = componentJson["lineSpacing"]; // 待实现
-        auto &wordSpacingJ = componentJson["wordSpacing"]; // 待实现
+        auto &lineSpacingJ = componentJson["lineSpacing"];
+        auto &wordSpacingJ = componentJson["wordSpacing"];
         auto &writingModeJ = componentJson["writingMode"]; // 待议
         auto &wordWrapJ = componentJson["wordWrap"];       // 待议
 
@@ -174,7 +176,7 @@ shared_ptr<Component::Base> renderComponent(Json &componentJson)
         double fontSize = fontSizeJ.is_number() ? (double)fontSizeJ : 14;
         int horizontalAlign = horizontalAlignJ.is_number() ? (int)horizontalAlignJ : 0;
         int verticalAlign = verticalAlignJ.is_number() ? (int)verticalAlignJ : 0;
-        double lineSpacing = lineSpacingJ.is_number() ? (double)lineSpacingJ : 1;
+        double lineSpacing = lineSpacingJ.is_number() ? (double)lineSpacingJ : 0;
         double wordSpacing = wordSpacingJ.is_number() ? (double)wordSpacingJ : 0;
         int writingMode = writingModeJ.is_number() ? (int)writingModeJ : 0;
         bool wordWrap = wordWrapJ.is_boolean() ? (bool)wordWrapJ : true;
@@ -185,7 +187,9 @@ shared_ptr<Component::Base> renderComponent(Json &componentJson)
                                                 fontWeight,
                                                 fontSize,
                                                 horizontalAlign,
-                                                verticalAlign);
+                                                verticalAlign,
+                                                lineSpacing,
+                                                wordSpacing);
     }
     case Component::TypeRepeat:
     {
