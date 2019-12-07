@@ -15,8 +15,8 @@ namespace Component
 class Text : public Base
 {
 private:
-    double realW;
-    double realH;
+    double _realW;
+    double _realH;
 
 public:
     Text(std::string __name,
@@ -36,7 +36,15 @@ public:
 
     inline std::tuple<double, double> getRealSize() const
     {
-        return {realW, realH};
+        return {_realW, _realH};
+    }
+    inline double realW() const
+    {
+        return _realW;
+    }
+    inline double realH() const
+    {
+        return _realH;
     }
 };
 

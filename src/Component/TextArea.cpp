@@ -61,8 +61,8 @@ TextArea::TextArea(std::string __name,
     pango_cairo_update_layout(cr, layout);
     int layoutWidth, layoutHeight;
     pango_layout_get_size(layout, &layoutWidth, &layoutHeight); // 获取实际大小
-    realW = (double)layoutWidth / PANGO_SCALE;
-    realH = (double)layoutHeight / PANGO_SCALE;
+    _realW = (double)layoutWidth / PANGO_SCALE;
+    _realH = (double)layoutHeight / PANGO_SCALE;
 
     // 垂直对齐
     double yMove = 0;
@@ -73,10 +73,10 @@ TextArea::TextArea(std::string __name,
         yMove = 0;
         break;
     case 1: // 中对齐
-        yMove = (_h - realH) / 2;
+        yMove = (_h - _realH) / 2;
         break;
     case 2: // 下对齐
-        yMove = _h - realH;
+        yMove = _h - _realH;
         break;
     }
     // 移动

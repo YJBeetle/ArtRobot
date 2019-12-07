@@ -60,8 +60,8 @@ Text::Text(std::string __name,
     pango_cairo_update_layout(cr, layout);
     int layoutWidth, layoutHeight;
     pango_layout_get_size(layout, &layoutWidth, &layoutHeight); // 获取实际大小
-    realW = (double)layoutWidth / PANGO_SCALE;
-    realH = (double)layoutHeight / PANGO_SCALE;
+    _realW = (double)layoutWidth / PANGO_SCALE;
+    _realH = (double)layoutHeight / PANGO_SCALE;
 
     // 水平对齐
     double xMove = 0;
@@ -72,10 +72,10 @@ Text::Text(std::string __name,
         xMove = 0;
         break;
     case 1: // 居中
-        xMove = -realW / 2;
+        xMove = -_realW / 2;
         break;
     case 2: // 右对齐
-        xMove = -realW;
+        xMove = -_realW;
         break;
     }
     // 垂直对齐
@@ -90,10 +90,10 @@ Text::Text(std::string __name,
         yMove = 0;
         break;
     case 2: // 中对齐
-        yMove = -realH / 2;
+        yMove = -_realH / 2;
         break;
     case 3: // 下对齐
-        yMove = -realH;
+        yMove = -_realH;
         break;
     }
     // 移动
