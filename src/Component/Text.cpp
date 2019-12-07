@@ -38,6 +38,21 @@ Text::Text(std::string __name,
         pango_layout_set_ellipsize(layout, PANGO_ELLIPSIZE_END); // 超出用省略号
     }
 
+    // 水平对齐
+    switch (horizontalAlign)
+    {
+    default:
+    case 0: // 左对齐
+        pango_layout_set_alignment(layout, PANGO_ALIGN_LEFT);
+        break;
+    case 1: // 居中
+        pango_layout_set_alignment(layout, PANGO_ALIGN_CENTER);
+        break;
+    case 2: // 右对齐
+        pango_layout_set_alignment(layout, PANGO_ALIGN_RIGHT);
+        break;
+    }
+
     pango_cairo_update_layout(cr, layout);
     int layoutWidth, layoutHeight;
     pango_layout_get_size(layout, &layoutWidth, &layoutHeight); // 获取实际大小
