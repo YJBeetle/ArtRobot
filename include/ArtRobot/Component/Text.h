@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <tuple>
 #include <pango/pangocairo.h>
 
 #include "ArtRobot/Types/Color.h"
