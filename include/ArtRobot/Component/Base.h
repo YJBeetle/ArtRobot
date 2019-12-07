@@ -49,6 +49,14 @@ public:
     void finish();
     cairo_surface_t *getSurface();
 
+    inline void setX(double __x)
+    {
+        _x = __x;
+    }
+    inline void setY(double __y)
+    {
+        _y = __y;
+    }
     inline double x()
     {
         return _x;
