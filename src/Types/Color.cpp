@@ -1,5 +1,7 @@
 #include "ArtRobot/Types/Color.h"
 
+#include <cstring>
+
 namespace ArtRobot
 {
 
@@ -20,7 +22,11 @@ Color::Color(const char *__color)
              (__color[1] == 'x' ||
               __color[1] == 'X'))
         __color += 2;
-    uint32_t intColor = 0x000000FF; // 黑不透明
+    uint32_t intColor;
+    if (strlen(__color) <= 6)
+        intColor = 0x000000FF; // 黑不透明
+    else
+        intColor = 0x00000000; // 黑透明
     for (int i = 7; i >= 0 && *__color; i--)
     {
         if (*__color == 0)
