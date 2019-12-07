@@ -3,7 +3,6 @@
 ## 依赖
 
 * cairo
-* freetype
 * pango
 * librsvg
 * opencv
