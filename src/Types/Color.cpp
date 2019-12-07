@@ -23,6 +23,8 @@ Color::Color(const char *__color)
     uint32_t intColor = 0x000000FF; // 黑不透明
     for (int i = 7; i >= 0 && *__color; i--)
     {
+        if (*__color == 0)
+            break;
         intColor |= ((*__color >= '0' && *__color <= '9')
                          ? *__color - '0'
                          : (*__color >= 'A' && *__color <= 'F')
