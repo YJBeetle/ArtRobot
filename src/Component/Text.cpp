@@ -14,7 +14,8 @@ Text::Text(std::string __name,
            int fontWeight,                // 粗细
            double fontSize,               // 字号
            int8_t horizontalAlign,        // 水平对齐方式，0为左对齐，1居中，2右对齐
-           int8_t verticalAlign)          // 垂直对齐方式，0为第一行基线对齐，1为顶部对齐，2垂直居中对齐，3底部对齐
+           int8_t verticalAlign,          // 垂直对齐方式，0为第一行基线对齐，1为顶部对齐，2垂直居中对齐，3底部对齐
+           double maxWidth)               // 最大宽度
     : Base(TypeText, __name, __x, __y, 0, 0, __r)
 {
     cairo_set_source_rgba(cr, color.red(), color.green(), color.blue(), color.alpha());
@@ -30,6 +31,12 @@ Text::Text(std::string __name,
     pango_font_description_set_size(desc, fontSize * PANGO_SCALE * 72 / 96);
     pango_layout_set_font_description(layout, desc);
     pango_font_description_free(desc);
+
+    if (maxWidth)
+    {
+        pango_layout_set_width(layout, maxWidth * PANGO_SCALE);  // 设置界定框
+        pango_layout_set_ellipsize(layout, PANGO_ELLIPSIZE_END); // 超出用省略号
+    }
 
     pango_cairo_update_layout(cr, layout);
     int layoutWidth, layoutHeight;

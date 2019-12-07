@@ -125,6 +125,7 @@ shared_ptr<Component::Base> renderComponent(Json &componentJson)
         auto &fontSizeJ = componentJson["fontSize"];
         auto &horizontalAlignJ = componentJson["horizontalAlign"];
         auto &verticalAlignJ = componentJson["verticalAlign"];
+        auto &maxWidthJ = componentJson["maxWidth"];
         auto &lineSpacingJ = componentJson["lineSpacing"]; // 待实现
         auto &wordSpacingJ = componentJson["wordSpacing"]; // 待实现
         auto &writingModeJ = componentJson["writingMode"]; // 待议
@@ -137,6 +138,7 @@ shared_ptr<Component::Base> renderComponent(Json &componentJson)
         double fontSize = fontSizeJ.is_number() ? (double)fontSizeJ : 14;
         int horizontalAlign = horizontalAlignJ.is_number() ? (int)horizontalAlignJ : 0;
         int verticalAlign = verticalAlignJ.is_number() ? (int)verticalAlignJ : 0;
+        int maxWidth = maxWidthJ.is_number() ? (int)maxWidthJ : 0;
         double lineSpacing = lineSpacingJ.is_number() ? (double)lineSpacingJ : 1;
         double wordSpacing = wordSpacingJ.is_number() ? (double)wordSpacingJ : 0;
         int writingMode = writingModeJ.is_number() ? (int)writingModeJ : 0;
@@ -148,7 +150,8 @@ shared_ptr<Component::Base> renderComponent(Json &componentJson)
                                             fontWeight,
                                             fontSize,
                                             horizontalAlign,
-                                            verticalAlign);
+                                            verticalAlign,
+                                            maxWidth);
     }
     case Component::TypeTextArea:
     {
