@@ -39,7 +39,7 @@ TextArea::TextArea(std::string __name,
 
     pango_layout_set_wrap(layout, PANGO_WRAP_WORD_CHAR);         // 换行方式
     pango_layout_set_ellipsize(layout, PANGO_ELLIPSIZE_END);     // 超出用省略号
-    pango_layout_set_justify(layout, true);                      // 对于换行的行，尽可能撑满整行（两端对齐）
+    // pango_layout_set_justify(layout, true);                      // 对于换行的行，尽可能撑满整行（两端对齐）
     pango_layout_set_spacing(layout, lineSpacing * PANGO_SCALE); // 行距
     // pango_layout_set_indent(layout, 10 * PANGO_SCALE);           // 测试用的行首锁进
 
