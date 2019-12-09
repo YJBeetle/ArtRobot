@@ -22,16 +22,16 @@
         "src": "p_mask.png",
         "x": 19,
         "y": 181,
-        "w": 135,
-        "h": 135,
+        "w": 136,
+        "h": 136,
         "child": {
           "type": "image",
           "name": "userPhoto",
           "src": "pp.jpg",
           "x": 19,
           "y": 181,
-          "w": 135,
-          "h": 135,
+          "w": 136,
+          "h": 136,
           "r": -160,
           "canedit": [
             {
