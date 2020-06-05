@@ -1,0 +1,13 @@
+# macOS
+.DS_Store
+
+# Qt Creator
+CMakeLists.txt.user
+CMakeLists.txt.user.*
+*.autosave
+
+# VScode
+/.vscode
+
+# Build
+/build

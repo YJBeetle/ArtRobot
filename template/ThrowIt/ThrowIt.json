@@ -1,0 +1,50 @@
+{
+  "w": 512,
+  "h": 512,
+  "unit": "px",
+  "ppi": 72,
+  "body": {
+    "type": "group",
+    "name": "body",
+		"child": [
+      {
+        "type": "image",
+        "name": "bg",
+        "src": "p.png",
+        "x": 0,
+        "y": 0,
+        "w": 512,
+        "h": 512
+      },
+      {
+        "type": "imageMask",
+        "name": "mask",
+        "src": "p_mask.png",
+        "x": 19,
+        "y": 181,
+        "w": 136,
+        "h": 136,
+        "child": {
+          "type": "image",
+          "name": "userPhoto",
+          "src": "pp.jpg",
+          "x": 19,
+          "y": 181,
+          "w": 136,
+          "h": 136,
+          "r": -160,
+          "canedit": [
+            {
+              "attributes": "src",
+              "id": "pp",
+              "description": "头像"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "data": {
+    "pp": "pp.jpg"
+  }
+}
