@@ -1,0 +1,3 @@
+[submodule "ArtRobot"]
+	path = ArtRobot
+	url = https://github.com/YJBeetle/ArtRobot.git
