@@ -98,10 +98,3 @@ target_link_libraries(${PROJECT_NAME} PUBLIC ${OpenCV_LIBS})
 target_include_directories(${PROJECT_NAME} PUBLIC ${WEBP_INCLUDE_DIRS})
 target_link_directories(${PROJECT_NAME} PUBLIC ${WEBP_LIBDIR})
 target_link_libraries(${PROJECT_NAME} PUBLIC ${WEBP_LIBRARIES})
-
-# Install
-install(TARGETS ${PROJECT_NAME}
-        RUNTIME DESTINATION bin
-        LIBRARY DESTINATION lib
-        ARCHIVE DESTINATION lib)
-install(DIRECTORY include/ DESTINATION include)

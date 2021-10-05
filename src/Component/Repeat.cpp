@@ -9,7 +9,7 @@
  *
  */
 
-#include "ArtRobot/Component/Repeat.h"
+#include "./Repeat.hpp"
 
 namespace ArtRobot
 {

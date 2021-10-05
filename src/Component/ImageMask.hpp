@@ -13,8 +13,8 @@
 
 #include <memory>
 
-#include "ArtRobot/Component/Base.h"
-#include "ArtRobot/Component/Image.h"
+#include "./Base.hpp"
+#include "./Image.hpp"
 
 namespace ArtRobot
 {

@@ -14,7 +14,7 @@
 #endif
 #include <webp/encode.h>
 
-#include "ArtRobot/Renderer.h"
+#include "./Renderer.hpp"
 
 namespace ArtRobot
 {

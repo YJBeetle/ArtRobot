@@ -11,22 +11,26 @@
 
 #pragma once
 
-#include "ArtRobot/Component/Base.h"
+#include <memory>
+#include <vector>
+
+#include "./Base.hpp"
 
 namespace ArtRobot
 {
 namespace Component
 {
 
-class Repeat : public Base // TODO
+class Group : public Base
 {
 private:
+    std::vector<std::shared_ptr<Base>> childs;
+
 public:
-    Repeat(std::string __name,
-           double __x, double __y,
-           double __w, double __h,
-           double __r);
-    ~Repeat();
+    Group(std::string __name);
+    ~Group();
+
+    void addChild(std::shared_ptr<Base> child);
 };
 
 } // namespace Component

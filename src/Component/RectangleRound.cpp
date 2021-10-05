@@ -9,7 +9,7 @@
  *
  */
 
-#include "ArtRobot/Component/RectangleRound.h"
+#include "./RectangleRound.hpp"
 
 namespace ArtRobot
 {
