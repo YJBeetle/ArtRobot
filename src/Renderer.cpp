@@ -9,10 +9,12 @@
  *
  */
 
+#include <iostream>
 #ifdef WIN32
 #include <fcntl.h>
 #endif
 #include <webp/encode.h>
+#include <jpeglib.h>
 
 #include "./Renderer.hpp"
 
@@ -80,6 +82,7 @@ Renderer::Renderer(OutputType __outputType,
         // cairo_show_page(cr);                                             // 多页
         break;
     case OutputTypePng:
+    case OutputTypeJpeg:
     case OutputTypeWebp:
     case OutputTypePixmap:
         surface = cairo_image_surface_create(CAIRO_FORMAT_ARGB32,
@@ -112,6 +115,59 @@ void Renderer::render(cairo_surface_t *__surface)
     case OutputTypePng: // PNG需要在渲染完成之后再写入data
         data.clear();   // 防止重复渲染
         cairo_surface_write_to_png_stream(surface, writeStreamToData, (void *)&data);
+        break;
+    case OutputTypeJpeg:
+        data.clear();
+        {
+            //get
+            JSAMPLE *image_buffer = cairo_image_surface_get_data(surface);
+            uint32_t image_width = cairo_image_surface_get_width(surface);
+            uint32_t image_height = cairo_image_surface_get_height(surface);
+            uint32_t row_stride = cairo_image_surface_get_stride(surface);
+            int quality = 100;
+
+            /* More stuff */
+            FILE *outfile;           /* target file */
+            JSAMPROW row_pointer[1]; /* pointer to JSAMPLE row[s] */
+
+            struct jpeg_compress_struct cinfo;
+
+            //出错处理
+            struct jpeg_error_mgr error_mgr;
+            cinfo.err = jpeg_std_error(&error_mgr);
+            error_mgr.error_exit = [](j_common_ptr cinfo){
+                (*cinfo->err->output_message)(cinfo);
+            };
+
+            jpeg_create_compress(&cinfo);
+            unsigned char* buf{};
+            unsigned long buf_sz{};
+            jpeg_mem_dest(&cinfo, &buf, &buf_sz);
+
+            cinfo.image_width = image_width; /* image width and height, in pixels */
+            cinfo.image_height = image_height;
+            cinfo.input_components = 3;     /* # of color components per pixel */
+            cinfo.in_color_space = JCS_RGB; /* colorspace of input image */
+
+            jpeg_set_defaults(&cinfo);
+
+            jpeg_set_quality(&cinfo, quality, TRUE /* limit to baseline-JPEG values */);
+
+            jpeg_start_compress(&cinfo, TRUE);
+
+            while (cinfo.next_scanline < cinfo.image_height)
+            {
+                row_pointer[0] = &image_buffer[cinfo.next_scanline * row_stride];
+                (void)jpeg_write_scanlines(&cinfo, row_pointer, 1);
+            }
+
+            data.insert(data.begin(), buf, buf + buf_sz);
+            free(buf);
+
+            jpeg_finish_compress(&cinfo);
+            fclose(outfile);
+            jpeg_destroy_compress(&cinfo);
+        }
         break;
     case OutputTypeWebp:
         data.clear();

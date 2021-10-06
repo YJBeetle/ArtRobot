@@ -20,6 +20,7 @@ enum OutputType
     OutputTypeSvg,
     OutputTypePdf,
     OutputTypePng,
+    OutputTypeJpeg,
     OutputTypeWebp,
     OutputTypePixmap,
 };
