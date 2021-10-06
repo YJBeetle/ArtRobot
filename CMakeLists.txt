@@ -24,7 +24,7 @@ message(STATUS "    libraries: ${CAIRO_LIBRARIES}")
 
 ## pango
 pkg_check_modules(PANGO pangocairo)
-if (NOT CAIRO_FOUND)
+if (NOT PANGO_FOUND)
 message(FATAL_ERROR "Pango not found!")
 endif ()
 message(STATUS "Pango library status:")
