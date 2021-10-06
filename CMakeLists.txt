@@ -107,3 +107,21 @@ target_link_libraries(${PROJECT_NAME} PUBLIC ${OpenCV_LIBS})
 target_include_directories(${PROJECT_NAME} PUBLIC ${WEBP_INCLUDE_DIRS})
 target_link_directories(${PROJECT_NAME} PUBLIC ${WEBP_LIBDIR})
 target_link_libraries(${PROJECT_NAME} PUBLIC ${WEBP_LIBRARIES})
+
+# Headers file
+file(GLOB_RECURSE HEADERS
+    ./src/*.h
+    ./src/*.hpp
+)
+foreach(HEADER ${HEADERS})
+    file(RELATIVE_PATH HEADER ${CMAKE_CURRENT_SOURCE_DIR}/src ${HEADER})
+    configure_file("${CMAKE_CURRENT_SOURCE_DIR}/src/${HEADER}" "${CMAKE_CURRENT_BINARY_DIR}/include/ArtRobot/${HEADER}" COPYONLY)
+endforeach()
+target_include_directories(${PROJECT_NAME} PUBLIC "${CMAKE_CURRENT_BINARY_DIR}/include/")
+
+# install
+install(TARGETS ${PROJECT_NAME}
+        RUNTIME DESTINATION bin
+        LIBRARY DESTINATION lib
+        ARCHIVE DESTINATION lib)
+install(DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/include/" DESTINATION include)
