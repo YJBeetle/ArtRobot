@@ -19,21 +19,6 @@ namespace ArtRobot
 namespace Component
 {
 
-void drawImageSurface(cairo_t *cr,
-                      double w, double h,
-                      cairo_surface_t *imageSurface)
-{
-    if (w || h)
-    {
-        double scaleX, scaleY;
-        scaleX = w / (double)cairo_image_surface_get_width(imageSurface);
-        scaleY = h / (double)cairo_image_surface_get_height(imageSurface);
-        cairo_scale(cr, scaleX, scaleY);
-    }
-    cairo_set_source_surface(cr, imageSurface, 0, 0);
-    cairo_paint(cr);
-}
-
 Image::Image(std::string __name,
              double x, double y,
              double w, double h,
@@ -49,9 +34,16 @@ Image::Image(std::string __name,
              cairo_surface_t * imageSurface)
     : Base(TypeImage, __name, x, y, w, h, r)
 {
-    drawImageSurface(cr,
-                     _w, _h,
-                     imageSurface);
+    if (w || h)
+    {
+        double scaleX, scaleY;
+        scaleX = w / (double)cairo_image_surface_get_width(imageSurface);
+        scaleY = h / (double)cairo_image_surface_get_height(imageSurface);
+        cairo_scale(cr, scaleX, scaleY);
+    }
+    cairo_set_source_surface(cr, imageSurface, 0, 0);
+    cairo_paint(cr);
+    cairo_surface_finish(imageSurface);
 }
 
 std::shared_ptr<Image> Image::fromRaw(std::string __name,
@@ -61,33 +53,10 @@ std::shared_ptr<Image> Image::fromRaw(std::string __name,
                                       unsigned char * imageData,
                                       int imageW, int imageH,
                                       int imageStride,
-                                      char imagePixelBits,
                                       bool premultipliedAlpha)
 {
-    cairo_surface_t *imageSurface;
-
-    cairo_format_t format;
-    switch (imagePixelBits)
-    {
-    case 1:
-        format = CAIRO_FORMAT_A1;
-        break;
-    case 8:
-        format = CAIRO_FORMAT_A8;
-        break;
-    case 24:
-        format = CAIRO_FORMAT_RGB24;
-        break;
-    case 32:
-        format = CAIRO_FORMAT_ARGB32;
-        break;
-    default:
-        format = CAIRO_FORMAT_A1;
-        break;
-    }
-
     // 计算预乘
-    if (imagePixelBits == 32 && premultipliedAlpha == false)
+    if (premultipliedAlpha == false)
     {
         // 尝试 cairo_set_operator CAIRO_OPERATOR_OVER CAIRO_OPERATOR_SOURCE ?
         for (int y = 0; y < imageH; y++)
@@ -100,8 +69,8 @@ std::shared_ptr<Image> Image::fromRaw(std::string __name,
             }
     }
 
-    imageSurface = cairo_image_surface_create_for_data(imageData,
-                                                       format,
+    cairo_surface_t * imageSurface = cairo_image_surface_create_for_data(imageData,
+                                                       CAIRO_FORMAT_ARGB32,
                                                        imageW,
                                                        imageH,
                                                        imageStride);
@@ -118,28 +87,20 @@ std::shared_ptr<Image> Image::fromMat(std::string __name,
                                       double x, double y,
                                       double w, double h,
                                       double r,
-                                      const cv::Mat &imageMatRead)
+                                      const cv::Mat &imageMat)
 {
-    cv::Mat imageMat;
     if (imageMat.channels() == 3)
     {
-        cvtColor(imageMatRead, imageMat, cv::COLOR_BGR2BGRA);
+        cv::Mat imageMatNew;
+        cvtColor(imageMat, imageMatNew, cv::COLOR_BGR2BGRA);
+        return Image::fromRaw(__name, x, y, w, h, r,
+                              imageMatNew.data, imageMatNew.cols, imageMatNew.rows, imageMatNew.step, true);
     }
     else
     {
-        imageMat = std::move(imageMatRead);
-        for (int y = 0; y < imageMat.rows; y++) // 预乘
-            for (int x = 0; x < imageMat.cols; x++)
-            {
-                auto &p = imageMat.at<cv::Vec4b>(y, x);
-                p[0] = p[0] * p[3] / 0xff;
-                p[1] = p[1] * p[3] / 0xff;
-                p[2] = p[2] * p[3] / 0xff;
-            }
+        return Image::fromRaw(__name, x, y, w, h, r,
+                              imageMat.data, imageMat.cols, imageMat.rows, imageMat.step, false);
     }
-
-    return Image::fromRaw(__name, x, y, w, h, r,
-                          imageMat.data, imageMat.cols, imageMat.rows, imageMat.step, imageMat.channels() * 8, true);
 }
 
 std::shared_ptr<Image> Image::fromFileByCV(std::string __name,
@@ -235,7 +196,7 @@ std::shared_ptr<Image> Image::fromJPG(std::string __name,
     }
 
     ret = Image::fromRaw(__name, x, y, w, h, r,
-                         image_buffer, cinfo.output_width, cinfo.output_height, cinfo.output_width * 4, 4 * 8, true);
+                         image_buffer, cinfo.output_width, cinfo.output_height, cinfo.output_width * 4, true);
 
     free(image_buffer);
 

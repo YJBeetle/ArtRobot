@@ -43,8 +43,7 @@ public:
                                             unsigned char * imageData,
                                             int imageW, int imageH,
                                             int imageStride,
-                                            char imagePixelBits,
-                                            bool premultipliedAlpha);
+                                            bool premultipliedAlpha); // 输入固定为ARGB32
       static std::shared_ptr<Image> fromMat(std::string __name,
                                             double x, double y,
                                             double w, double h,
