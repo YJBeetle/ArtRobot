@@ -9,7 +9,7 @@
  *
  */
 
-#include "ArtRobot/Component/TextArea.h"
+#include "./TextArea.hpp"
 
 namespace ArtRobot
 {

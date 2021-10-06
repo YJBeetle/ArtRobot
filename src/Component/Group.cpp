@@ -9,7 +9,7 @@
  *
  */
 
-#include "ArtRobot/Component/Group.h"
+#include "./Group.hpp"
 
 #include <iostream>
 

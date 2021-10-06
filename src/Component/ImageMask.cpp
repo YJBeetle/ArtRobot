@@ -9,7 +9,7 @@
  *
  */
 
-#include "ArtRobot/Component/ImageMask.h"
+#include "./ImageMask.hpp"
 
 namespace ArtRobot
 {

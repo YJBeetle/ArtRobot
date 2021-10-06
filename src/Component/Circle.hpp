@@ -11,8 +11,8 @@
 
 #pragma once
 
-#include "ArtRobot/Types/Color.h"
-#include "ArtRobot/Component/Base.h"
+#include "../Types/Color.hpp"
+#include "./Base.hpp"
 
 namespace ArtRobot
 {

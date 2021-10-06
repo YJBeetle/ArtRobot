@@ -9,7 +9,7 @@
  *
  */
 
-#include "ArtRobot/Component/Base.h"
+#include "./Base.hpp"
 
 namespace ArtRobot
 {

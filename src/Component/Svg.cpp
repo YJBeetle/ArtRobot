@@ -9,7 +9,7 @@
  *
  */
 
-#include "ArtRobot/Component/Svg.h"
+#include "./Svg.hpp"
 
 namespace ArtRobot
 {

@@ -9,7 +9,7 @@
  *
  */
 
-#include "ArtRobot/Types/Color.h"
+#include "./Color.hpp"
 
 #include <cstring>
 

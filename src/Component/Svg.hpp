@@ -14,7 +14,7 @@
 #include <string>
 #include <librsvg/rsvg.h>
 
-#include "ArtRobot/Component/Base.h"
+#include "./Base.hpp"
 
 namespace ArtRobot
 {

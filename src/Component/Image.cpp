@@ -9,7 +9,7 @@
  *
  */
 
-#include "ArtRobot/Component/Image.h"
+#include "./Image.hpp"
 
 #include <iostream>
 

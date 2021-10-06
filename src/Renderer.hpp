@@ -18,7 +18,7 @@
 //#include <cairo-ps.h>
 #include <cairo-svg.h>
 
-#include "ArtRobot/Types/OutputType.h"
+#include "./Types/OutputType.hpp"
 
 #define MM2IN(MM) ((double)MM / 25.4)
 #define PX2IN(PX, PPI) ((double)PX / PPI)

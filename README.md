@@ -13,7 +13,4 @@
 * webp
 
 ## 编译
-    mkdir build && cd build && cmake .. && make -j
-
-## 安装
-    sudo make install
+    cmake -B build && cmake --build build -j28

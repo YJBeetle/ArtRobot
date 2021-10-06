@@ -9,7 +9,7 @@
  *
  */
 
-#include "ArtRobot/Component/Circle.h"
+#include "./Circle.hpp"
 
 namespace ArtRobot
 {

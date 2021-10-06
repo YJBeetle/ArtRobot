@@ -14,7 +14,7 @@
 #include <string>
 #include <opencv2/opencv.hpp>
 
-#include "ArtRobot/Component/Base.h"
+#include "./Base.hpp"
 
 namespace ArtRobot
 {
