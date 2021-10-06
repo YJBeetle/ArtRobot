@@ -37,12 +37,23 @@ Image::Image(std::string __name,
              double x, double y,
              double w, double h,
              double r,
-             unsigned char * imageData,
-             int imageW, int imageH,
-             int imageStride,
-             char imagePixelBits,
-             bool premultipliedAlpha)
+             cairo_surface_t * imageSurface)
     : Base(TypeImage, __name, x, y, w, h, r)
+{
+    drawImageSurface(cr,
+                     _w, _h,
+                     imageSurface);
+}
+
+std::shared_ptr<Image> Image::fromRaw(std::string __name,
+                                      double x, double y,
+                                      double w, double h,
+                                      double r,
+                                      unsigned char * imageData,
+                                      int imageW, int imageH,
+                                      int imageStride,
+                                      char imagePixelBits,
+                                      bool premultipliedAlpha)
 {
     cairo_surface_t *imageSurface;
 
@@ -86,11 +97,12 @@ Image::Image(std::string __name,
                                                        imageH,
                                                        imageStride);
 
-    drawImageSurface(cr,
-                     _w, _h,
-                     imageSurface);
+    std::shared_ptr<Image> ret = std::make_shared<Image>(__name, x, y, w, h, r,
+                                                         imageSurface);
 
     cairo_surface_destroy(imageSurface); // 回收
+
+    return ret;
 }
 
 std::shared_ptr<Image> Image::fromMat(std::string __name,
@@ -117,7 +129,8 @@ std::shared_ptr<Image> Image::fromMat(std::string __name,
             }
     }
 
-    return std::make_shared<Image>(__name, __x, __y, __w, __h, __r, imageMat.data, imageMat.cols, imageMat.rows, imageMat.step, imageMat.channels() * 8, true);
+    return Image::fromRaw(__name, __x, __y, __w, __h, __r,
+                          imageMat.data, imageMat.cols, imageMat.rows, imageMat.step, imageMat.channels() * 8, true);
 }
 
 std::shared_ptr<Image> Image::fromFileByCV(std::string __name,
@@ -126,7 +139,8 @@ std::shared_ptr<Image> Image::fromFileByCV(std::string __name,
                                            double __r,
                                            const std::string &imageFilePath)
 {
-    return Image::fromMat(__name, __x, __y, __w, __h, __r, cv::imread(imageFilePath, cv::IMREAD_UNCHANGED));
+    return Image::fromMat(__name, __x, __y, __w, __h, __r,
+                          cv::imread(imageFilePath, cv::IMREAD_UNCHANGED));
 }
 
 Image::~Image()

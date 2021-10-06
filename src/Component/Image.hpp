@@ -31,11 +31,16 @@ public:
             double x, double y,
             double w, double h,
             double r,
-            unsigned char * imageData,
-            int imageW, int imageH,
-            int imageStride,
-            char imagePixelBits,
-            bool premultipliedAlpha);
+            cairo_surface_t * imageSurface);
+      static std::shared_ptr<Image> fromRaw(std::string __name,
+                                            double x, double y,
+                                            double w, double h,
+                                            double r,
+                                            unsigned char * imageData,
+                                            int imageW, int imageH,
+                                            int imageStride,
+                                            char imagePixelBits,
+                                            bool premultipliedAlpha);
       static std::shared_ptr<Image> fromMat(std::string __name,
                                             double x, double y,
                                             double w, double h,
