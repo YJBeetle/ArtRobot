@@ -46,6 +46,13 @@ message(STATUS "    lib path: ${RSVG_LIBDIR}")
 message(STATUS "    libs path: ${RSVG_LIBRARY_DIRS}")
 message(STATUS "    libraries: ${RSVG_LIBRARIES}")
 
+## Jpeg
+find_package(Jpeg REQUIRED)
+message(STATUS "Jpeg library status:")
+message(STATUS "    version: ${JPEG_VERSION}")
+message(STATUS "    include path: ${JPEG_INCLUDE_DIR}")
+message(STATUS "    libraries: ${JPEG_LIBRARIES}")
+
 # Find OpenCV
 find_package(OpenCV REQUIRED)
 message(STATUS "OpenCV library status:")
@@ -93,6 +100,8 @@ target_include_directories(${PROJECT_NAME} PUBLIC ${RSVG_INCLUDE_DIRS})
 target_link_directories(${PROJECT_NAME} PUBLIC ${RSVG_LIBDIR})
 target_link_directories(${PROJECT_NAME} PUBLIC ${RSVG_LIBRARY_DIRS})
 target_link_libraries(${PROJECT_NAME} PUBLIC ${RSVG_LIBRARIES})
+target_include_directories(${PROJECT_NAME} PUBLIC ${JPEG_INCLUDE_DIR})
+target_link_libraries(${PROJECT_NAME} PUBLIC ${JPEG_LIBRARIES})
 target_include_directories(${PROJECT_NAME} PUBLIC ${OpenCV_INCLUDE_DIRS})
 target_link_libraries(${PROJECT_NAME} PUBLIC ${OpenCV_LIBS})
 target_include_directories(${PROJECT_NAME} PUBLIC ${WEBP_INCLUDE_DIRS})

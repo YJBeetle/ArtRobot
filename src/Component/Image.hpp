@@ -30,6 +30,10 @@ public:
       Image(std::string __name,
             double x, double y,
             double w, double h,
+            double r);
+      Image(std::string __name,
+            double x, double y,
+            double w, double h,
             double r,
             cairo_surface_t * imageSurface);
       static std::shared_ptr<Image> fromRaw(std::string __name,
@@ -51,6 +55,21 @@ public:
                                                  double w, double h,
                                                  double r,
                                                  const std::string &imageFilePath);
+      static std::shared_ptr<Image> fromPNG(std::string __name,
+                                            double x, double y,
+                                            double w, double h,
+                                            double r,
+                                            const std::string &imageFilePath);
+      static std::shared_ptr<Image> fromJPG(std::string __name,
+                                            double x, double y,
+                                            double w, double h,
+                                            double r,
+                                            const std::string &imageFilePath);
+      static std::shared_ptr<Image> fromFile(std::string __name,
+                                             double x, double y,
+                                             double w, double h,
+                                             double r,
+                                             const std::string &imageFilePath);
       ~Image();
 };
 
