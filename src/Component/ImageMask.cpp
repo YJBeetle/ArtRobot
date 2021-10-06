@@ -57,7 +57,7 @@ ImageMask::ImageMask(std::string __name,
             p[0] = p[1] = p[2] = p[3] = MIN(a, b);
         }
 
-    maskImage = new Image(name, _x, _y, _w, _h, _r, maskImageMat);
+    maskImage = Image::fromMat(name, _x, _y, _w, _h, _r, maskImageMat);
 
     cairo_set_source_surface(cr, child->getSurface(), 0.0, 0.0);
     cairo_mask_surface(cr, maskImage->getSurface(), 0, 0);
@@ -67,8 +67,6 @@ ImageMask::ImageMask(std::string __name,
 ImageMask::~ImageMask()
 {
     finish();
-    if (maskImage)
-        delete maskImage;
 }
 
 } // namespace Component

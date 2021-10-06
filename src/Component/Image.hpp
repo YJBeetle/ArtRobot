@@ -24,8 +24,6 @@ namespace Component
 class Image : public Base
 {
 private:
-      cv::Mat imageMat;
-
       void drawMat(const cv::Mat &imageMatRead);
 
 public:
@@ -33,12 +31,21 @@ public:
             double x, double y,
             double w, double h,
             double r,
-            const std::string &imageFilePath);
-      Image(std::string __name,
-            double x, double y,
-            double w, double h,
-            double r,
-            const cv::Mat &imageMatRead);
+            unsigned char * imageData,
+            int imageW, int imageH,
+            int imageStride,
+            char imagePixelBits,
+            bool premultipliedAlpha);
+      static std::shared_ptr<Image> fromMat(std::string __name,
+                                            double x, double y,
+                                            double w, double h,
+                                            double r,
+                                            const cv::Mat &imageMat);
+      static std::shared_ptr<Image> fromFileByCV(std::string __name,
+                                                 double x, double y,
+                                                 double w, double h,
+                                                 double r,
+                                                 const std::string &imageFilePath);
       ~Image();
 };
 
