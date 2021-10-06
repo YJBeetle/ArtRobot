@@ -87,6 +87,8 @@ set(SRC_LIST
     src/Types/Color.cpp
     src/Renderer.cpp
 )
+
+# building project
 add_library(${PROJECT_NAME} SHARED ${SRC_LIST})
 target_include_directories(${PROJECT_NAME} PUBLIC include)
 target_include_directories(${PROJECT_NAME} PUBLIC ${CAIRO_INCLUDE_DIRS})
@@ -125,3 +127,28 @@ install(TARGETS ${PROJECT_NAME}
         LIBRARY DESTINATION lib
         ARCHIVE DESTINATION lib)
 install(DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/include/" DESTINATION include)
+
+# samples
+## octopus
+### sources
+include_directories(include)
+set(OCTOPUS_SRC_LIST
+    samples/OctopusRender/src/main.cpp
+    samples/OctopusRender/src/Args.cpp
+)
+
+add_executable(OctopusRender ${OCTOPUS_SRC_LIST})
+target_link_libraries(OctopusRender PRIVATE ${PROJECT_NAME})
+
+configure_file(samples/OctopusRender/template/demo/demo.json demo.json COPYONLY)
+configure_file(samples/OctopusRender/template/demo/bg-veins.svg bg-veins.svg COPYONLY)
+configure_file(samples/OctopusRender/template/ThrowIt/ThrowIt.json ThrowIt.json COPYONLY)
+configure_file(samples/OctopusRender/template/ThrowIt/p.png p.png COPYONLY)
+configure_file(samples/OctopusRender/template/ThrowIt/p_mask.png p_mask.png COPYONLY)
+configure_file(samples/OctopusRender/template/ThrowIt/pp.jpg pp.jpg COPYONLY)
+configure_file(samples/OctopusRender/template/SaySticker/SaySticker.json SaySticker.json COPYONLY)
+configure_file(samples/OctopusRender/template/SaySticker/SaySticker_userPhotoMask.png SaySticker_userPhotoMask.png COPYONLY)
+configure_file(samples/OctopusRender/template/SaySticker/SaySticker_messageX.png SaySticker_messageX.png COPYONLY)
+configure_file(samples/OctopusRender/template/SaySticker/SaySticker2.json SaySticker2.json COPYONLY)
+configure_file(samples/OctopusRender/template/SaySticker/SaySticker2_userPhotoMask.png SaySticker2_userPhotoMask.png COPYONLY)
+configure_file(samples/OctopusRender/template/SaySticker/SaySticker2_messageX.png SaySticker2_messageX.png COPYONLY)
