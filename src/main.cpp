@@ -1,7 +1,7 @@
 #include "CommonIncludes.h"
 
-#include "ArtRobot/ArtRobot.h"
-#include "Args.h"
+#include <ArtRobot/ArtRobot.hpp>
+#include "./Args.hpp"
 
 using namespace ArtRobot;
 
@@ -103,8 +103,8 @@ shared_ptr<Component::Base> renderComponent(Json &componentJson)
         auto &srcJ = componentJson["src"];
         string src = srcJ.is_string() ? (string)srcJ : "";
 
-        return make_shared<Component::Image>(name, x, y, w, h, r,
-                                             src);
+        return Component::Image::fromFileByCV(name, x, y, w, h, r,
+                                              src);
     }
     case Component::TypeImageMask:
     {

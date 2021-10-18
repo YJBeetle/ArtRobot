@@ -3,7 +3,7 @@
 #include <libgen.h>
 #include <getopt.h>
 
-#include "Args.h"
+#include "./Args.hpp"
 
 void Args::args_help(const char *argv0)
 {
@@ -70,6 +70,8 @@ Args::Args(int argc, char *argv[])
                 type = OutputTypeSvg;
             else if (!strcasecmp(optarg, "png"))
                 type = OutputTypePng;
+            else if (!strcasecmp(optarg, "jpg") || !strcasecmp(optarg, "jpeg"))
+                type = OutputTypeJpeg;
             else if (!strcasecmp(optarg, "webp"))
                 type = OutputTypeWebp;
             break;

@@ -4,7 +4,7 @@
 #include <string>
 #include <cstring>
 
-#include "ArtRobot/Types/OutputType.h"
+#include <ArtRobot/Types/OutputType.hpp>
 
 using namespace ArtRobot;
 
