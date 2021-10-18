@@ -14,13 +14,3 @@
 
 ## 编译
     cmake -B build && cmake --build build -j28
-
-## 测试
-
-    cd build
-    make -j28 && ./OctopusRender ThrowIt.json -t png out.png
-    open out.png
-
-## OctopusRender 格式
-
-格式请参考 [Octopus Documents](https://gitlab.com/project-null-plus-1/octopus-docs) 中的 [数据交换JSON格式说明文档](https://gitlab.com/project-null-plus-1/octopus-docs/blob/master/DataExchangeJsonFormat.md)
