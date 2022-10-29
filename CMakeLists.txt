@@ -8,6 +8,10 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DTIMER=1")
 
 project(ArtRobot)
 
+if(CMAKE_SYSTEM_NAME MATCHES "Emscripten")
+    set(WASM TRUE)
+endif()
+
 # libs
 include(FindPkgConfig)
 
@@ -87,7 +91,11 @@ set(SRC_LIST
     src/Types/Color.cpp
     src/Renderer.cpp
 )
-add_library(${PROJECT_NAME} SHARED ${SRC_LIST})
+if(WASM)
+    add_library(${PROJECT_NAME} STATIC ${SRC_LIST})
+else()
+    add_library(${PROJECT_NAME} SHARED ${SRC_LIST})
+endif()
 target_include_directories(${PROJECT_NAME} PUBLIC include)
 target_include_directories(${PROJECT_NAME} PUBLIC ${CAIRO_INCLUDE_DIRS})
 target_link_directories(${PROJECT_NAME} PUBLIC ${CAIRO_LIBDIR})
