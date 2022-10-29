@@ -103,6 +103,8 @@ std::shared_ptr<Image> Image::fromMat(std::string __name,
     }
 }
 
+#ifndef WASM
+
 std::shared_ptr<Image> Image::fromFileByCV(std::string __name,
                                            double x, double y,
                                            double w, double h,
@@ -221,6 +223,8 @@ std::shared_ptr<Image> Image::fromFile(std::string __name,
         return Image::fromJPG(__name, x, y, w, h, r, imageFilePath);
     return std::make_shared<Image>(__name, x, y, w, h, r);
 }
+
+#endif
 
 Image::~Image()
 {

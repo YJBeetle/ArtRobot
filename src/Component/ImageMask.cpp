@@ -16,6 +16,8 @@ namespace ArtRobot
 namespace Component
 {
 
+#ifndef WASM
+
 ImageMask::ImageMask(std::string __name,
                      double __x, double __y,
                      double __w, double __h,
@@ -25,6 +27,8 @@ ImageMask::ImageMask(std::string __name,
     : ImageMask(__name, __x, __y, __w, __h, __r, cv::imread(maskImageFilePath, cv::IMREAD_UNCHANGED), __child)
 {
 }
+
+#endif
 
 ImageMask::ImageMask(std::string __name,
                      double __x, double __y,

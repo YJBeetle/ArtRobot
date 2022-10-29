@@ -49,6 +49,7 @@ public:
                                             double w, double h,
                                             double r,
                                             const cv::Mat &imageMat);
+#ifndef WASM
       static std::shared_ptr<Image> fromFileByCV(std::string __name,
                                                  double x, double y,
                                                  double w, double h,
@@ -69,6 +70,7 @@ public:
                                              double w, double h,
                                              double r,
                                              const std::string &imageFilePath);
+#endif
       ~Image();
 };
 

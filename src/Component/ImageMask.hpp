@@ -30,12 +30,14 @@ private:
     void drawChildSurfaceUsedMask(const cv::Mat &maskImageMatRead);
 
 public:
+#ifndef WASM
     ImageMask(std::string __name,
               double __x, double __y,
               double __w, double __h,
               double __r,
               const std::string &maskImageFilePath,
               std::shared_ptr<Base> child);
+#endif
     ImageMask(std::string __name,
               double __x, double __y,
               double __w, double __h,

@@ -10,6 +10,7 @@ project(ArtRobot)
 
 if(CMAKE_SYSTEM_NAME MATCHES "Emscripten")
     set(WASM TRUE)
+    add_compile_definitions("WASM")
 endif()
 
 # libs
