@@ -47,7 +47,7 @@ message(STATUS "    libs path: ${RSVG_LIBRARY_DIRS}")
 message(STATUS "    libraries: ${RSVG_LIBRARIES}")
 
 ## Jpeg
-find_package(Jpeg REQUIRED)
+find_package(JPEG REQUIRED)
 message(STATUS "Jpeg library status:")
 message(STATUS "    version: ${JPEG_VERSION}")
 message(STATUS "    include path: ${JPEG_INCLUDE_DIR}")
