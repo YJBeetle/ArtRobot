@@ -16,6 +16,17 @@ endif()
 # libs
 include(FindPkgConfig)
 
+## pixman
+pkg_check_modules(PIXMAN pixman-1)
+if (NOT PIXMAN_FOUND)
+message(FATAL_ERROR "pixman not found!")
+endif ()
+message(STATUS "pixman library status:")
+message(STATUS "    version: ${PIXMAN_VERSION}")
+message(STATUS "    include path: ${PIXMAN_INCLUDE_DIRS}")
+message(STATUS "    lib path: ${PIXMAN_LIBDIR}")
+message(STATUS "    libraries: ${PIXMAN_LIBRARIES}")
+
 ## cairo
 pkg_check_modules(CAIRO cairo)
 if (NOT CAIRO_FOUND)
@@ -98,6 +109,9 @@ else()
     add_library(${PROJECT_NAME} SHARED ${SRC_LIST})
 endif()
 target_include_directories(${PROJECT_NAME} PUBLIC include)
+target_include_directories(${PROJECT_NAME} PUBLIC ${PIXMAN_INCLUDE_DIRS})
+target_link_directories(${PROJECT_NAME} PUBLIC ${PIXMAN_LIBDIR})
+target_link_libraries(${PROJECT_NAME} PUBLIC ${PIXMAN_LIBRARIES})
 target_include_directories(${PROJECT_NAME} PUBLIC ${CAIRO_INCLUDE_DIRS})
 target_link_directories(${PROJECT_NAME} PUBLIC ${CAIRO_LIBDIR})
 target_link_libraries(${PROJECT_NAME} PUBLIC ${CAIRO_LIBRARIES})
