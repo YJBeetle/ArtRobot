@@ -17,63 +17,69 @@
 
 #include "./Base.hpp"
 
-namespace ArtRobot
-{
-namespace Component
-{
+namespace ArtRobot {
+    namespace Component {
 
-class Image : public Base
-{
-private:
-      void drawMat(const cv::Mat &imageMatRead);
+        class Image : public Base {
+        private:
+            void drawMat(const cv::Mat &imageMatRead);
 
-public:
-      Image(std::string __name,
-            double x, double y,
-            double w, double h,
-            double r);
-      Image(std::string __name,
-            double x, double y,
-            double w, double h,
-            double r,
-            cairo_surface_t * imageSurface);
-      static std::shared_ptr<Image> fromRaw(std::string __name,
-                                            double x, double y,
-                                            double w, double h,
-                                            double r,
-                                            unsigned char * imageData,
-                                            int imageW, int imageH,
-                                            int imageStride,
-                                            bool premultipliedAlpha); // 输入固定为ARGB32
-      static std::shared_ptr<Image> fromMat(std::string __name,
-                                            double x, double y,
-                                            double w, double h,
-                                            double r,
-                                            const cv::Mat &imageMat);
+        public:
+            Image(std::string __name,
+                  double x, double y,
+                  double w, double h,
+                  double r);
+
+            Image(std::string __name,
+                  double x, double y,
+                  double w, double h,
+                  double r,
+                  cairo_surface_t *imageSurface);
+
+            static std::shared_ptr<Image> fromRaw(std::string __name,
+                                                  double x, double y,
+                                                  double w, double h,
+                                                  double r,
+                                                  unsigned char *imageData,
+                                                  int imageW, int imageH,
+                                                  int imageStride,
+                                                  bool premultipliedAlpha); // 输入固定为ARGB32
+            static std::shared_ptr<Image> fromMat(std::string __name,
+                                                  double x, double y,
+                                                  double w, double h,
+                                                  double r,
+                                                  const cv::Mat &imageMat);
+
 #ifndef WASM
-      static std::shared_ptr<Image> fromFileByCV(std::string __name,
-                                                 double x, double y,
-                                                 double w, double h,
-                                                 double r,
-                                                 const std::string &imageFilePath);
-      static std::shared_ptr<Image> fromPNG(std::string __name,
-                                            double x, double y,
-                                            double w, double h,
-                                            double r,
-                                            const std::string &imageFilePath);
-      static std::shared_ptr<Image> fromJPG(std::string __name,
-                                            double x, double y,
-                                            double w, double h,
-                                            double r,
-                                            const std::string &imageFilePath);
-      static std::shared_ptr<Image> fromFile(std::string __name,
-                                             double x, double y,
-                                             double w, double h,
-                                             double r,
-                                             const std::string &imageFilePath);
-#endif
-      ~Image();
-};
 
-} // namespace Component
+            static std::shared_ptr<Image> fromFileByCV(std::string __name,
+                                                       double x, double y,
+                                                       double w, double h,
+                                                       double r,
+                                                       const std::string &imageFilePath);
+
+            static std::shared_ptr<Image> fromPNG(std::string __name,
+                                                  double x, double y,
+                                                  double w, double h,
+                                                  double r,
+                                                  const std::string &imageFilePath);
+
+            static std::shared_ptr<Image> fromJPG(std::string __name,
+                                                  double x, double y,
+                                                  double w, double h,
+                                                  double r,
+                                                  const std::string &imageFilePath);
+
+            static std::shared_ptr<Image> fromFile(std::string __name,
+                                                   double x, double y,
+                                                   double w, double h,
+                                                   double r,
+                                                   const std::string &imageFilePath);
+
+#endif
+
+            ~Image();
+        };
+
+    } // namespace Component
 } // namespace ArtRobot
