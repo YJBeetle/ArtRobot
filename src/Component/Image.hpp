@@ -22,6 +22,17 @@ namespace ArtRobot {
 
         class Image : public Base {
         public:
+
+            enum class ColorFormat {
+                ARGB32,
+                ARGB32NoPremultiplied,
+                RGB24,
+                A8,
+                A1,
+                RGB16_565,
+                RGB30,
+            };
+
             Image(std::string __name,
                   double x, double y,
                   double w, double h,
@@ -40,7 +51,8 @@ namespace ArtRobot {
                                                   unsigned char *imageData,
                                                   int imageW, int imageH,
                                                   int imageStride,
-                                                  bool premultipliedAlpha); // 输入固定为ARGB32
+                                                  ColorFormat colorFormat);
+
             static std::shared_ptr<Image> fromMat(std::string __name,
                                                   double x, double y,
                                                   double w, double h,
@@ -76,6 +88,26 @@ namespace ArtRobot {
 #endif
 
             ~Image();
+
+        private:
+            static _cairo_format toCairoFormat(ColorFormat format) {
+                switch (format) {
+                    case ColorFormat::ARGB32:
+                        return CAIRO_FORMAT_ARGB32;
+                    case ColorFormat::ARGB32NoPremultiplied:
+                        return CAIRO_FORMAT_ARGB32;
+                    case ColorFormat::RGB24:
+                        return CAIRO_FORMAT_RGB24;
+                    case ColorFormat::A8:
+                        return CAIRO_FORMAT_A8;
+                    case ColorFormat::A1:
+                        return CAIRO_FORMAT_A1;
+                    case ColorFormat::RGB16_565:
+                        return CAIRO_FORMAT_RGB16_565;
+                    case ColorFormat::RGB30:
+                        return CAIRO_FORMAT_RGB30;
+                }
+            }
         };
 
     } // namespace Component

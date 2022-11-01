@@ -48,9 +48,9 @@ namespace ArtRobot {
                                               unsigned char *imageData,
                                               int imageW, int imageH,
                                               int imageStride,
-                                              bool premultipliedAlpha) {
+                                              ColorFormat colorFormat) {
             // 计算预乘
-            if (premultipliedAlpha == false) {
+            if (colorFormat == ColorFormat::ARGB32NoPremultiplied) {
                 // 尝试 cairo_set_operator CAIRO_OPERATOR_OVER CAIRO_OPERATOR_SOURCE ?
                 for (int y = 0; y < imageH; y++)
                     for (int x = 0; x < imageW; x++) {
@@ -59,10 +59,11 @@ namespace ArtRobot {
                         p[1] = (unsigned short) p[1] * p[3] / 0xff;
                         p[2] = (unsigned short) p[2] * p[3] / 0xff;
                     }
+                colorFormat = ColorFormat::ARGB32;
             }
 
             cairo_surface_t *imageSurface = cairo_image_surface_create_for_data(imageData,
-                                                                                CAIRO_FORMAT_ARGB32,
+                                                                                toCairoFormat(colorFormat),
                                                                                 imageW,
                                                                                 imageH,
                                                                                 imageStride);
@@ -80,15 +81,15 @@ namespace ArtRobot {
                                               double w, double h,
                                               double r,
                                               const cv::Mat &imageMat) {
-            if (imageMat.channels() == 3) {
-                cv::Mat imageMatNew;
-                cvtColor(imageMat, imageMatNew, cv::COLOR_BGR2BGRA);
+            if (imageMat.channels() == 1)
                 return Image::fromRaw(__name, x, y, w, h, r,
-                                      imageMatNew.data, imageMatNew.cols, imageMatNew.rows, imageMatNew.step, true);
-            } else {
+                                      imageMat.data, imageMat.cols, imageMat.rows, imageMat.step, ColorFormat::A8);
+            else if (imageMat.channels() == 3)
                 return Image::fromRaw(__name, x, y, w, h, r,
-                                      imageMat.data, imageMat.cols, imageMat.rows, imageMat.step, false);
-            }
+                                      imageMat.data, imageMat.cols, imageMat.rows, imageMat.step, ColorFormat::RGB24);
+            else
+                return Image::fromRaw(__name, x, y, w, h, r,
+                                      imageMat.data, imageMat.cols, imageMat.rows, imageMat.step, ColorFormat::ARGB32NoPremultiplied);
         }
 
 #ifndef WASM
