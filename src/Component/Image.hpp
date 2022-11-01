@@ -12,6 +12,7 @@
 #pragma once
 
 #include <string>
+#include <memory>
 #include <opencv2/opencv.hpp>
 
 #include "./Base.hpp"
