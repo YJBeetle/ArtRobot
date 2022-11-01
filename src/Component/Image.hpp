@@ -24,6 +24,7 @@ namespace ArtRobot {
         public:
 
             enum class ColorFormat {
+                Unknow = -1,
                 ARGB32,
                 ARGB32NoPremultiplied,
                 RGB24,
@@ -32,6 +33,19 @@ namespace ArtRobot {
                 RGB16_565,
                 RGB30,
             };
+
+            static ColorFormat colorFormatFromChannel(int channels) {
+                switch (channels) {
+                    case 4:
+                        return ColorFormat::ARGB32;
+                    case 3:
+                        return ColorFormat::RGB24;
+                    case 1:
+                        return ColorFormat::A8;
+                    default:
+                        return ColorFormat::Unknow;
+                }
+            }
 
             Image(std::string __name,
                   double x, double y,
@@ -106,6 +120,8 @@ namespace ArtRobot {
                         return CAIRO_FORMAT_RGB16_565;
                     case ColorFormat::RGB30:
                         return CAIRO_FORMAT_RGB30;
+                    case ColorFormat::Unknow:
+                        return CAIRO_FORMAT_INVALID;
                 }
             }
         };
