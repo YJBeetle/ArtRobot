@@ -21,9 +21,6 @@ namespace ArtRobot {
     namespace Component {
 
         class Image : public Base {
-        private:
-            void drawMat(const cv::Mat &imageMatRead);
-
         public:
             Image(std::string __name,
                   double x, double y,
