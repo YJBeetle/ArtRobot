@@ -169,7 +169,7 @@ namespace ArtRobot {
             uint8_t *image_buffer_p = image_buffer;
             while (cinfo.output_scanline < cinfo.output_height) {
                 (void) jpeg_read_scanlines(&cinfo, buffer, 1);
-                memcpy(image_buffer_p, buffer[0], row_stride);
+                memcpy(image_buffer_p, buffer[0], row_stride); // todo
                 for (int i = 0; i < cinfo.output_width; i++) {
                     image_buffer_p[i * 4 + 1] = buffer[0][i * cinfo.output_components + 0];
                     image_buffer_p[i * 4 + 2] = buffer[0][i * cinfo.output_components + 1];
@@ -180,7 +180,7 @@ namespace ArtRobot {
             }
 
             ret = Image::fromRaw(__name, x, y, w, h, r,
-                                 image_buffer, cinfo.output_width, cinfo.output_height, cinfo.output_width * 4, true);
+                                 image_buffer, cinfo.output_width, cinfo.output_height, cinfo.output_width * 4, ColorFormat::ARGB32);
 
             free(image_buffer);
 
