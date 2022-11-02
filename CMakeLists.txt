@@ -122,7 +122,6 @@ target_link_libraries(${PROJECT_NAME} PUBLIC ${WEBP_LIBRARIES})
 
 # Headers file
 file(GLOB_RECURSE HEADERS
-    ./src/*.h
     ./src/*.hpp
 )
 foreach(HEADER ${HEADERS})
