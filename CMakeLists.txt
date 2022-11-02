@@ -132,7 +132,14 @@ target_include_directories(${PROJECT_NAME} PUBLIC "${CMAKE_CURRENT_BINARY_DIR}/i
 
 # install
 install(TARGETS ${PROJECT_NAME}
-        RUNTIME DESTINATION bin
-        LIBRARY DESTINATION lib
-        ARCHIVE DESTINATION lib)
+    RUNTIME DESTINATION bin
+    LIBRARY DESTINATION lib
+    ARCHIVE DESTINATION lib
+)
 install(DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/include/" DESTINATION include)
+
+# test
+add_executable(testImage test/testImage.cpp)
+target_link_libraries(testImage PUBLIC ${PROJECT_NAME})
+configure_file(test/img.jpg img.jpg COPYONLY)
+configure_file(test/mask.png mask.png COPYONLY)
