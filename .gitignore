@@ -7,7 +7,11 @@ CMakeLists.txt.user.*
 *.autosave
 
 # VScode
-/.vscode
+/.vscode/
+
+# CLion
+/.idea/
+/cmake-build-debug/
 
 # Build
-/build
+/build/
