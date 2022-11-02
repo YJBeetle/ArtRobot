@@ -37,7 +37,7 @@ namespace ArtRobot {
             static ColorFormat colorFormatFromChannel(int channels) {
                 switch (channels) {
                     case 4:
-                        return ColorFormat::ARGB32;
+                        return ColorFormat::ARGB32NoPremultiplied;
                     case 3:
                         return ColorFormat::RGB24;
                     case 1:
