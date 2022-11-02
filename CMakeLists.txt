@@ -6,7 +6,7 @@ set (CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DTIMER=1")
 # set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O0")
 
-project(OctopusRender)
+project(ArtRobotRender)
 
 add_subdirectory("ArtRobot")
 
@@ -15,7 +15,7 @@ set(SRC_LIST
     src/main.cpp
     src/Args.cpp
 )
-add_executable(OctopusRender ${SRC_LIST})
+add_executable(${PROJECT_NAME} ${SRC_LIST})
 target_link_libraries(${PROJECT_NAME} PRIVATE ArtRobot)
 
 configure_file(template/demo/demo.json demo.json COPYONLY)
