@@ -19,7 +19,7 @@ include(FindPkgConfig)
 ## pixman
 pkg_check_modules(PIXMAN pixman-1)
 if (NOT PIXMAN_FOUND)
-message(FATAL_ERROR "pixman not found!")
+    message(FATAL_ERROR "pixman not found!")
 endif ()
 message(STATUS "pixman library status:")
 message(STATUS "    version: ${PIXMAN_VERSION}")
@@ -30,7 +30,7 @@ message(STATUS "    libraries: ${PIXMAN_LIBRARIES}")
 ## cairo
 pkg_check_modules(CAIRO cairo)
 if (NOT CAIRO_FOUND)
-message(FATAL_ERROR "Cairo not found!")
+    message(FATAL_ERROR "Cairo not found!")
 endif ()
 message(STATUS "Cairo library status:")
 message(STATUS "    version: ${CAIRO_VERSION}")
@@ -41,7 +41,7 @@ message(STATUS "    libraries: ${CAIRO_LIBRARIES}")
 ## pango
 pkg_check_modules(PANGO pangocairo)
 if (NOT PANGO_FOUND)
-message(FATAL_ERROR "Pango not found!")
+    message(FATAL_ERROR "Pango not found!")
 endif ()
 message(STATUS "Pango library status:")
 message(STATUS "    version: ${PANGO_VERSION}")
@@ -53,7 +53,7 @@ message(STATUS "    libraries: ${PANGO_LIBRARIES}")
 ## rsvg
 pkg_check_modules(RSVG librsvg-2.0)
 if (NOT RSVG_FOUND)
-message(FATAL_ERROR "rsvg not found!")
+    message(FATAL_ERROR "rsvg not found!")
 endif ()
 message(STATUS "rsvg library status:")
 message(STATUS "    version: ${RSVG_VERSION}")
@@ -79,7 +79,7 @@ message(STATUS "    libraries: ${OpenCV_LIBS}")
 ## libwebp
 pkg_check_modules(WEBP libwebp)
 if (NOT WEBP_FOUND)
-message(FATAL_ERROR "libwebp not found!")
+    message(FATAL_ERROR "libwebp not found!")
 endif ()
 message(STATUS "libwebp library status:")
 message(STATUS "    version: ${WEBP_VERSION}")
@@ -88,20 +88,9 @@ message(STATUS "    lib path: ${WEBP_LIBDIR}")
 message(STATUS "    libraries: ${WEBP_LIBRARIES}")
 
 # Project
-set(SRC_LIST
-    src/Component/Base.cpp
-    src/Component/Group.cpp
-    src/Component/Image.cpp
-    src/Component/ImageMask.cpp
-    src/Component/Rectangle.cpp
-    src/Component/RectangleRound.cpp
-    src/Component/Circle.cpp
-    src/Component/Repeat.cpp
-    src/Component/Svg.cpp
-    src/Component/Text.cpp
-    src/Component/TextArea.cpp
-    src/Types/Color.cpp
-    src/Renderer.cpp
+file(GLOB_RECURSE SRC_LIST
+    ./src/*.cpp
+    ./src/*.hpp
 )
 if(WASM)
     add_library(${PROJECT_NAME} STATIC ${SRC_LIST})
