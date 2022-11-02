@@ -17,4 +17,3 @@
     mkdir build && cd build && cmake ..
     make -j28 && ./OctopusRender ThrowIt.json -t png out.png
     open out.png
-    
