@@ -10,6 +10,7 @@ int main(int argc, char *argv[])
         renderer.saveToFile("TestImage-Result-fromFile.png");
     }
 
+#ifdef OpenCV_FOUND
     // fromFileByCV
     {
         auto img = ArtRobot::Component::Image::fromFileByCV("img", 0, 0, 512, 512, 0, "img.jpg");
@@ -17,6 +18,7 @@ int main(int argc, char *argv[])
         renderer.render(img->getSurface());
         renderer.saveToFile("TestImage-Result-fromFileByCV.png");
     }
+#endif
 
     return 0;
 }

@@ -28,10 +28,8 @@ private:
     std::shared_ptr<Image> maskImage;
     std::shared_ptr<Base> child;
 
-    void drawChildSurfaceUsedMask(const cv::Mat &maskImageMatRead);
-
 public:
-#ifndef WASM
+#ifdef OpenCV_FOUND
     ImageMask(std::string __name,
               double __x, double __y,
               double __w, double __h,
@@ -39,13 +37,18 @@ public:
               const std::string &maskImageFilePath,
               std::shared_ptr<Base> child);
 #endif
+
+#ifdef OpenCV_FOUND
     ImageMask(std::string __name,
               double __x, double __y,
               double __w, double __h,
               double __r,
               const cv::Mat &maskImageMatRead,
               std::shared_ptr<Base> child);
+#endif
+
     ~ImageMask();
+
 };
 
 } // namespace Component

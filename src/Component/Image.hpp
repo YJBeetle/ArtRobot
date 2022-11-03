@@ -13,7 +13,14 @@
 
 #include <string>
 #include <memory>
+
+#include <ArtRobot/Features.hpp>
+
+#ifdef OpenCV_FOUND
+
 #include <opencv2/opencv.hpp>
+
+#endif
 
 #include "./Base.hpp"
 
@@ -67,19 +74,21 @@ namespace ArtRobot {
                                                   int imageStride,
                                                   ColorFormat colorFormat);
 
+#ifdef OpenCV_FOUND
             static std::shared_ptr<Image> fromMat(std::string __name,
                                                   double x, double y,
                                                   double w, double h,
                                                   double r,
                                                   const cv::Mat &imageMat);
+#endif
 
-#ifndef WASM
-
+#ifdef OpenCV_FOUND
             static std::shared_ptr<Image> fromFileByCV(std::string __name,
                                                        double x, double y,
                                                        double w, double h,
                                                        double r,
                                                        const std::string &imageFilePath);
+#endif
 
             static std::shared_ptr<Image> fromPNG(std::string __name,
                                                   double x, double y,
@@ -99,7 +108,6 @@ namespace ArtRobot {
                                                    double r,
                                                    const std::string &imageFilePath);
 
-#endif
 
             ~Image();
 
