@@ -1,0 +1,6 @@
+#cmakedefine PANGO_FOUND
+#cmakedefine RSVG_FOUND
+#cmakedefine WEBP_FOUND
+#cmakedefine JPEG_FOUND
+#cmakedefine OpenCV_FOUND
+#cmakedefine OpenCV_WITHOUT_IMAPI
