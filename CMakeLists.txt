@@ -10,9 +10,6 @@ option(UseWebP "Use WebP" ON)
 
 include(cmake/FindLibrary.cmake)
 
-# Features
-configure_file("src/Features.hpp.in" "${CMAKE_CURRENT_BINARY_DIR}/include/Features.hpp" @ONLY)
-
 # Project
 project(ArtRobot)
 
@@ -46,6 +43,9 @@ target_link_directories(${PROJECT_NAME} PUBLIC ${JPEG_LIBDIR})
 target_link_libraries(${PROJECT_NAME} PUBLIC ${JPEG_LIBRARIES})
 target_include_directories(${PROJECT_NAME} PUBLIC ${OpenCV_INCLUDE_DIRS})
 target_link_libraries(${PROJECT_NAME} PUBLIC ${OpenCV_LIBS})
+
+# Features
+configure_file("src/Features.hpp.in" "${CMAKE_CURRENT_BINARY_DIR}/include/Features.hpp" @ONLY)
 
 # Headers file
 file(GLOB_RECURSE HEADERS
