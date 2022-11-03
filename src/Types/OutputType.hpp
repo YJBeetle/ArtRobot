@@ -11,6 +11,8 @@
 
 #pragma once
 
+#include <ArtRobot/Features.hpp>
+
 namespace ArtRobot
 {
 
@@ -20,8 +22,10 @@ enum OutputType
     OutputTypeSvg,
     OutputTypePdf,
     OutputTypePng,
-    OutputTypeJpeg,
     OutputTypeWebp,
+#ifdef JPEG_FOUND
+    OutputTypeJpeg,
+#endif
     OutputTypePixmap,
 };
 }

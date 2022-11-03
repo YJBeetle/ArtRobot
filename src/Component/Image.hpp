@@ -96,11 +96,13 @@ namespace ArtRobot {
                                                   double r,
                                                   const std::string &imageFilePath);
 
+#ifdef JPEG_FOUND
             static std::shared_ptr<Image> fromJPG(std::string __name,
                                                   double x, double y,
                                                   double w, double h,
                                                   double r,
                                                   const std::string &imageFilePath);
+#endif
 
             static std::shared_ptr<Image> fromFile(std::string __name,
                                                    double x, double y,

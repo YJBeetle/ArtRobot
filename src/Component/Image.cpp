@@ -12,7 +12,10 @@
 #include "./Image.hpp"
 
 #include <iostream>
+
+#ifdef JPEG_FOUND
 #include <jpeglib.h>
+#endif
 
 namespace ArtRobot {
     namespace Component {
@@ -127,6 +130,7 @@ namespace ArtRobot {
             return ret;
         }
 
+#ifdef JPEG_FOUND
         std::shared_ptr<Image> Image::fromJPG(std::string __name,
                                               double x, double y,
                                               double w, double h,
@@ -193,6 +197,7 @@ namespace ArtRobot {
 
             return ret;
         }
+#endif
 
         std::shared_ptr<Image> Image::fromFile(std::string __name,
                                                double x, double y,
@@ -202,8 +207,10 @@ namespace ArtRobot {
             const char *ext = imageFilePath.c_str() + imageFilePath.length() - 4;
             if (!strcasecmp(ext, ".png"))
                 return Image::fromPNG(__name, x, y, w, h, r, imageFilePath);
+#ifdef JPEG_FOUND
             else if (!strcasecmp(ext, ".jpg"))
                 return Image::fromJPG(__name, x, y, w, h, r, imageFilePath);
+#endif
             return std::make_shared<Image>(__name, x, y, w, h, r);
         }
 
