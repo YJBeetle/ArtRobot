@@ -139,7 +139,7 @@ install(TARGETS ${PROJECT_NAME}
 install(DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/include/" DESTINATION include)
 
 # test
-add_executable(testImage test/testImage.cpp)
-target_link_libraries(testImage PUBLIC ${PROJECT_NAME})
+add_executable(TestImage test/TestImage.cpp)
+target_link_libraries(TestImage PUBLIC ${PROJECT_NAME})
 configure_file(test/img.jpg img.jpg COPYONLY)
 configure_file(test/mask.png mask.png COPYONLY)
