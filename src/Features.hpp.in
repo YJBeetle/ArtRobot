@@ -1,3 +1,4 @@
+#pragma once
 #cmakedefine PANGO_FOUND
 #cmakedefine RSVG_FOUND
 #cmakedefine WEBP_FOUND
