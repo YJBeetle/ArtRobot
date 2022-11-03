@@ -2,11 +2,11 @@ cmake_minimum_required(VERSION 3.13)
 
 set (CMAKE_CXX_STANDARD 17)
 
-option(WithoutPango "Without Pango" OFF)
-option(WithoutRsvg "Without Rsvg" OFF)
-option(WithoutJpeg "Without Jpeg" OFF)
-option(WithoutOpenCV "Without OpenCV" OFF)
-option(WithoutWebP "Without WebP" OFF)
+option(UsePango "Use Pango" ON)
+option(UseRsvg "Use Rsvg" ON)
+option(UseJpeg "Use Jpeg" ON)
+option(UseOpenCV "Use OpenCV" ON)
+option(UseWebP "Use WebP" ON)
 
 include(cmake/FindLibrary.cmake)
 

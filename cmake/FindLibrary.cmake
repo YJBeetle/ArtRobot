@@ -27,7 +27,7 @@ else ()
 endif ()
 
 # pango
-if (NOT WithoutPango)
+if (UsePango)
     pkg_check_modules(PANGO pangocairo)
     if (NOT PANGO_FOUND)
         message(FATAL_ERROR "Pango not found!")
@@ -42,7 +42,7 @@ if (NOT WithoutPango)
 endif ()
 
 # rsvg
-if (NOT WithoutRsvg)
+if (UseRsvg)
     pkg_check_modules(RSVG librsvg-2.0)
     if (NOT RSVG_FOUND)
         message(FATAL_ERROR "rsvg not found!")
@@ -57,7 +57,7 @@ if (NOT WithoutRsvg)
 endif ()
 
 # libwebp
-if (NOT WithoutWebP)
+if (UseWebP)
     pkg_check_modules(WEBP libwebp)
     if (NOT WEBP_FOUND)
         message(FATAL_ERROR "libwebp not found!")
@@ -72,7 +72,7 @@ endif ()
 
 
 # Jpeg
-if (NOT WithoutJpeg)
+if (UseJpeg)
     pkg_check_modules(JPEG libturbojpeg)
     if (NOT JPEG_FOUND)
         pkg_check_modules(JPEG libjpeg)
@@ -89,7 +89,7 @@ if (NOT WithoutJpeg)
 endif ()
 
 # OpenCV
-if (NOT WithoutOpenCV)
+if (UseOpenCV)
     find_package(OpenCV REQUIRED)
     if (NOT OpenCV_FOUND)
         message(FATAL_ERROR "OpenCV not found!")
