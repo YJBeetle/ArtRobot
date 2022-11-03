@@ -45,7 +45,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC ${OpenCV_INCLUDE_DIRS})
 target_link_libraries(${PROJECT_NAME} PUBLIC ${OpenCV_LIBS})
 
 # Features
-configure_file("src/Features.hpp.in" "${CMAKE_CURRENT_BINARY_DIR}/include/Features.hpp" @ONLY)
+configure_file("src/Features.hpp.in" "${CMAKE_CURRENT_BINARY_DIR}/include/ArtRobot/Features.hpp" @ONLY)
 
 # Headers file
 file(GLOB_RECURSE HEADERS
