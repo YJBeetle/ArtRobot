@@ -96,6 +96,8 @@ namespace ArtRobot {
                                                   double r,
                                                   const std::string &imageFilePath);
 
+// todo webp
+
 #ifdef JPEG_FOUND
             static std::shared_ptr<Image> fromJPG(std::string __name,
                                                   double x, double y,

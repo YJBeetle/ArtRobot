@@ -22,7 +22,9 @@ enum OutputType
     OutputTypeSvg,
     OutputTypePdf,
     OutputTypePng,
+#ifdef WEBP_FOUND
     OutputTypeWebp,
+#endif
 #ifdef JPEG_FOUND
     OutputTypeJpeg,
 #endif

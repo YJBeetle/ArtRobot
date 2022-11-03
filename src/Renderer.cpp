@@ -16,7 +16,9 @@
 
 #include <ArtRobot/Features.hpp>
 
+#ifdef WEBP_FOUND
 #include <webp/encode.h>
+#endif
 
 #ifdef JPEG_FOUND
 #include <jpeglib.h>
@@ -88,7 +90,9 @@ Renderer::Renderer(OutputType __outputType,
         // cairo_show_page(cr);                                             // 多页
         break;
     case OutputTypePng:
+#ifdef WEBP_FOUND
     case OutputTypeWebp:
+#endif
 #ifdef JPEG_FOUND
     case OutputTypeJpeg:
 #endif
@@ -124,6 +128,7 @@ void Renderer::render(cairo_surface_t *__surface)
         data.clear();   // 防止重复渲染
         cairo_surface_write_to_png_stream(surface, writeStreamToData, (void *)&data);
         break;
+#ifdef WEBP_FOUND
     case OutputTypeWebp:
         data.clear();
         {
@@ -165,6 +170,7 @@ void Renderer::render(cairo_surface_t *__surface)
             }
         }
         break;
+#endif
 #ifdef JPEG_FOUND
     case OutputTypeJpeg:
         data.clear();
