@@ -13,21 +13,19 @@
 
 #include <ArtRobot/Features.hpp>
 
-namespace ArtRobot
-{
+namespace ArtRobot {
 
-enum OutputType
-{
-    OutputTypeUnknow = 0,
-    OutputTypeSvg,
-    OutputTypePdf,
-    OutputTypePng,
+    enum OutputType {
+        OutputTypeUnknow = 0,
+        OutputTypeSvg,
+        OutputTypePdf,
+        OutputTypePng,
 #ifdef WEBP_FOUND
-    OutputTypeWebp,
+        OutputTypeWebp,
 #endif
 #ifdef JPEG_FOUND
-    OutputTypeJpeg,
+        OutputTypeJpeg,
 #endif
-    OutputTypePixmap,
-};
+        OutputTypePixmap,
+    };
 }

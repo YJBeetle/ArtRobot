@@ -14,22 +14,20 @@
 #include "../Types/Color.hpp"
 #include "./Base.hpp"
 
-namespace ArtRobot
-{
-namespace Component
-{
+namespace ArtRobot {
+    namespace Component {
 
-class Circle : public Base
-{
-private:
-public:
-    Circle(std::string __name,
-           double __x, double __y,
-           double __w, double __h,
-           double __r,
-           Color color);
-    ~Circle();
-};
+        class Circle : public Base {
+        private:
+        public:
+            Circle(std::string __name,
+                   double __x, double __y,
+                   double __w, double __h,
+                   double __r,
+                   Color color);
 
-} // namespace Component
+            ~Circle();
+        };
+
+    } // namespace Component
 } // namespace ArtRobot

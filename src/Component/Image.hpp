@@ -75,19 +75,23 @@ namespace ArtRobot {
                                                   ColorFormat colorFormat);
 
 #ifdef OpenCV_FOUND
+
             static std::shared_ptr<Image> fromMat(std::string __name,
                                                   double x, double y,
                                                   double w, double h,
                                                   double r,
                                                   const cv::Mat &imageMat);
+
 #endif
 
 #ifdef OpenCV_FOUND
+
             static std::shared_ptr<Image> fromFileByCV(std::string __name,
                                                        double x, double y,
                                                        double w, double h,
                                                        double r,
                                                        const std::string &imageFilePath);
+
 #endif
 
             static std::shared_ptr<Image> fromPNG(std::string __name,
@@ -99,11 +103,13 @@ namespace ArtRobot {
 // todo webp
 
 #ifdef JPEG_FOUND
+
             static std::shared_ptr<Image> fromJPG(std::string __name,
                                                   double x, double y,
                                                   double w, double h,
                                                   double r,
                                                   const std::string &imageFilePath);
+
 #endif
 
             static std::shared_ptr<Image> fromFile(std::string __name,

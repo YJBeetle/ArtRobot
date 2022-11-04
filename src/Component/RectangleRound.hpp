@@ -14,26 +14,24 @@
 #include "../Types/Color.hpp"
 #include "./Base.hpp"
 
-namespace ArtRobot
-{
-namespace Component
-{
+namespace ArtRobot {
+    namespace Component {
 
-class RectangleRound : public Base
-{
-private:
-public:
-    RectangleRound(std::string __name,
-                   double __x, double __y,
-                   double __w, double __h,
-                   double __r,
-                   double angleTL,
-                   double angleTR,
-                   double angleBR,
-                   double angleBL,
-                   Color color);
-    ~RectangleRound();
-};
+        class RectangleRound : public Base {
+        private:
+        public:
+            RectangleRound(std::string __name,
+                           double __x, double __y,
+                           double __w, double __h,
+                           double __r,
+                           double angleTL,
+                           double angleTR,
+                           double angleBR,
+                           double angleBL,
+                           Color color);
 
-} // namespace Component
+            ~RectangleRound();
+        };
+
+    } // namespace Component
 } // namespace ArtRobot

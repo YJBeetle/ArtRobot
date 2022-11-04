@@ -14,7 +14,9 @@
 #include <iostream>
 
 #ifdef JPEG_FOUND
+
 #include <jpeglib.h>
+
 #endif
 
 namespace ArtRobot {
@@ -80,6 +82,7 @@ namespace ArtRobot {
         }
 
 #ifdef OpenCV_FOUND
+
         std::shared_ptr<Image> Image::fromMat(std::string __name,
                                               double x, double y,
                                               double w, double h,
@@ -95,9 +98,11 @@ namespace ArtRobot {
                 return Image::fromRaw(__name, x, y, w, h, r,
                                       imageMat.data, imageMat.cols, imageMat.rows, imageMat.step, ColorFormat::ARGB32NoPremultiplied);
         }
+
 #endif
 
 #ifdef OpenCV_FOUND
+
         std::shared_ptr<Image> Image::fromFileByCV(std::string __name,
                                                    double x, double y,
                                                    double w, double h,
@@ -106,6 +111,7 @@ namespace ArtRobot {
             return Image::fromMat(__name, x, y, w, h, r,
                                   cv::imread(imageFilePath, cv::IMREAD_UNCHANGED));
         }
+
 #endif
 
         std::shared_ptr<Image> Image::fromPNG(std::string __name,
@@ -131,6 +137,7 @@ namespace ArtRobot {
         }
 
 #ifdef JPEG_FOUND
+
         std::shared_ptr<Image> Image::fromJPG(std::string __name,
                                               double x, double y,
                                               double w, double h,
@@ -197,6 +204,7 @@ namespace ArtRobot {
 
             return ret;
         }
+
 #endif
 
         std::shared_ptr<Image> Image::fromFile(std::string __name,

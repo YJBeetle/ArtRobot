@@ -16,22 +16,20 @@
 
 #include "./Base.hpp"
 
-namespace ArtRobot
-{
-namespace Component
-{
+namespace ArtRobot {
+    namespace Component {
 
-class Group : public Base
-{
-private:
-    std::vector<std::shared_ptr<Base>> childs;
+        class Group : public Base {
+        private:
+            std::vector<std::shared_ptr<Base>> childs;
 
-public:
-    Group(std::string __name);
-    ~Group();
+        public:
+            Group(std::string __name);
 
-    void addChild(std::shared_ptr<Base> child);
-};
+            ~Group();
 
-} // namespace Component
+            void addChild(std::shared_ptr<Base> child);
+        };
+
+    } // namespace Component
 } // namespace ArtRobot

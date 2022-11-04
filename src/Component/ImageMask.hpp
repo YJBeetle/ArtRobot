@@ -17,39 +17,40 @@
 #include "./Base.hpp"
 #include "./Image.hpp"
 
-namespace ArtRobot
-{
-namespace Component
-{
+namespace ArtRobot {
+    namespace Component {
 
-class ImageMask : public Base
-{
-private:
-    std::shared_ptr<Image> maskImage;
-    std::shared_ptr<Base> child;
+        class ImageMask : public Base {
+        private:
+            std::shared_ptr<Image> maskImage;
+            std::shared_ptr<Base> child;
 
-public:
+        public:
 #ifdef OpenCV_FOUND
-    ImageMask(std::string __name,
-              double __x, double __y,
-              double __w, double __h,
-              double __r,
-              const std::string &maskImageFilePath,
-              std::shared_ptr<Base> child);
+
+            ImageMask(std::string __name,
+                      double __x, double __y,
+                      double __w, double __h,
+                      double __r,
+                      const std::string &maskImageFilePath,
+                      std::shared_ptr<Base> child);
+
 #endif
 
 #ifdef OpenCV_FOUND
-    ImageMask(std::string __name,
-              double __x, double __y,
-              double __w, double __h,
-              double __r,
-              const cv::Mat &maskImageMatRead,
-              std::shared_ptr<Base> child);
+
+            ImageMask(std::string __name,
+                      double __x, double __y,
+                      double __w, double __h,
+                      double __r,
+                      const cv::Mat &maskImageMatRead,
+                      std::shared_ptr<Base> child);
+
 #endif
 
-    ~ImageMask();
+            ~ImageMask();
 
-};
+        };
 
-} // namespace Component
+    } // namespace Component
 } // namespace ArtRobot

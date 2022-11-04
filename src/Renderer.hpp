@@ -23,47 +23,49 @@
 #define MM2IN(MM) ((double)MM / 25.4)
 #define PX2IN(PX, PPI) ((double)PX / PPI)
 
-namespace ArtRobot
-{
+namespace ArtRobot {
 
-class Renderer
-{
-public:
-    enum unitType
-    {
-        unitTypeUnknow = 0,
-        PX, // PT
-        IN, // INCH
-        MM,
-        CM,
+    class Renderer {
+    public:
+        enum unitType {
+            unitTypeUnknow = 0,
+            PX, // PT
+            IN, // INCH
+            MM,
+            CM,
+        };
+
+    private:
+        double surfaceWidth;
+        double surfaceHeight;
+        double ppi;
+        OutputType outputType;
+
+        cairo_surface_t *surface; //介质
+        cairo_t *cr;              //画笔
+
+        std::vector<unsigned char> data;
+
+    public:
+        Renderer(OutputType __outputType,
+                 double __width,
+                 double __height,
+                 unitType __unit,
+                 double __ppi);
+
+        ~Renderer();
+
+        void render(cairo_surface_t *__surface);
+
+        void saveToFile(std::string outputPath);
+
+        std::vector<unsigned char> getData();
+
+        unsigned char *getDataC();
+
+        size_t getDataCSize();
+
+        std::string getDataString();
     };
-
-private:
-    double surfaceWidth;
-    double surfaceHeight;
-    double ppi;
-    OutputType outputType;
-
-    cairo_surface_t *surface; //介质
-    cairo_t *cr;              //画笔
-
-    std::vector<unsigned char> data;
-
-public:
-    Renderer(OutputType __outputType,
-             double __width,
-             double __height,
-             unitType __unit,
-             double __ppi);
-    ~Renderer();
-
-    void render(cairo_surface_t *__surface);
-
-    void saveToFile(std::string outputPath);
-    std::vector<unsigned char> getData();
-    unsigned char *getDataC();
-    size_t getDataCSize();
-    std::string getDataString();
-};
 
 } // namespace ArtRobot
