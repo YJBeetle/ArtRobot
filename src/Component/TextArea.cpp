@@ -27,7 +27,7 @@ namespace ArtRobot {
                            int8_t verticalAlign,          // 垂直对齐方式，0为第一行基线对齐，1为顶部对齐，2垂直居中对齐，3底部对齐
                            double lineSpacing,            // 行间距
                            double wordSpacing)            // 字间距
-                : Base(TypeText, __name, __x, __y, __w, __h, __r) {
+                : Base(TypeTextArea, __name, __x, __y, __w, __h, __r) {
             cairo_set_source_rgba(cr, color.red(), color.green(), color.blue(), color.alpha());
 
             PangoLayout *layout;

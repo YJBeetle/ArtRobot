@@ -19,7 +19,7 @@ namespace ArtRobot {
                        double __w, double __h,
                        double __r,
                        Color color)
-                : Base(TypeRectangleRound, __name, __x, __y, __w, __h, __r) {
+                : Base(TypeCircle, __name, __x, __y, __w, __h, __r) {
             cairo_set_source_rgba(cr, color.red(), color.green(), color.blue(), color.alpha());
 
             cairo_scale(cr, __w / 2.0, __h / 2.0);
