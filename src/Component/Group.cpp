@@ -16,21 +16,17 @@
 namespace ArtRobot {
     namespace Component {
 
-        Group::Group(std::string __name)
-                : Base(TypeGroup, __name) {
+        Group::Group(std::string name, Transform transform)
+                : Base({Property::Type::Group, name, 0, 0}, transform) {
         }
 
         Group::~Group() {
             finish();
-            childs.clear();
         }
 
-        void Group::addChild(std::shared_ptr<Base> child) {
-            childs.insert(childs.end(), child);
-
+        void Group::addChild(const Base &child) {
             cairo_save(cr); //保存画笔
-            cairo_translate(cr, child->x(), child->y());
-            cairo_set_source_surface(cr, child->getSurface(), 0.0, 0.0);
+            cairo_set_source_surface(cr, child.getSurface(), 0.0, 0.0);
             cairo_paint(cr);
             cairo_restore(cr); //还原画笔
         }

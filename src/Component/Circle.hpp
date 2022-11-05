@@ -20,11 +20,7 @@ namespace ArtRobot {
         class Circle : public Base {
         private:
         public:
-            Circle(std::string __name,
-                   double __x, double __y,
-                   double __w, double __h,
-                   double __r,
-                   Color color);
+            Circle(std::string name, double width, double height, Transform transform, Color color);
 
             ~Circle();
         };

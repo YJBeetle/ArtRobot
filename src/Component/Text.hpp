@@ -27,9 +27,7 @@ namespace ArtRobot {
             double _realH;
 
         public:
-            Text(std::string __name,
-                 double __x, double __y,
-                 double __r,
+            Text(std::string name, Transform transform,
                  const std::string &content,    // 内容
                  Color color,                   // 颜色
                  const std::string &fontFamily, // 字体

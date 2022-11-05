@@ -14,36 +14,54 @@
 namespace ArtRobot {
     namespace Component {
 
-        Base::Base()
-                : type(TypeUnknow) {
+        Base::Base() {
         }
 
-        Base::Base(Type __type, std::string __name)
-                : type(__type),
-                  name(__name) {
-            if (type != TypeUnknow) {
-                surface = cairo_recording_surface_create(CAIRO_CONTENT_COLOR_ALPHA, NULL);
+        Base::Base(Property property)
+                : property(property) {
+            if (property.type != Property::Type::Unknow) {
+                surface = cairo_recording_surface_create(CAIRO_CONTENT_COLOR_ALPHA, nullptr);
                 cr = cairo_create(surface);
             }
         }
 
-        Base::Base(Type __type, std::string __name,
-                   double __x, double __y,
-                   double __w, double __h,
-                   double __r)
-                : type(__type),
-                  name(__name),
-                  _x(__x),
-                  _y(__y),
-                  _w(__w),
-                  _h(__h),
-                  _r(__r) {
-            if (type != TypeUnknow) {
-                surface = cairo_recording_surface_create(CAIRO_CONTENT_COLOR_ALPHA, NULL);
+        Base::Base(Property property, Transform transform)
+                : property(property),
+                  transform(transform) {
+            if (property.type != Property::Type::Unknow) {
+                surface = cairo_recording_surface_create(CAIRO_CONTENT_COLOR_ALPHA, nullptr);
                 cr = cairo_create(surface);
-                cairo_translate(cr, _w / 2, _h / 2);
-                cairo_rotate(cr, _r * M_PI / 180);
-                cairo_translate(cr, -_w / 2, -_h / 2);
+                cairo_translate(cr, transform.x, transform.y);
+                cairo_rotate(cr, transform.rotate * M_PI / 180);
+                cairo_scale(cr, transform.scaleX, transform.scaleY);
+                switch (transform.anchor) {
+                    case Transform::Anchor::LT:
+                        break;
+                    case Transform::Anchor::CT:
+                        cairo_translate(cr, -property.width / 2, 0);
+                        break;
+                    case Transform::Anchor::RT:
+                        cairo_translate(cr, -property.width, 0);
+                        break;
+                    case Transform::Anchor::LC:
+                        cairo_translate(cr, 0, -property.height / 2);
+                        break;
+                    case Transform::Anchor::CC:
+                        cairo_translate(cr, -property.width / 2, -property.height / 2);
+                        break;
+                    case Transform::Anchor::RC:
+                        cairo_translate(cr, -property.width, -property.height / 2);
+                        break;
+                    case Transform::Anchor::LD:
+                        cairo_translate(cr, 0, -property.height);
+                        break;
+                    case Transform::Anchor::CD:
+                        cairo_translate(cr, -property.width / 2, -property.height);
+                        break;
+                    case Transform::Anchor::RD:
+                        cairo_translate(cr, -property.width, -property.height);
+                        break;
+                }
             }
         }
 
@@ -61,8 +79,8 @@ namespace ArtRobot {
             // cairo_surface_finish(surface);
         }
 
-        cairo_surface_t *Base::getSurface() {
-            return (type != TypeUnknow)
+        cairo_surface_t *Base::getSurface() const {
+            return (property.type != Property::Type::Unknow)
                    ? surface
                    : nullptr;
         }

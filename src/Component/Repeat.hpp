@@ -20,10 +20,9 @@ namespace ArtRobot {
         {
         private:
         public:
-            Repeat(std::string __name,
-                   double __x, double __y,
-                   double __w, double __h,
-                   double __r);
+            Repeat(std::string name, double width, double height);
+
+            Repeat(std::string name, double width, double height, Transform transform);
 
             ~Repeat();
         };

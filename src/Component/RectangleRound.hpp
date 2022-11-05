@@ -20,10 +20,7 @@ namespace ArtRobot {
         class RectangleRound : public Base {
         private:
         public:
-            RectangleRound(std::string __name,
-                           double __x, double __y,
-                           double __w, double __h,
-                           double __r,
+            RectangleRound(std::string name, double width, double height, Transform transform,
                            double angleTL,
                            double angleTR,
                            double angleBR,

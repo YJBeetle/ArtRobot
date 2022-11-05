@@ -22,16 +22,10 @@ namespace ArtRobot {
         class Svg : public Base {
         private:
         public:
-            Svg(std::string __name,
-                double __x, double __y,
-                double __w, double __h,
-                double __r,
+            Svg(std::string name, double width, double height, Transform transform,
                 const std::string &src);
 
-            Svg(std::string __name,
-                double __x, double __y,
-                double __w, double __h,
-                double __r,
+            Svg(std::string name, double width, double height, Transform transform,
                 unsigned char *data, size_t len);
 
             ~Svg();

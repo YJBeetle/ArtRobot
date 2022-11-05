@@ -28,10 +28,7 @@ namespace ArtRobot {
         public:
 #ifdef OpenCV_FOUND
 
-            ImageMask(std::string __name,
-                      double __x, double __y,
-                      double __w, double __h,
-                      double __r,
+            ImageMask(std::string name, double width, double height, Transform transform,
                       const std::string &maskImageFilePath,
                       std::shared_ptr<Base> child);
 
@@ -39,10 +36,7 @@ namespace ArtRobot {
 
 #ifdef OpenCV_FOUND
 
-            ImageMask(std::string __name,
-                      double __x, double __y,
-                      double __w, double __h,
-                      double __r,
+            ImageMask(std::string name, double width, double height, Transform transform,
                       const cv::Mat &maskImageMatRead,
                       std::shared_ptr<Base> child);
 

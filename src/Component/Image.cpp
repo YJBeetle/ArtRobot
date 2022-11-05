@@ -22,23 +22,17 @@
 namespace ArtRobot {
     namespace Component {
 
-        Image::Image(std::string __name,
-                     double x, double y,
-                     double w, double h,
-                     double r)
-                : Base(TypeImage, __name, x, y, w, h, r) {
+        Image::Image(std::string name, double width, double height, Transform transform)
+                : Base({Property::Type::Image, name, width, height}, transform) {
         }
 
-        Image::Image(std::string __name,
-                     double x, double y,
-                     double w, double h,
-                     double r,
+        Image::Image(std::string name, double width, double height, Transform transform,
                      cairo_surface_t *imageSurface)
-                : Base(TypeImage, __name, x, y, w, h, r) {
-            if (w || h) {
+                : Base({Property::Type::Image, name, width, height}, transform) {
+            if (width || height) {
                 double scaleX, scaleY;
-                scaleX = w / (double) cairo_image_surface_get_width(imageSurface);
-                scaleY = h / (double) cairo_image_surface_get_height(imageSurface);
+                scaleX = width / (double) cairo_image_surface_get_width(imageSurface);
+                scaleY = height / (double) cairo_image_surface_get_height(imageSurface);
                 cairo_scale(cr, scaleX, scaleY);
             }
             cairo_set_source_surface(cr, imageSurface, 0, 0);
@@ -46,10 +40,7 @@ namespace ArtRobot {
             cairo_surface_finish(imageSurface);
         }
 
-        std::shared_ptr<Image> Image::fromRaw(std::string __name,
-                                              double x, double y,
-                                              double w, double h,
-                                              double r,
+        std::shared_ptr<Image> Image::fromRaw(std::string name, double width, double height, Transform transform,
                                               unsigned char *imageData,
                                               int imageW, int imageH,
                                               int imageStride,
@@ -73,7 +64,7 @@ namespace ArtRobot {
                                                                                 imageH,
                                                                                 imageStride);
 
-            std::shared_ptr<Image> ret = std::make_shared<Image>(__name, x, y, w, h, r,
+            std::shared_ptr<Image> ret = std::make_shared<Image>(name, width, height, transform,
                                                                  imageSurface);
 
             cairo_surface_destroy(imageSurface); // 回收
@@ -83,19 +74,16 @@ namespace ArtRobot {
 
 #ifdef OpenCV_FOUND
 
-        std::shared_ptr<Image> Image::fromMat(std::string __name,
-                                              double x, double y,
-                                              double w, double h,
-                                              double r,
+        std::shared_ptr<Image> Image::fromMat(std::string name, double width, double height, Transform transform,
                                               const cv::Mat &imageMat) {
             if (imageMat.channels() == 1)
-                return Image::fromRaw(__name, x, y, w, h, r,
+                return Image::fromRaw(name, width, height, transform,
                                       imageMat.data, imageMat.cols, imageMat.rows, imageMat.step, ColorFormat::A8);
             else if (imageMat.channels() == 3)
-                return Image::fromRaw(__name, x, y, w, h, r,
+                return Image::fromRaw(name, width, height, transform,
                                       imageMat.data, imageMat.cols, imageMat.rows, imageMat.step, ColorFormat::RGB24);
             else
-                return Image::fromRaw(__name, x, y, w, h, r,
+                return Image::fromRaw(name, width, height, transform,
                                       imageMat.data, imageMat.cols, imageMat.rows, imageMat.step, ColorFormat::ARGB32NoPremultiplied);
         }
 
@@ -103,21 +91,15 @@ namespace ArtRobot {
 
 #ifdef OpenCV_FOUND
 
-        std::shared_ptr<Image> Image::fromFileByCV(std::string __name,
-                                                   double x, double y,
-                                                   double w, double h,
-                                                   double r,
+        std::shared_ptr<Image> Image::fromFileByCV(std::string name, double width, double height, Transform transform,
                                                    const std::string &imageFilePath) {
-            return Image::fromMat(__name, x, y, w, h, r,
+            return Image::fromMat(name, width, height, transform,
                                   cv::imread(imageFilePath, cv::IMREAD_UNCHANGED));
         }
 
 #endif
 
-        std::shared_ptr<Image> Image::fromPNG(std::string __name,
-                                              double x, double y,
-                                              double w, double h,
-                                              double r,
+        std::shared_ptr<Image> Image::fromPNG(std::string name, double width, double height, Transform transform,
                                               const std::string &imageFilePath) {
             std::shared_ptr<Image> ret;
 
@@ -128,7 +110,7 @@ namespace ArtRobot {
 
                 cairo_surface_t *img = cairo_image_surface_create_from_png(imageFilePath.c_str());
 
-                ret = std::make_shared<Image>(__name, x, y, w, h, r, img);
+                ret = std::make_shared<Image>(name, width, height, transform, img);
 
                 cairo_surface_destroy(img); // 回收PNG
             }
@@ -138,10 +120,7 @@ namespace ArtRobot {
 
 #ifdef JPEG_FOUND
 
-        std::shared_ptr<Image> Image::fromJPG(std::string __name,
-                                              double x, double y,
-                                              double w, double h,
-                                              double r,
+        std::shared_ptr<Image> Image::fromJPG(std::string name, double width, double height, Transform transform,
                                               const std::string &imageFilePath) {
             std::shared_ptr<Image> ret;
 
@@ -154,7 +133,7 @@ namespace ArtRobot {
             //文件检查
             if ((infile = fopen(filename, "rb")) == NULL) {
                 fprintf(stderr, "文件不存在： %s \n", filename);
-                return std::make_shared<Image>(__name, x, y, w, h, r);
+                return std::make_shared<Image>(name, width, height, transform);
             }
 
             struct jpeg_decompress_struct cinfo;
@@ -192,7 +171,7 @@ namespace ArtRobot {
                 // put_scanline_someplace(buffer[0], row_stride);
             }
 
-            ret = Image::fromRaw(__name, x, y, w, h, r,
+            ret = Image::fromRaw(name, width, height, transform,
                                  image_buffer, cinfo.output_width, cinfo.output_height, cinfo.output_width * 4, ColorFormat::ARGB32);
 
             free(image_buffer);
@@ -207,19 +186,16 @@ namespace ArtRobot {
 
 #endif
 
-        std::shared_ptr<Image> Image::fromFile(std::string __name,
-                                               double x, double y,
-                                               double w, double h,
-                                               double r,
+        std::shared_ptr<Image> Image::fromFile(std::string name, double width, double height, Transform transform,
                                                const std::string &imageFilePath) {
             const char *ext = imageFilePath.c_str() + imageFilePath.length() - 4;
             if (!strcasecmp(ext, ".png"))
-                return Image::fromPNG(__name, x, y, w, h, r, imageFilePath);
+                return Image::fromPNG(name, width, height, transform, imageFilePath);
 #ifdef JPEG_FOUND
             else if (!strcasecmp(ext, ".jpg"))
-                return Image::fromJPG(__name, x, y, w, h, r, imageFilePath);
+                return Image::fromJPG(name, width, height, transform, imageFilePath);
 #endif
-            return std::make_shared<Image>(__name, x, y, w, h, r);
+            return std::make_shared<Image>(name, width, height, transform);
         }
 
         Image::~Image() {

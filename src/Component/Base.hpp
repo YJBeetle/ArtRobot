@@ -18,74 +18,89 @@
 namespace ArtRobot {
     namespace Component {
 
-        enum Type {
-            TypeUnknow = 0,
-            TypeRectangle,      // 方形
-            TypeRectangleRound, // 圆角方形
-            TypeCircle,         // 圆形
-            TypeSvg,
-            TypeImage,
-            TypeImageMask,
-            TypeText,     // 点状文字
-            TypeTextArea, // 区域文字
-            TypeRepeat,   // 重复对象
-            TypeGroup,    // 群组对象
+        struct Property {
+            enum class Type {
+                Unknow = 0,
+                Rectangle,      // 方形
+                RectangleRound, // 圆角方形
+                Circle,         // 圆形
+                Svg,
+                Image,
+                ImageMask,
+                Text,     // 点状文字
+                TextArea, // 区域文字
+                Repeat,   // 重复对象
+                Group,    // 群组对象
+            };
+            Type type = Type::Unknow;
+            std::string name = std::string();
+            double width = 0;
+            double height = 0;
+        };
+        struct Transform {
+            double x = 0;
+            double y = 0;
+            double rotate = 0;
+            enum class Anchor {
+                LT, CT, RT,
+                LC, CC, RC,
+                LD, CD, RD,
+            };
+            Anchor anchor = Anchor::CC;
+            double scaleX = 1;
+            double scaleY = 1;
         };
 
         class Base {
         protected:
-            Type type = TypeUnknow;
-            std::string name;
-            double _x = 0;
-            double _y = 0;
-            double _w = 0;
-            double _h = 0;
-            double _r = 0;
+            Property property;
+            Transform transform;
             cairo_surface_t *surface = nullptr;
             cairo_t *cr = nullptr;
 
         public:
             Base();
 
-            Base(Type __type, std::string __name);
+            Base(Property property);
 
-            Base(Type __type, std::string __name,
-                 double __x, double __y,
-                 double __w, double __h,
-                 double __r);
+            Base(Property property, Transform transform);
 
             virtual ~Base();
 
             void finish();
 
-            cairo_surface_t *getSurface();
+            cairo_surface_t *getSurface() const;
 
-            inline void setX(double __x) {
-                _x = __x;
+            inline double width() const {
+                return property.width;
             }
 
-            inline void setY(double __y) {
-                _y = __y;
+            inline double height() const {
+                return property.height;
             }
 
-            inline double x() {
-                return _x;
+            inline void setX(double x) {
+                transform.x = x;
             }
 
-            inline double y() {
-                return _y;
+            inline void setY(double y) {
+                transform.y = y;
             }
 
-            inline double w() {
-                return _w;
+            inline void setRotate(double rotate) {
+                transform.rotate = rotate;
             }
 
-            inline double h() {
-                return _h;
+            inline double x() const {
+                return transform.x;
             }
 
-            inline double r() {
-                return _r;
+            inline double y() const {
+                return transform.y;
+            }
+
+            inline double rotate() const {
+                return transform.rotate;
             }
         };
 
