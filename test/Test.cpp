@@ -22,10 +22,17 @@ int main(int argc, char *argv[]) {
         renderer.render(c.getSurface());
         renderer.saveToFile("Test-Result-Component-Circle.png");
     }
+    // Circle
+    {
+        auto c = ArtRobot::Component::Text("Text", {.x=256, .y=256}, "喵喵喵", "black", "", 900, 100, 1, 0);
+        ArtRobot::Renderer renderer(ArtRobot::OutputTypePng, 512, 512, ArtRobot::Renderer::PX, 72);
+        renderer.render(c.getSurface());
+        renderer.saveToFile("Test-Result-Component-Text.png");
+    }
     // Group
     {
         auto c1 = ArtRobot::Component::Rectangle("Rectangle1", 100, 100, {.rotate=20}, "red");
-        auto g1 = ArtRobot::Component::Group("Group1", {.rotate=20,.scaleX=.5});
+        auto g1 = ArtRobot::Component::Group("Group1", {.rotate=20, .scaleX=.5});
         g1.addChild(c1);
         auto c2 = ArtRobot::Component::Rectangle("Rectangle2", 100, 100, {.rotate=20}, "blue");
         auto g2 = ArtRobot::Component::Group("Group2", {.x=256, .y=256});
@@ -44,7 +51,7 @@ int main(int argc, char *argv[]) {
     }
     // Anchor
     {
-        ArtRobot::Component::Circle cl[]={
+        ArtRobot::Component::Circle cl[] = {
                 ArtRobot::Component::Circle("Circle", 200, 200, {.anchor=ArtRobot::Component::Transform::Anchor::LT}, "red"),
                 ArtRobot::Component::Circle("Circle", 200, 200, {.anchor=ArtRobot::Component::Transform::Anchor::CT}, "green"),
                 ArtRobot::Component::Circle("Circle", 200, 200, {.anchor=ArtRobot::Component::Transform::Anchor::RT}, "blue"),
