@@ -17,20 +17,20 @@ namespace ArtRobot {
 
     class Color {
     private:
-        uint32_t color;
+        uint32_t value;
 
     public:
         Color();
 
-        Color(uint32_t __color);
+        Color(uint32_t colorVal);
 
-        Color(const char *__color);
+        Color(const char *colorStr);
 
-        Color &operator=(uint32_t __color);
+        Color &operator=(uint32_t colorVal);
 
-        Color &operator=(const char *__color);
+        Color &operator=(const char *colorStr);
 
-        Color &operator=(const Color &__color);
+        Color &operator=(const Color &other);
 
         double red();
 
