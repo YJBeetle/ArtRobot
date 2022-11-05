@@ -6,28 +6,28 @@ int main(int argc, char *argv[]) {
         auto c = ArtRobot::Component::Rectangle("Rectangle", 100, 200, {.x=256, .y=256}, "red");
         ArtRobot::Renderer renderer(ArtRobot::OutputTypePng, 512, 512, ArtRobot::Renderer::PX, 72);
         renderer.render(c.getSurface());
-        renderer.saveToFile("Test-Result-Rectangle.png");
+        renderer.saveToFile("Test-Result-Component-Rectangle.png");
     }
     // RectangleRound
     {
         auto c = ArtRobot::Component::RectangleRound("RectangleRound", 100, 200, {.x=256, .y=256}, 10, 20, 30, 40, "red");
         ArtRobot::Renderer renderer(ArtRobot::OutputTypePng, 512, 512, ArtRobot::Renderer::PX, 72);
         renderer.render(c.getSurface());
-        renderer.saveToFile("Test-Result-RectangleRound.png");
+        renderer.saveToFile("Test-Result-Component-RectangleRound.png");
     }
     // Circle
     {
         auto c = ArtRobot::Component::Circle("Circle", 100, 200, {.x=256, .y=256}, "red");
         ArtRobot::Renderer renderer(ArtRobot::OutputTypePng, 512, 512, ArtRobot::Renderer::PX, 72);
         renderer.render(c.getSurface());
-        renderer.saveToFile("Test-Result-Circle.png");
+        renderer.saveToFile("Test-Result-Component-Circle.png");
     }
     // Scale
     {
         auto c = ArtRobot::Component::RectangleRound("RectangleRound", 200, 200, {.x=256, .y=256, .scaleX = .5, .scaleY=2.}, 10, 20, 30, 40, "red");
         ArtRobot::Renderer renderer(ArtRobot::OutputTypePng, 512, 512, ArtRobot::Renderer::PX, 72);
         renderer.render(c.getSurface());
-        renderer.saveToFile("Test-Result-Scale.png");
+        renderer.saveToFile("Test-Result-Transform-Scale.png");
     }
     // Anchor
     {
@@ -47,7 +47,7 @@ int main(int argc, char *argv[]) {
             g.addChild(c);
         ArtRobot::Renderer renderer(ArtRobot::OutputTypePng, 400, 400, ArtRobot::Renderer::PX, 72);
         renderer.render(g.getSurface());
-        renderer.saveToFile("Test-Result-Anchor.png");
+        renderer.saveToFile("Test-Result-Transform-Anchor.png");
     }
 
     return 0;
