@@ -198,6 +198,7 @@ namespace ArtRobot {
             else if (strcmp(colorStrLower, "wheat") == 0) value = 0xf5deb3ff;
             else if (strcmp(colorStrLower, "whitesmoke") == 0) value = 0xf5f5f5ff;
             else if (strcmp(colorStrLower, "yellowgreen") == 0) value = 0x9acd32ff;
+            else value = 0x000000FF; // 黑不透明
         }
     }
 

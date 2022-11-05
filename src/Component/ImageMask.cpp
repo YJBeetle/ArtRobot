@@ -16,31 +16,20 @@ namespace ArtRobot {
 
 #ifdef OpenCV_FOUND
 
-        ImageMask::ImageMask(std::string __name,
-                             double __x, double __y,
-                             double __w, double __h,
-                             double __r,
+        ImageMask::ImageMask(std::string name, double width, double height, Transform transform,
                              const std::string &maskImageFilePath,
                              std::shared_ptr<Base> __child)
-                : ImageMask(__name, __x, __y, __w, __h, __r, cv::imread(maskImageFilePath, cv::IMREAD_UNCHANGED), __child) {
+                : ImageMask(name, width, height, transform, cv::imread(maskImageFilePath, cv::IMREAD_UNCHANGED), __child) {
         }
 
 #endif
 
 #ifdef OpenCV_FOUND
 
-        ImageMask::ImageMask(std::string __name,
-                             double __x, double __y,
-                             double __w, double __h,
-                             double __r,
+        ImageMask::ImageMask(std::string name, double width, double height, Transform transform,
                              const cv::Mat &maskImageMatRead,
                              std::shared_ptr<Base> __child)
-                : Base(TypeImageMask, __name) {
-            _x = __x;
-            _y = __y;
-            _w = __w;
-            _h = __h;
-            _r = __r;
+                : Base({Property::Type::ImageMask, name, width, height}, transform) {
             child = __child;
 
             cv::Mat maskImageMat;
@@ -58,7 +47,7 @@ namespace ArtRobot {
                     p[0] = p[1] = p[2] = p[3] = MIN(a, b);
                 }
 
-            maskImage = Image::fromMat(name, _x, _y, _w, _h, _r, maskImageMat);
+            maskImage = Image::fromMat(name, width, height, transform, maskImageMat);
 
             cairo_set_source_surface(cr, child->getSurface(), 0.0, 0.0);
             cairo_mask_surface(cr, maskImage->getSurface(), 0, 0);

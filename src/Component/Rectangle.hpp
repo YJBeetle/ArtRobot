@@ -20,11 +20,7 @@ namespace ArtRobot {
         class Rectangle : public Base {
         private:
         public:
-            Rectangle(std::string __name,
-                      double __x, double __y,
-                      double __w, double __h,
-                      double __r,
-                      Color color);
+            Rectangle(std::string name, double width, double height, Transform transform, Color color);
 
             ~Rectangle();
         };

@@ -28,39 +28,33 @@ namespace ArtRobot {
             rsvg_handle_render_cairo(svg, cr);
         }
 
-        Svg::Svg(std::string __name,
-                 double __x, double __y,
-                 double __w, double __h,
-                 double __r,
+        Svg::Svg(std::string name, double width, double height, Transform transform,
                  const std::string &src)
-                : Base(TypeSvg, __name, __x, __y, __w, __h, __r) {
+                : Base({Property::Type::Svg, name, width, height}, transform) {
             FILE *imageFile = fopen(src.c_str(), "rb"); // 判断文件存在
             if (imageFile) {
                 fclose(imageFile);
 
-                RsvgHandle *svg = rsvg_handle_new_from_file(src.c_str(), NULL); // TODO 错误处理
+                RsvgHandle *svg = rsvg_handle_new_from_file(src.c_str(), nullptr); // TODO 错误处理
 
                 drawSvg(cr,
-                        _w, _h,
+                        width, height,
                         svg);
 
-                rsvg_handle_close(svg, NULL); // 释放handle
+                rsvg_handle_close(svg, nullptr); // 释放handle
             }
         }
 
-        Svg::Svg(std::string __name,
-                 double __x, double __y,
-                 double __w, double __h,
-                 double __r,
+        Svg::Svg(std::string name, double width, double height, Transform transform,
                  unsigned char *data, size_t len)
-                : Base(TypeSvg, __name, __x, __y, __w, __h, __r) {
-            RsvgHandle *svg = rsvg_handle_new_from_data(data, len, NULL); // TODO 错误处理
+                : Base({Property::Type::Svg, name, width, height}, transform) {
+            RsvgHandle *svg = rsvg_handle_new_from_data(data, len, nullptr); // TODO 错误处理
 
             drawSvg(cr,
-                    _w, _h,
+                    width, height,
                     svg);
 
-            rsvg_handle_close(svg, NULL);
+            rsvg_handle_close(svg, nullptr);
         }
 
         Svg::~Svg() {

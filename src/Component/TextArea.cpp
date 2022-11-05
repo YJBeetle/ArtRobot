@@ -14,10 +14,7 @@
 namespace ArtRobot {
     namespace Component {
 
-        TextArea::TextArea(std::string __name,
-                           double __x, double __y,
-                           double __w, double __h,
-                           double __r,
+        TextArea::TextArea(std::string name, double width, double height, Transform transform,
                            const std::string &content,    // 内容
                            Color color,                   // 颜色
                            const std::string &fontFamily, // 字体
@@ -27,7 +24,7 @@ namespace ArtRobot {
                            int8_t verticalAlign,          // 垂直对齐方式，0为第一行基线对齐，1为顶部对齐，2垂直居中对齐，3底部对齐
                            double lineSpacing,            // 行间距
                            double wordSpacing)            // 字间距
-                : Base(TypeTextArea, __name, __x, __y, __w, __h, __r) {
+                : Base({Property::Type::TextArea, name, width, height}, transform) {
             cairo_set_source_rgba(cr, color.red(), color.green(), color.blue(), color.alpha());
 
             PangoLayout *layout;
@@ -42,8 +39,8 @@ namespace ArtRobot {
             pango_layout_set_font_description(layout, desc);                         // 字体
             pango_font_description_free(desc);                                       // 字体
 
-            pango_layout_set_width(layout, _w * PANGO_SCALE);  // 设置界定框
-            pango_layout_set_height(layout, _h * PANGO_SCALE); // 设置界定框
+            pango_layout_set_width(layout, width * PANGO_SCALE);  // 设置界定框
+            pango_layout_set_height(layout, height * PANGO_SCALE); // 设置界定框
 
             pango_layout_set_wrap(layout, PANGO_WRAP_WORD_CHAR);         // 换行方式
             pango_layout_set_ellipsize(layout, PANGO_ELLIPSIZE_END);     // 超出用省略号
@@ -79,10 +76,10 @@ namespace ArtRobot {
                     yMove = 0;
                     break;
                 case 1: // 中对齐
-                    yMove = (_h - _realH) / 2;
+                    yMove = (height - _realH) / 2;
                     break;
                 case 2: // 下对齐
-                    yMove = _h - _realH;
+                    yMove = height - _realH;
                     break;
             }
             // 移动

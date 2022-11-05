@@ -14,9 +14,7 @@
 namespace ArtRobot {
     namespace Component {
 
-        Text::Text(std::string __name,
-                   double __x, double __y,
-                   double __r,
+        Text::Text(std::string name, Transform transform,
                    const std::string &content,    // 内容
                    Color color,                   // 颜色
                    const std::string &fontFamily, // 字体
@@ -27,7 +25,7 @@ namespace ArtRobot {
                    double maxWidth,               // 最大宽度
                    double lineSpacing,            // 行间距
                    double wordSpacing)            // 字间距
-                : Base(TypeText, __name, __x, __y, 0, 0, __r) {
+                : Base({Property::Type::Text, name, 0, 0}, transform) {
             cairo_set_source_rgba(cr, color.red(), color.green(), color.blue(), color.alpha());
 
             PangoLayout *layout;

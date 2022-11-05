@@ -24,7 +24,7 @@ namespace ArtRobot {
             std::vector<std::shared_ptr<Base>> childs;
 
         public:
-            Group(std::string __name);
+            Group(std::string name);
 
             ~Group();
 

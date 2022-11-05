@@ -54,21 +54,12 @@ namespace ArtRobot {
                 }
             }
 
-            Image(std::string __name,
-                  double x, double y,
-                  double w, double h,
-                  double r);
+            Image(std::string name, double width, double height, Transform transform);
 
-            Image(std::string __name,
-                  double x, double y,
-                  double w, double h,
-                  double r,
+            Image(std::string name, double width, double height, Transform transform,
                   cairo_surface_t *imageSurface);
 
-            static std::shared_ptr<Image> fromRaw(std::string __name,
-                                                  double x, double y,
-                                                  double w, double h,
-                                                  double r,
+            static std::shared_ptr<Image> fromRaw(std::string name, double width, double height, Transform transform,
                                                   unsigned char *imageData,
                                                   int imageW, int imageH,
                                                   int imageStride,
@@ -76,46 +67,31 @@ namespace ArtRobot {
 
 #ifdef OpenCV_FOUND
 
-            static std::shared_ptr<Image> fromMat(std::string __name,
-                                                  double x, double y,
-                                                  double w, double h,
-                                                  double r,
+            static std::shared_ptr<Image> fromMat(std::string name, double width, double height, Transform transform,
                                                   const cv::Mat &imageMat);
 
 #endif
 
 #ifdef OpenCV_FOUND
 
-            static std::shared_ptr<Image> fromFileByCV(std::string __name,
-                                                       double x, double y,
-                                                       double w, double h,
-                                                       double r,
+            static std::shared_ptr<Image> fromFileByCV(std::string name, double width, double height, Transform transform,
                                                        const std::string &imageFilePath);
 
 #endif
 
-            static std::shared_ptr<Image> fromPNG(std::string __name,
-                                                  double x, double y,
-                                                  double w, double h,
-                                                  double r,
+            static std::shared_ptr<Image> fromPNG(std::string name, double width, double height, Transform transform,
                                                   const std::string &imageFilePath);
 
 // todo webp
 
 #ifdef JPEG_FOUND
 
-            static std::shared_ptr<Image> fromJPG(std::string __name,
-                                                  double x, double y,
-                                                  double w, double h,
-                                                  double r,
+            static std::shared_ptr<Image> fromJPG(std::string name, double width, double height, Transform transform,
                                                   const std::string &imageFilePath);
 
 #endif
 
-            static std::shared_ptr<Image> fromFile(std::string __name,
-                                                   double x, double y,
-                                                   double w, double h,
-                                                   double r,
+            static std::shared_ptr<Image> fromFile(std::string name, double width, double height, Transform transform,
                                                    const std::string &imageFilePath);
 
 
