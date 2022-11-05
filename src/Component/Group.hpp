@@ -20,15 +20,12 @@ namespace ArtRobot {
     namespace Component {
 
         class Group : public Base {
-        private:
-            std::vector<std::shared_ptr<Base>> childs;
-
         public:
             Group(std::string name);
 
             ~Group();
 
-            void addChild(std::shared_ptr<Base> child);
+            void addChild(const Base &child);
         };
 
     } // namespace Component
