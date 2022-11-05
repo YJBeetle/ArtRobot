@@ -31,7 +31,7 @@ namespace ArtRobot {
             if (property.type != Property::Type::Unknow) {
                 surface = cairo_recording_surface_create(CAIRO_CONTENT_COLOR_ALPHA, nullptr);
                 cr = cairo_create(surface);
-                cairo_translate(cr, property.width / 2, property.height / 2);
+                cairo_translate(cr, transform.x, transform.y);
                 cairo_rotate(cr, transform.rotate * M_PI / 180);
                 cairo_translate(cr, -property.width / 2, -property.height / 2);
             }

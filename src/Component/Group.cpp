@@ -26,7 +26,6 @@ namespace ArtRobot {
 
         void Group::addChild(const Base &child) {
             cairo_save(cr); //保存画笔
-            cairo_translate(cr, child.x(), child.y());
             cairo_set_source_surface(cr, child.getSurface(), 0.0, 0.0);
             cairo_paint(cr);
             cairo_restore(cr); //还原画笔
