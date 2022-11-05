@@ -21,7 +21,7 @@ namespace ArtRobot {
 
         class Group : public Base {
         public:
-            Group(std::string name);
+            Group(std::string name, Transform transform);
 
             ~Group();
 
