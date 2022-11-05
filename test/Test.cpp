@@ -22,6 +22,19 @@ int main(int argc, char *argv[]) {
         renderer.render(c.getSurface());
         renderer.saveToFile("Test-Result-Component-Circle.png");
     }
+    // Group
+    {
+        auto c1 = ArtRobot::Component::Rectangle("Rectangle", 100, 100, {.rotate=20}, "red");
+        auto g1 = ArtRobot::Component::Group("Group", {.rotate=20,.scaleX=.5});
+        g1.addChild(c1);
+        auto c2 = ArtRobot::Component::Rectangle("Rectangle", 100, 100, {.rotate=20}, "blue");
+        auto g2 = ArtRobot::Component::Group("Group", {.x=256, .y=256});
+        g2.addChild(c2);
+        g2.addChild(g1);
+        ArtRobot::Renderer renderer(ArtRobot::OutputTypePdf, 512, 512, ArtRobot::Renderer::PX, 72);
+        renderer.render(g2.getSurface());
+        renderer.saveToFile("Test-Result-Component-Group.pdf");
+    }
     // Scale
     {
         auto c = ArtRobot::Component::RectangleRound("RectangleRound", 200, 200, {.x=256, .y=256, .scaleX = .5, .scaleY=2.}, 10, 20, 30, 40, "red");
