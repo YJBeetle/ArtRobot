@@ -24,11 +24,11 @@ int main(int argc, char *argv[]) {
     }
     // Group
     {
-        auto c1 = ArtRobot::Component::Rectangle("Rectangle", 100, 100, {.rotate=20}, "red");
-        auto g1 = ArtRobot::Component::Group("Group", {.rotate=20,.scaleX=.5});
+        auto c1 = ArtRobot::Component::Rectangle("Rectangle1", 100, 100, {.rotate=20}, "red");
+        auto g1 = ArtRobot::Component::Group("Group1", {.rotate=20,.scaleX=.5});
         g1.addChild(c1);
-        auto c2 = ArtRobot::Component::Rectangle("Rectangle", 100, 100, {.rotate=20}, "blue");
-        auto g2 = ArtRobot::Component::Group("Group", {.x=256, .y=256});
+        auto c2 = ArtRobot::Component::Rectangle("Rectangle2", 100, 100, {.rotate=20}, "blue");
+        auto g2 = ArtRobot::Component::Group("Group2", {.x=256, .y=256});
         g2.addChild(c2);
         g2.addChild(g1);
         ArtRobot::Renderer renderer(ArtRobot::OutputTypePdf, 512, 512, ArtRobot::Renderer::PX, 72);
