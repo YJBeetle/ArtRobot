@@ -47,6 +47,8 @@ namespace ArtRobot {
                 LD, CD, RD,
             };
             Anchor anchor = Anchor::CC;
+            double scaleX = 1;
+            double scaleY = 1;
         };
 
         class Base {

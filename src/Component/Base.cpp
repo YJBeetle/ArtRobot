@@ -33,6 +33,7 @@ namespace ArtRobot {
                 cr = cairo_create(surface);
                 cairo_translate(cr, transform.x, transform.y);
                 cairo_rotate(cr, transform.rotate * M_PI / 180);
+                cairo_scale(cr, transform.scaleX, transform.scaleY);
                 switch (transform.anchor) {
                     case Transform::Anchor::LT:
                         break;
