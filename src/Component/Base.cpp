@@ -51,7 +51,7 @@ namespace ArtRobot {
             // cairo_surface_finish(surface);
         }
 
-        cairo_surface_t *Base::getSurface() {
+        cairo_surface_t *Base::getSurface() const {
             return (property.type != Property::Type::Unknow)
                    ? surface
                    : nullptr;

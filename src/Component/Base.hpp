@@ -61,13 +61,13 @@ namespace ArtRobot {
 
             void finish();
 
-            cairo_surface_t *getSurface();
+            cairo_surface_t *getSurface() const;
 
-            inline double width() {
+            inline double width() const {
                 return property.width;
             }
 
-            inline double height() {
+            inline double height() const {
                 return property.height;
             }
 
@@ -83,15 +83,15 @@ namespace ArtRobot {
                 transform.rotate = rotate;
             }
 
-            inline double x() {
+            inline double x() const {
                 return transform.x;
             }
 
-            inline double y() {
+            inline double y() const {
                 return transform.y;
             }
 
-            inline double rotate() {
+            inline double rotate() const {
                 return transform.rotate;
             }
         };
