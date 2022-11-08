@@ -21,7 +21,6 @@ namespace ArtRobot {
         }
 
         Group::~Group() {
-            finish();
         }
 
         void Group::addChild(const Base &child) {

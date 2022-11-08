@@ -111,7 +111,6 @@ namespace ArtRobot {
         }
 
         Text::~Text() {
-            finish();
         }
 
     } // namespace Component

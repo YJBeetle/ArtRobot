@@ -67,8 +67,6 @@ namespace ArtRobot {
 
             virtual ~Base();
 
-            void finish();
-
             cairo_surface_t *getSurface() const;
 
             inline double width() const {

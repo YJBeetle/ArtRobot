@@ -72,13 +72,6 @@ namespace ArtRobot {
                 cairo_surface_destroy(surface);
         }
 
-        void Base::finish() {
-            if (cr)
-                cairo_destroy(cr);
-            cr = nullptr;
-            // cairo_surface_finish(surface);
-        }
-
         cairo_surface_t *Base::getSurface() const {
             return (property.type != Property::Type::Unknow)
                    ? surface

@@ -263,7 +263,6 @@ namespace ArtRobot {
         }
 
         Image::~Image() {
-            finish();
             if (imageSurface)
                 cairo_surface_destroy(imageSurface);
         }

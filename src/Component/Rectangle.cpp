@@ -22,7 +22,6 @@ namespace ArtRobot {
         }
 
         Rectangle::~Rectangle() {
-            finish();
         }
 
     } // namespace Component

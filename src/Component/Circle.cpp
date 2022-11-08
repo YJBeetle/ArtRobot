@@ -25,7 +25,6 @@ namespace ArtRobot {
         }
 
         Circle::~Circle() {
-            finish();
         }
 
     } // namespace Component

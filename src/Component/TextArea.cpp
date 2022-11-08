@@ -96,7 +96,6 @@ namespace ArtRobot {
         }
 
         TextArea::~TextArea() {
-            finish();
         }
 
     } // namespace Component

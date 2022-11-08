@@ -59,7 +59,6 @@ namespace ArtRobot {
 #endif
 
         ImageMask::~ImageMask() {
-            finish();
         }
 
     } // namespace Component

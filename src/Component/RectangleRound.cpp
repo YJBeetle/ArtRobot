@@ -42,7 +42,6 @@ namespace ArtRobot {
         }
 
         RectangleRound::~RectangleRound() {
-            finish();
         }
 
     } // namespace Component
