@@ -20,14 +20,10 @@ namespace ArtRobot {
     namespace Component {
 
         class ImageMask : public Base {
-        private:
-            Image maskImage;
-            Base child;
-
         public:
             ImageMask(std::string name, double width, double height, Transform transform,
-                      Image maskImage,
-                      Base child);
+                      const Image &maskImage,
+                      const Base &child);
 
 #ifdef OpenCV_FOUND
 

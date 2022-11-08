@@ -15,9 +15,9 @@ namespace ArtRobot {
     namespace Component {
 
         ImageMask::ImageMask(std::string name, double width, double height, Transform transform,
-                             Image __maskImage,
-                             Base __child)
-                : Base({Property::Type::ImageMask, name, width, height}, transform), maskImage(__maskImage), child(__child) {
+                             const Image &maskImage,
+                             const Base &child)
+                : Base({Property::Type::ImageMask, name, width, height}, transform) {
             cairo_set_source_surface(cr, child.getSurface(), 0.0, 0.0);
             cairo_mask_surface(cr, maskImage.getSurface(), 0, 0);
             cairo_fill(cr);
