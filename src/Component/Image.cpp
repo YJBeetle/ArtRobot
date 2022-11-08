@@ -115,6 +115,29 @@ namespace ArtRobot {
 #endif
 
         Image Image::fromPng(std::string name, Transform transform,
+                             const std::vector<uint8_t> &data,
+                             double width, double height) {
+            struct PngStreamClosure {
+                const uint8_t *data;
+                const size_t max_size;
+                size_t pos;
+            } pngStreamClosure{data.data(), data.size(), 0};
+            return Image(name, transform,
+                         cairo_image_surface_create_from_png_stream(
+                                 [](void *_closure,
+                                    unsigned char *data,
+                                    unsigned int length) -> cairo_status_t {
+                                     PngStreamClosure *closure = (PngStreamClosure *) _closure;
+                                     if ((closure->pos + length) > (closure->max_size))
+                                         return CAIRO_STATUS_READ_ERROR;
+                                     memcpy(data, (closure->data + closure->pos), length);
+                                     closure->pos += length;
+                                     return CAIRO_STATUS_SUCCESS;
+                                 }, (void *) &pngStreamClosure),
+                         width, height);
+        }
+
+        Image Image::fromPng(std::string name, Transform transform,
                              const std::string &imageFilePath,
                              double width, double height) {
             if (std::filesystem::exists(imageFilePath))

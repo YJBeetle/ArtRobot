@@ -79,6 +79,10 @@ namespace ArtRobot {
 #endif
 
             static Image fromPng(std::string name, Transform transform,
+                                 const std::vector<uint8_t> &data,
+                                 double width = 0., double height = 0.);
+
+            static Image fromPng(std::string name, Transform transform,
                                  const std::string &imageFilePath,
                                  double width = 0., double height = 0.);
 
