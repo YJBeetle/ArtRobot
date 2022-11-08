@@ -22,6 +22,15 @@ int main(int argc, char *argv[]) {
         renderer.render(c.getSurface());
         renderer.saveToFile("Test-Result-Component-Circle.png");
     }
+    // Mask
+    {
+        auto mask = ArtRobot::Component::Circle("Circle", {.x=256, .y=256}, 200, 200, ArtRobot::Color::Red);
+        auto img = ArtRobot::Component::Image::fromJpg("Img", {.x=256, .y=256}, "img.jpg");
+        auto c = ArtRobot::Component::Mask("Body", 512, 512, {.x=256, .y=256}, mask, img);
+        ArtRobot::Renderer renderer(ArtRobot::OutputTypePng, 512, 512, ArtRobot::Renderer::PX, 72);
+        renderer.render(c.getSurface());
+        renderer.saveToFile("Test-Result-Component-Mask.png");
+    }
     // Text
     {
         auto c = ArtRobot::Component::Text("Text", {.x=256, .y=256}, "喵喵喵", ArtRobot::Color::Black, "", 900, 100, ArtRobot::HorizontalAlign::Center, ArtRobot::VerticalAlign::Center);

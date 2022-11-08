@@ -19,15 +19,15 @@
 namespace ArtRobot {
     namespace Component {
 
-        class ImageMask : public Base {
+        class Mask : public Base {
         public:
-            ImageMask(std::string name, double width, double height, Transform transform,
+            Mask(std::string name, double width, double height, Transform transform,
                       const Base &mask,
                       const Base &child);
 
 #ifdef OpenCV_FOUND
 
-            static ImageMask fromCvMat(std::string name, double width, double height, Transform transform,
+            static Mask fromCvMat(std::string name, double width, double height, Transform transform,
                                        const cv::Mat &maskImageMatRead,
                                        Base child);
 
@@ -35,13 +35,13 @@ namespace ArtRobot {
 
 #ifdef OpenCV_FOUND
 
-            static ImageMask fromFile(std::string name, double width, double height, Transform transform,
+            static Mask fromFile(std::string name, double width, double height, Transform transform,
                                       const std::string &maskImageFilePath,
                                       Base child);
 
 #endif
 
-            ~ImageMask();
+            ~Mask();
 
         };
 

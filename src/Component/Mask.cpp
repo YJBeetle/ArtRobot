@@ -9,15 +9,15 @@
  *
  */
 
-#include "./ImageMask.hpp"
+#include "./Mask.hpp"
 
 namespace ArtRobot {
     namespace Component {
 
-        ImageMask::ImageMask(std::string name, double width, double height, Transform transform,
+        Mask::Mask(std::string name, double width, double height, Transform transform,
                              const Base &mask,
                              const Base &child)
-                : Base({Property::Type::ImageMask, name, width, height}, transform) {
+                : Base({Property::Type::Mask, name, width, height}, transform) {
             cairo_set_source_surface(cr, child.getSurface(), 0.0, 0.0);
             cairo_mask_surface(cr, mask.getSurface(), 0, 0);
             cairo_fill(cr);
@@ -25,7 +25,7 @@ namespace ArtRobot {
 
 #ifdef OpenCV_FOUND
 
-        ImageMask ImageMask::fromCvMat(std::string name, double width, double height, Transform transform,
+        Mask Mask::fromCvMat(std::string name, double width, double height, Transform transform,
                                        const cv::Mat &maskImageMatRead,
                                        Base __child) {
             cv::Mat maskImageMat;
@@ -43,22 +43,22 @@ namespace ArtRobot {
                     p[0] = p[1] = p[2] = p[3] = MIN(a, b);
                 }
 
-            return ImageMask(name, width, height, transform, Image::fromMat(name, transform, maskImageMat, width, height), __child);
+            return Mask(name, width, height, transform, Image::fromMat(name, transform, maskImageMat, width, height), __child);
         }
 
 #endif
 
 #ifdef OpenCV_FOUND
 
-        ImageMask ImageMask::fromFile(std::string name, double width, double height, Transform transform,
+        Mask Mask::fromFile(std::string name, double width, double height, Transform transform,
                                       const std::string &maskImageFilePath,
                                       Base __child) {
-            return ImageMask::fromCvMat(name, width, height, transform, cv::imread(maskImageFilePath, cv::IMREAD_UNCHANGED), __child);
+            return Mask::fromCvMat(name, width, height, transform, cv::imread(maskImageFilePath, cv::IMREAD_UNCHANGED), __child);
         }
 
 #endif
 
-        ImageMask::~ImageMask() {
+        Mask::~Mask() {
         }
 
     } // namespace Component
