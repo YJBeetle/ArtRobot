@@ -24,7 +24,7 @@ int main(int argc, char *argv[]) {
     }
     // Text
     {
-        auto c = ArtRobot::Component::Text("Text", {.x=256, .y=256}, "喵喵喵", ArtRobot::Color::Black, "", 900, 100);
+        auto c = ArtRobot::Component::Text("Text", {.x=256, .y=256}, "喵喵喵", ArtRobot::Color::Black, "", 900, 100, ArtRobot::HorizontalAlign::Center, ArtRobot::VerticalAlign::Center);
         ArtRobot::Renderer renderer(ArtRobot::OutputTypePng, 512, 512, ArtRobot::Renderer::PX, 72);
         renderer.render(c.getSurface());
         renderer.saveToFile("Test-Result-Component-Text.png");
