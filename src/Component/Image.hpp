@@ -108,9 +108,9 @@ namespace ArtRobot {
             ~Image();
 
         private:
-            cairo_surface_t *imageSurface;
-            int imageCols;
-            int imageRows;
+            cairo_surface_t *imageSurface = nullptr;
+            int imageCols = 0;
+            int imageRows = 0;
 
             Image(std::string name, Transform transform,
                   cairo_surface_t *imageSurface,
