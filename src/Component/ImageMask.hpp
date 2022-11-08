@@ -22,7 +22,7 @@ namespace ArtRobot {
         class ImageMask : public Base {
         public:
             ImageMask(std::string name, double width, double height, Transform transform,
-                      const Image &maskImage,
+                      const Base &mask,
                       const Base &child);
 
 #ifdef OpenCV_FOUND
