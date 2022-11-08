@@ -20,12 +20,10 @@ namespace ArtRobot {
         class RectangleRound : public Base {
         private:
         public:
-            RectangleRound(std::string name, double width, double height, Transform transform,
-                           double angleTL,
-                           double angleTR,
-                           double angleBR,
-                           double angleBL,
-                           Color color);
+            RectangleRound(std::string name, Transform transform,
+                           double width = 10, double height = 10,
+                           double angleTL = 2, double angleTR = 2, double angleBR = 2, double angleBL = 2,
+                           Color color = Color::Black);
 
             ~RectangleRound();
         };

@@ -14,7 +14,8 @@
 namespace ArtRobot {
     namespace Component {
 
-        TextArea::TextArea(std::string name, double width, double height, Transform transform,
+        TextArea::TextArea(std::string name, Transform transform,
+                           double width, double height,
                            const std::string &content,    // 内容
                            Color color,                   // 颜色
                            const std::string &fontFamily, // 字体

@@ -27,7 +27,8 @@ namespace ArtRobot {
             double _realH;
 
         public:
-            TextArea(std::string name, double width, double height, Transform transform,
+            TextArea(std::string name, Transform transform,
+                     double width, double height,
                      const std::string &content,    // 内容
                      Color color,                   // 颜色
                      const std::string &fontFamily, // 字体
