@@ -30,10 +30,10 @@ namespace ArtRobot {
         public:
             Text(std::string name, Transform transform,
                  const std::string &content,                       // 内容
-                 Color color,                                      // 颜色
-                 const std::string &fontFamily,                    // 字体
-                 int fontWeight,                                   // 粗细
-                 double fontSize,                                  // 字号
+                 Color color = Color::Black,                       // 颜色
+                 const std::string &fontFamily = std::string(),    // 字体
+                 int fontWeight = 500,                             // 粗细
+                 double fontSize = 10.,                            // 字号
                  HorizontalAlign hAlign = HorizontalAlign::Center, // 水平对齐方式
                  VerticalAlign vAlign = VerticalAlign::BaseLine,   // 垂直对齐方式
                  double maxWidth = 0,                              // 最大宽度
