@@ -101,6 +101,8 @@ namespace ArtRobot {
 
         private:
             cairo_surface_t *imageSurface;
+            int imageCols;
+            int imageRows;
 
             Image(std::string name, Transform transform,
                   cairo_surface_t *imageSurface,

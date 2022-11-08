@@ -4,7 +4,7 @@
 int main(int argc, char *argv[]) {
     // fromPng
     {
-        auto img = ArtRobot::Component::Image::fromPng("img", {.x=256, .y=256}, "img.png");
+        auto img = ArtRobot::Component::Image::fromPng("img", {.x=256, .y=256}, "img.png", 200);
         ArtRobot::Renderer renderer(ArtRobot::OutputTypePng, 512, 512, ArtRobot::Renderer::PX, 72);
         renderer.render(img.getSurface());
         renderer.saveToFile("TestImage-Result-fromPng.png");

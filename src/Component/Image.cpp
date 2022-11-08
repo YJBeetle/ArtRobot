@@ -31,14 +31,16 @@ namespace ArtRobot {
                      cairo_surface_t *_imageSurface,
                      double width, double height)
                 : Base({Property::Type::Image, name,
-                        (width || height) ? width : cairo_image_surface_get_width(_imageSurface),
-                        (width || height) ? height : cairo_image_surface_get_height(_imageSurface)},
+                        width ? width : height ? (height / cairo_image_surface_get_height(_imageSurface) * cairo_image_surface_get_width(_imageSurface)) : cairo_image_surface_get_width(_imageSurface),
+                        height ? height : width ? (width / cairo_image_surface_get_width(_imageSurface) * cairo_image_surface_get_height(_imageSurface)) : cairo_image_surface_get_height(_imageSurface)},
                        transform),
-                  imageSurface(_imageSurface) {
+                  imageSurface(_imageSurface),
+                  imageCols(cairo_image_surface_get_width(imageSurface)),
+                  imageRows(cairo_image_surface_get_height(imageSurface)) {
             if (width || height)
                 cairo_scale(cr,
-                            width / (double) cairo_image_surface_get_width(imageSurface),
-                            height / (double) cairo_image_surface_get_height(imageSurface));
+                            property.width / imageCols,
+                            property.height / imageRows);
             cairo_set_source_surface(cr, imageSurface, 0, 0);
             cairo_paint(cr);
         }
