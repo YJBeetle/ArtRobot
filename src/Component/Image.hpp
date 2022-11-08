@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 YJBeetle
+ * Copyright 2022 YJBeetle
  *
  * Authors:
  *  YJBeetle <YJBeetle@gmail.com>
@@ -12,7 +12,6 @@
 #pragma once
 
 #include <string>
-#include <memory>
 
 #include <ArtRobot/Features.hpp>
 
@@ -59,40 +58,40 @@ namespace ArtRobot {
             Image(std::string name, double width, double height, Transform transform,
                   cairo_surface_t *imageSurface);
 
-            static std::shared_ptr<Image> fromRaw(std::string name, double width, double height, Transform transform,
-                                                  unsigned char *imageData,
-                                                  int imageW, int imageH,
-                                                  int imageStride,
-                                                  ColorFormat colorFormat);
+            static Image fromRaw(std::string name, double width, double height, Transform transform,
+                                 unsigned char *imageData,
+                                 int imageW, int imageH,
+                                 int imageStride,
+                                 ColorFormat colorFormat);
 
 #ifdef OpenCV_FOUND
 
-            static std::shared_ptr<Image> fromMat(std::string name, double width, double height, Transform transform,
-                                                  const cv::Mat &imageMat);
+            static Image fromMat(std::string name, double width, double height, Transform transform,
+                                 const cv::Mat &imageMat);
 
 #endif
 
 #ifdef OpenCV_FOUND
 
-            static std::shared_ptr<Image> fromFileByCV(std::string name, double width, double height, Transform transform,
-                                                       const std::string &imageFilePath);
+            static Image fromFileByCV(std::string name, double width, double height, Transform transform,
+                                      const std::string &imageFilePath);
 
 #endif
 
-            static std::shared_ptr<Image> fromPNG(std::string name, double width, double height, Transform transform,
-                                                  const std::string &imageFilePath);
+            static Image fromPNG(std::string name, double width, double height, Transform transform,
+                                 const std::string &imageFilePath);
 
 // todo webp
 
 #ifdef JPEG_FOUND
 
-            static std::shared_ptr<Image> fromJPG(std::string name, double width, double height, Transform transform,
-                                                  const std::string &imageFilePath);
+            static Image fromJPG(std::string name, double width, double height, Transform transform,
+                                 const std::string &imageFilePath);
 
 #endif
 
-            static std::shared_ptr<Image> fromFile(std::string name, double width, double height, Transform transform,
-                                                   const std::string &imageFilePath);
+            static Image fromFile(std::string name, double width, double height, Transform transform,
+                                  const std::string &imageFilePath);
 
 
             ~Image();

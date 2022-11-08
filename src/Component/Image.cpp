@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 YJBeetle
+ * Copyright 2022 YJBeetle
  *
  * Authors:
  *  YJBeetle <YJBeetle@gmail.com>
@@ -28,7 +28,7 @@ namespace ArtRobot {
 
         Image::Image(std::string name, double width, double height, Transform transform,
                      cairo_surface_t *imageSurface)
-                : Base({Property::Type::Image, name, width, height}, transform) {
+                : Image(name, width, height, transform) {
             if (width || height) {
                 double scaleX, scaleY;
                 scaleX = width / (double) cairo_image_surface_get_width(imageSurface);
@@ -40,11 +40,11 @@ namespace ArtRobot {
             cairo_surface_finish(imageSurface);
         }
 
-        std::shared_ptr<Image> Image::fromRaw(std::string name, double width, double height, Transform transform,
-                                              unsigned char *imageData,
-                                              int imageW, int imageH,
-                                              int imageStride,
-                                              ColorFormat colorFormat) {
+        Image Image::fromRaw(std::string name, double width, double height, Transform transform,
+                             unsigned char *imageData,
+                             int imageW, int imageH,
+                             int imageStride,
+                             ColorFormat colorFormat) {
             // 计算预乘
             if (colorFormat == ColorFormat::ARGB32NoPremultiplied) {
                 // 尝试 cairo_set_operator CAIRO_OPERATOR_OVER CAIRO_OPERATOR_SOURCE ?
@@ -64,8 +64,8 @@ namespace ArtRobot {
                                                                                 imageH,
                                                                                 imageStride);
 
-            std::shared_ptr<Image> ret = std::make_shared<Image>(name, width, height, transform,
-                                                                 imageSurface);
+            Image ret = Image(name, width, height, transform,
+                              imageSurface);
 
             cairo_surface_destroy(imageSurface); // 回收
 
@@ -74,8 +74,8 @@ namespace ArtRobot {
 
 #ifdef OpenCV_FOUND
 
-        std::shared_ptr<Image> Image::fromMat(std::string name, double width, double height, Transform transform,
-                                              const cv::Mat &imageMat) {
+        Image Image::fromMat(std::string name, double width, double height, Transform transform,
+                             const cv::Mat &imageMat) {
             if (imageMat.channels() == 1)
                 return Image::fromRaw(name, width, height, transform,
                                       imageMat.data, imageMat.cols, imageMat.rows, imageMat.step, ColorFormat::A8);
@@ -91,17 +91,16 @@ namespace ArtRobot {
 
 #ifdef OpenCV_FOUND
 
-        std::shared_ptr<Image> Image::fromFileByCV(std::string name, double width, double height, Transform transform,
-                                                   const std::string &imageFilePath) {
+        Image Image::fromFileByCV(std::string name, double width, double height, Transform transform,
+                                  const std::string &imageFilePath) {
             return Image::fromMat(name, width, height, transform,
                                   cv::imread(imageFilePath, cv::IMREAD_UNCHANGED));
         }
 
 #endif
 
-        std::shared_ptr<Image> Image::fromPNG(std::string name, double width, double height, Transform transform,
-                                              const std::string &imageFilePath) {
-            std::shared_ptr<Image> ret;
+        Image Image::fromPNG(std::string name, double width, double height, Transform transform,
+                             const std::string &imageFilePath) {
 
             FILE *imageFile = fopen(imageFilePath.c_str(), "rb");
 
@@ -110,20 +109,20 @@ namespace ArtRobot {
 
                 cairo_surface_t *img = cairo_image_surface_create_from_png(imageFilePath.c_str());
 
-                ret = std::make_shared<Image>(name, width, height, transform, img);
+                auto ret = Image(name, width, height, transform, img);
 
                 cairo_surface_destroy(img); // 回收PNG
+
+                return ret;
             }
 
-            return ret;
+            return Image(name, width, height, transform);
         }
 
 #ifdef JPEG_FOUND
 
-        std::shared_ptr<Image> Image::fromJPG(std::string name, double width, double height, Transform transform,
-                                              const std::string &imageFilePath) {
-            std::shared_ptr<Image> ret;
-
+        Image Image::fromJPG(std::string name, double width, double height, Transform transform,
+                             const std::string &imageFilePath) {
             const char *filename = imageFilePath.c_str();
 
             FILE *infile;      /* source file */
@@ -131,9 +130,9 @@ namespace ArtRobot {
             int row_stride;    /* physical row width in output buffer */
 
             //文件检查
-            if ((infile = fopen(filename, "rb")) == NULL) {
+            if ((infile = fopen(filename, "rb")) == nullptr) {
                 fprintf(stderr, "文件不存在： %s \n", filename);
-                return std::make_shared<Image>(name, width, height, transform);
+                return Image(name, width, height, transform);
             }
 
             struct jpeg_decompress_struct cinfo;
@@ -148,7 +147,7 @@ namespace ArtRobot {
             //准备
             jpeg_create_decompress(&cinfo);
             jpeg_stdio_src(&cinfo, infile);
-            (void) jpeg_read_header(&cinfo, TRUE);
+            (void) jpeg_read_header(&cinfo, true);
             (void) jpeg_start_decompress(&cinfo);
 
             row_stride = cinfo.output_width * cinfo.output_components;
@@ -171,8 +170,8 @@ namespace ArtRobot {
                 // put_scanline_someplace(buffer[0], row_stride);
             }
 
-            ret = Image::fromRaw(name, width, height, transform,
-                                 image_buffer, cinfo.output_width, cinfo.output_height, cinfo.output_width * 4, ColorFormat::ARGB32);
+            auto ret = Image::fromRaw(name, width, height, transform,
+                                      image_buffer, cinfo.output_width, cinfo.output_height, cinfo.output_width * 4, ColorFormat::ARGB32);
 
             free(image_buffer);
 
@@ -186,8 +185,8 @@ namespace ArtRobot {
 
 #endif
 
-        std::shared_ptr<Image> Image::fromFile(std::string name, double width, double height, Transform transform,
-                                               const std::string &imageFilePath) {
+        Image Image::fromFile(std::string name, double width, double height, Transform transform,
+                              const std::string &imageFilePath) {
             const char *ext = imageFilePath.c_str() + imageFilePath.length() - 4;
             if (!strcasecmp(ext, ".png"))
                 return Image::fromPNG(name, width, height, transform, imageFilePath);
@@ -195,7 +194,7 @@ namespace ArtRobot {
             else if (!strcasecmp(ext, ".jpg"))
                 return Image::fromJPG(name, width, height, transform, imageFilePath);
 #endif
-            return std::make_shared<Image>(name, width, height, transform);
+            return Image(name, width, height, transform);
         }
 
         Image::~Image() {
