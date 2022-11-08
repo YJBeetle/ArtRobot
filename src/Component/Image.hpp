@@ -71,11 +71,13 @@ namespace ArtRobot {
 #endif
 
 #ifdef OpenCV_FOUND
+#ifndef OpenCV_WITHOUT_IMAPI
 
             static Image fromFileByCV(std::string name, Transform transform,
                                       const std::string &imageFilePath,
                                       double width = 0., double height = 0.);
 
+#endif
 #endif
 
             static Image fromPng(std::string name, Transform transform,

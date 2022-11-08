@@ -103,6 +103,7 @@ namespace ArtRobot {
 #endif
 
 #ifdef OpenCV_FOUND
+#ifndef OpenCV_WITHOUT_IMAPI
 
         Image Image::fromFileByCV(std::string name, Transform transform,
                                   const std::string &imageFilePath,
@@ -112,6 +113,7 @@ namespace ArtRobot {
                                   width, height);
         }
 
+#endif
 #endif
 
         Image Image::fromPng(std::string name, Transform transform,

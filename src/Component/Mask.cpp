@@ -49,6 +49,7 @@ namespace ArtRobot {
 #endif
 
 #ifdef OpenCV_FOUND
+#ifndef OpenCV_WITHOUT_IMAPI
 
         Mask Mask::fromFile(std::string name, double width, double height, Transform transform,
                                       const std::string &maskImageFilePath,
@@ -56,6 +57,7 @@ namespace ArtRobot {
             return Mask::fromCvMat(name, width, height, transform, cv::imread(maskImageFilePath, cv::IMREAD_UNCHANGED), __child);
         }
 
+#endif
 #endif
 
         Mask::~Mask() {

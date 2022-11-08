@@ -34,11 +34,13 @@ namespace ArtRobot {
 #endif
 
 #ifdef OpenCV_FOUND
+#ifndef OpenCV_WITHOUT_IMAPI
 
             static Mask fromFile(std::string name, double width, double height, Transform transform,
                                       const std::string &maskImageFilePath,
                                       Base child);
 
+#endif
 #endif
 
             ~Mask();
