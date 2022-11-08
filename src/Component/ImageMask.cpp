@@ -14,24 +14,20 @@
 namespace ArtRobot {
     namespace Component {
 
-#ifdef OpenCV_FOUND
-
         ImageMask::ImageMask(std::string name, double width, double height, Transform transform,
-                             const std::string &maskImageFilePath,
-                             std::shared_ptr<Base> __child)
-                : ImageMask(name, width, height, transform, cv::imread(maskImageFilePath, cv::IMREAD_UNCHANGED), __child) {
+                             Image __maskImage,
+                             Base __child)
+                : Base({Property::Type::ImageMask, name, width, height}, transform), maskImage(__maskImage), child(__child) {
+            cairo_set_source_surface(cr, child.getSurface(), 0.0, 0.0);
+            cairo_mask_surface(cr, maskImage.getSurface(), 0, 0);
+            cairo_fill(cr);
         }
 
-#endif
-
 #ifdef OpenCV_FOUND
 
-        ImageMask::ImageMask(std::string name, double width, double height, Transform transform,
-                             const cv::Mat &maskImageMatRead,
-                             std::shared_ptr<Base> __child)
-                : Base({Property::Type::ImageMask, name, width, height}, transform) {
-            child = __child;
-
+        ImageMask ImageMask::fromCvMat(std::string name, double width, double height, Transform transform,
+                                       const cv::Mat &maskImageMatRead,
+                                       Base __child) {
             cv::Mat maskImageMat;
             if (maskImageMatRead.channels() == 3)
                 cvtColor(maskImageMatRead, maskImageMat, cv::COLOR_BGR2BGRA);
@@ -47,11 +43,17 @@ namespace ArtRobot {
                     p[0] = p[1] = p[2] = p[3] = MIN(a, b);
                 }
 
-            maskImage = Image::fromMat(name, width, height, transform, maskImageMat);
+            return ImageMask(name, width, height, transform, Image::fromMat(name, width, height, transform, maskImageMat), __child);
+        }
 
-            cairo_set_source_surface(cr, child->getSurface(), 0.0, 0.0);
-            cairo_mask_surface(cr, maskImage->getSurface(), 0, 0);
-            cairo_fill(cr);
+#endif
+
+#ifdef OpenCV_FOUND
+
+        ImageMask ImageMask::fromFile(std::string name, double width, double height, Transform transform,
+                                      const std::string &maskImageFilePath,
+                                      Base __child) {
+            return ImageMask::fromCvMat(name, width, height, transform, cv::imread(maskImageFilePath, cv::IMREAD_UNCHANGED), __child);
         }
 
 #endif

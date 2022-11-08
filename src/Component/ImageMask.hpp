@@ -12,7 +12,6 @@
 #pragma once
 
 #include <string>
-#include <memory>
 
 #include "./Base.hpp"
 #include "./Image.hpp"
@@ -22,23 +21,27 @@ namespace ArtRobot {
 
         class ImageMask : public Base {
         private:
-            std::shared_ptr<Image> maskImage;
-            std::shared_ptr<Base> child;
+            Image maskImage;
+            Base child;
 
         public:
+            ImageMask(std::string name, double width, double height, Transform transform,
+                      Image maskImage,
+                      Base child);
+
 #ifdef OpenCV_FOUND
 
-            ImageMask(std::string name, double width, double height, Transform transform,
-                      const std::string &maskImageFilePath,
-                      std::shared_ptr<Base> child);
+            static ImageMask fromCvMat(std::string name, double width, double height, Transform transform,
+                                       const cv::Mat &maskImageMatRead,
+                                       Base child);
 
 #endif
 
 #ifdef OpenCV_FOUND
 
-            ImageMask(std::string name, double width, double height, Transform transform,
-                      const cv::Mat &maskImageMatRead,
-                      std::shared_ptr<Base> child);
+            static ImageMask fromFile(std::string name, double width, double height, Transform transform,
+                                      const std::string &maskImageFilePath,
+                                      Base child);
 
 #endif
 
