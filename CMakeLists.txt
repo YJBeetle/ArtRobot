@@ -7,6 +7,7 @@ option(UseRsvg "Use Rsvg" ON)
 option(UseJpeg "Use Jpeg" ON)
 option(UseOpenCV "Use OpenCV" ON)
 option(UseWebP "Use WebP" ON)
+option(BuildTest "Build Test" ON)
 
 include(cmake/FindLibrary.cmake)
 
@@ -65,15 +66,17 @@ install(TARGETS ${PROJECT_NAME}
 )
 install(DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/include/" DESTINATION include)
 
-# Test
-add_executable(Test test/Test.cpp)
-target_link_libraries(Test PUBLIC ${PROJECT_NAME})
+if(BuildTest)
+    # Test
+    add_executable(Test test/Test.cpp)
+    target_link_libraries(Test PUBLIC ${PROJECT_NAME})
 
-# TestImage
-add_executable(TestImage test/TestImage.cpp)
-target_link_libraries(TestImage PUBLIC ${PROJECT_NAME})
-configure_file(test/img.jpg img.jpg COPYONLY)
-configure_file(test/img-CMYK.jpg img-CMYK.jpg COPYONLY)
-configure_file(test/img-Gray.jpg img-Gray.jpg COPYONLY)
-configure_file(test/img.png img.png COPYONLY)
-configure_file(test/mask.png mask.png COPYONLY)
+    # TestImage
+    add_executable(TestImage test/TestImage.cpp)
+    target_link_libraries(TestImage PUBLIC ${PROJECT_NAME})
+    configure_file(test/img.jpg img.jpg COPYONLY)
+    configure_file(test/img-CMYK.jpg img-CMYK.jpg COPYONLY)
+    configure_file(test/img-Gray.jpg img-Gray.jpg COPYONLY)
+    configure_file(test/img.png img.png COPYONLY)
+    configure_file(test/mask.png mask.png COPYONLY)
+endif()
