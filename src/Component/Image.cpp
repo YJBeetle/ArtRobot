@@ -48,11 +48,10 @@ namespace ArtRobot {
         Image Image::fromRaw(std::string name, Transform transform,
                              unsigned char *imageData,
                              int imageCols, int imageRows,
-                             int imageStride,
-                             ColorFormat colorFormat,
+                             int imageStride, bool isPremultiplied,
                              double width, double height) {
             // 计算预乘
-            if (colorFormat == ColorFormat::ARGB32NoPremultiplied) {
+            if (!isPremultiplied) {
                 // 尝试 cairo_set_operator CAIRO_OPERATOR_OVER CAIRO_OPERATOR_SOURCE ?
                 for (int y = 0; y < imageRows; y++)
                     for (int x = 0; x < imageCols; x++) {
@@ -61,11 +60,10 @@ namespace ArtRobot {
                         p[1] = (unsigned short) p[1] * p[3] / 0xff;
                         p[2] = (unsigned short) p[2] * p[3] / 0xff;
                     }
-                colorFormat = ColorFormat::ARGB32;
             }
 
             cairo_surface_t *imageSurface = cairo_image_surface_create_for_data(imageData,
-                                                                                toCairoFormat(colorFormat),
+                                                                                CAIRO_FORMAT_ARGB32,
                                                                                 imageCols,
                                                                                 imageRows,
                                                                                 imageStride);
@@ -85,16 +83,14 @@ namespace ArtRobot {
                              const cv::Mat &imageMat,
                              double width, double height) {
             if (imageMat.channels() == 1)
-                return Image::fromRaw(name, transform,
-                                      imageMat.data, imageMat.cols, imageMat.rows, imageMat.step, ColorFormat::A8,
-                                      width, height);
+                return Image(name); // todo
             else if (imageMat.channels() == 3)
-                return Image::fromRaw(name, transform,
-                                      imageMat.data, imageMat.cols, imageMat.rows, imageMat.step, ColorFormat::RGB24,
-                                      width, height);
+                return Image(name); // todo
             else if (imageMat.channels() == 4)
                 return Image::fromRaw(name, transform,
-                                      imageMat.data, imageMat.cols, imageMat.rows, imageMat.step, ColorFormat::ARGB32NoPremultiplied,
+                                      imageMat.data,
+                                      imageMat.cols, imageMat.rows,
+                                      imageMat.step, false,
                                       width, height);
             else
                 return Image(name);
