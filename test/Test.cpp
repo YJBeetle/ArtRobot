@@ -68,15 +68,15 @@ int main(int argc, char *argv[]) {
     // Anchor
     {
         ArtRobot::Component::Circle cl[] = {
-                ArtRobot::Component::Circle("Circle", {.anchor=ArtRobot::Component::Transform::Anchor::LT}, 200, 200, ArtRobot::Color::Red),
-                ArtRobot::Component::Circle("Circle", {.anchor=ArtRobot::Component::Transform::Anchor::CT}, 200, 200, ArtRobot::Color::Lime),
-                ArtRobot::Component::Circle("Circle", {.anchor=ArtRobot::Component::Transform::Anchor::RT}, 200, 200, ArtRobot::Color::Blue),
-                ArtRobot::Component::Circle("Circle", {.anchor=ArtRobot::Component::Transform::Anchor::LC}, 200, 200, ArtRobot::Color::Yellow),
-                ArtRobot::Component::Circle("Circle", {.anchor=ArtRobot::Component::Transform::Anchor::CC}, 200, 200, ArtRobot::Color::Aqua),
-                ArtRobot::Component::Circle("Circle", {.anchor=ArtRobot::Component::Transform::Anchor::RC}, 200, 200, ArtRobot::Color::Fuchsia),
-                ArtRobot::Component::Circle("Circle", {.anchor=ArtRobot::Component::Transform::Anchor::LD}, 200, 200, ArtRobot::Color::Purple),
-                ArtRobot::Component::Circle("Circle", {.anchor=ArtRobot::Component::Transform::Anchor::CD}, 200, 200, ArtRobot::Color::Teal),
-                ArtRobot::Component::Circle("Circle", {.anchor=ArtRobot::Component::Transform::Anchor::RD}, 200, 200, ArtRobot::Color::Navy),
+                ArtRobot::Component::Circle("Circle", {.anchor=ArtRobot::Transform::Anchor::LT}, 200, 200, ArtRobot::Color::Red),
+                ArtRobot::Component::Circle("Circle", {.anchor=ArtRobot::Transform::Anchor::CT}, 200, 200, ArtRobot::Color::Lime),
+                ArtRobot::Component::Circle("Circle", {.anchor=ArtRobot::Transform::Anchor::RT}, 200, 200, ArtRobot::Color::Blue),
+                ArtRobot::Component::Circle("Circle", {.anchor=ArtRobot::Transform::Anchor::LC}, 200, 200, ArtRobot::Color::Yellow),
+                ArtRobot::Component::Circle("Circle", {.anchor=ArtRobot::Transform::Anchor::CC}, 200, 200, ArtRobot::Color::Aqua),
+                ArtRobot::Component::Circle("Circle", {.anchor=ArtRobot::Transform::Anchor::RC}, 200, 200, ArtRobot::Color::Fuchsia),
+                ArtRobot::Component::Circle("Circle", {.anchor=ArtRobot::Transform::Anchor::LD}, 200, 200, ArtRobot::Color::Purple),
+                ArtRobot::Component::Circle("Circle", {.anchor=ArtRobot::Transform::Anchor::CD}, 200, 200, ArtRobot::Color::Teal),
+                ArtRobot::Component::Circle("Circle", {.anchor=ArtRobot::Transform::Anchor::RD}, 200, 200, ArtRobot::Color::Navy),
         };
         auto g = ArtRobot::Component::Group("Group", {.x=200, .y=200});
         for (const auto &c: cl)
