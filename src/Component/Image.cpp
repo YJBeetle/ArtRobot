@@ -11,6 +11,7 @@
 
 #include "./Image.hpp"
 
+#include <fstream>
 #include <iostream>
 
 #ifdef JPEG_FOUND
@@ -22,34 +23,37 @@
 namespace ArtRobot {
     namespace Component {
 
-        Image::Image(std::string name, double width, double height, Transform transform)
-                : Base({Property::Type::Image, name, width, height}, transform) {
+        Image::Image(std::string name)
+                : Base({Property::Type::Image, name}) {
         }
 
-        Image::Image(std::string name, double width, double height, Transform transform,
-                     cairo_surface_t *imageSurface)
-                : Image(name, width, height, transform) {
-            if (width || height) {
-                double scaleX, scaleY;
-                scaleX = width / (double) cairo_image_surface_get_width(imageSurface);
-                scaleY = height / (double) cairo_image_surface_get_height(imageSurface);
-                cairo_scale(cr, scaleX, scaleY);
-            }
+        Image::Image(std::string name, Transform transform,
+                     cairo_surface_t *_imageSurface,
+                     double width, double height)
+                : Base({Property::Type::Image, name,
+                        (width || height) ? width : cairo_image_surface_get_width(_imageSurface),
+                        (width || height) ? height : cairo_image_surface_get_height(_imageSurface)},
+                       transform),
+                  imageSurface(_imageSurface) {
+            if (width || height)
+                cairo_scale(cr,
+                            width / (double) cairo_image_surface_get_width(imageSurface),
+                            height / (double) cairo_image_surface_get_height(imageSurface));
             cairo_set_source_surface(cr, imageSurface, 0, 0);
             cairo_paint(cr);
-            cairo_surface_finish(imageSurface);
         }
 
-        Image Image::fromRaw(std::string name, double width, double height, Transform transform,
+        Image Image::fromRaw(std::string name, Transform transform,
                              unsigned char *imageData,
-                             int imageW, int imageH,
+                             int imageCols, int imageRows,
                              int imageStride,
-                             ColorFormat colorFormat) {
+                             ColorFormat colorFormat,
+                             double width, double height) {
             // 计算预乘
             if (colorFormat == ColorFormat::ARGB32NoPremultiplied) {
                 // 尝试 cairo_set_operator CAIRO_OPERATOR_OVER CAIRO_OPERATOR_SOURCE ?
-                for (int y = 0; y < imageH; y++)
-                    for (int x = 0; x < imageW; x++) {
+                for (int y = 0; y < imageRows; y++)
+                    for (int x = 0; x < imageCols; x++) {
                         auto p = imageData + y * imageStride + x * 4;
                         p[0] = (unsigned short) p[0] * p[3] / 0xff;
                         p[1] = (unsigned short) p[1] * p[3] / 0xff;
@@ -60,12 +64,13 @@ namespace ArtRobot {
 
             cairo_surface_t *imageSurface = cairo_image_surface_create_for_data(imageData,
                                                                                 toCairoFormat(colorFormat),
-                                                                                imageW,
-                                                                                imageH,
+                                                                                imageCols,
+                                                                                imageRows,
                                                                                 imageStride);
 
-            Image ret = Image(name, width, height, transform,
-                              imageSurface);
+            Image ret = Image(name, transform,
+                              imageSurface,
+                              width, height);
 
             cairo_surface_destroy(imageSurface); // 回收
 
@@ -74,84 +79,72 @@ namespace ArtRobot {
 
 #ifdef OpenCV_FOUND
 
-        Image Image::fromMat(std::string name, double width, double height, Transform transform,
-                             const cv::Mat &imageMat) {
+        Image Image::fromMat(std::string name, Transform transform,
+                             const cv::Mat &imageMat,
+                             double width, double height) {
             if (imageMat.channels() == 1)
-                return Image::fromRaw(name, width, height, transform,
-                                      imageMat.data, imageMat.cols, imageMat.rows, imageMat.step, ColorFormat::A8);
+                return Image::fromRaw(name, transform,
+                                      imageMat.data, imageMat.cols, imageMat.rows, imageMat.step, ColorFormat::A8,
+                                      width, height);
             else if (imageMat.channels() == 3)
-                return Image::fromRaw(name, width, height, transform,
-                                      imageMat.data, imageMat.cols, imageMat.rows, imageMat.step, ColorFormat::RGB24);
+                return Image::fromRaw(name, transform,
+                                      imageMat.data, imageMat.cols, imageMat.rows, imageMat.step, ColorFormat::RGB24,
+                                      width, height);
+            else if (imageMat.channels() == 4)
+                return Image::fromRaw(name, transform,
+                                      imageMat.data, imageMat.cols, imageMat.rows, imageMat.step, ColorFormat::ARGB32NoPremultiplied,
+                                      width, height);
             else
-                return Image::fromRaw(name, width, height, transform,
-                                      imageMat.data, imageMat.cols, imageMat.rows, imageMat.step, ColorFormat::ARGB32NoPremultiplied);
+                return Image(name);
         }
 
 #endif
 
 #ifdef OpenCV_FOUND
 
-        Image Image::fromFileByCV(std::string name, double width, double height, Transform transform,
-                                  const std::string &imageFilePath) {
-            return Image::fromMat(name, width, height, transform,
-                                  cv::imread(imageFilePath, cv::IMREAD_UNCHANGED));
+        Image Image::fromFileByCV(std::string name, Transform transform,
+                                  const std::string &imageFilePath,
+                                  double width, double height) {
+            return Image::fromMat(name, transform,
+                                  cv::imread(imageFilePath, cv::IMREAD_UNCHANGED),
+                                  width, height);
         }
 
 #endif
 
-        Image Image::fromPNG(std::string name, double width, double height, Transform transform,
-                             const std::string &imageFilePath) {
-
-            FILE *imageFile = fopen(imageFilePath.c_str(), "rb");
-
-            if (imageFile) {
-                fclose(imageFile);
-
-                cairo_surface_t *img = cairo_image_surface_create_from_png(imageFilePath.c_str());
-
-                auto ret = Image(name, width, height, transform, img);
-
-                cairo_surface_destroy(img); // 回收PNG
-
-                return ret;
-            }
-
-            return Image(name, width, height, transform);
+        Image Image::fromPng(std::string name, Transform transform,
+                             const std::string &imageFilePath,
+                             double width, double height) {
+            if (std::filesystem::exists(imageFilePath))
+                return Image(name, transform, cairo_image_surface_create_from_png(imageFilePath.c_str()), width, height);
+            return Image(name);
         }
 
 #ifdef JPEG_FOUND
 
-        Image Image::fromJPG(std::string name, double width, double height, Transform transform,
-                             const std::string &imageFilePath) {
-            const char *filename = imageFilePath.c_str();
-
-            FILE *infile;      /* source file */
-            JSAMPARRAY buffer; /* Output row buffer */
-            int row_stride;    /* physical row width in output buffer */
-
-            //文件检查
-            if ((infile = fopen(filename, "rb")) == nullptr) {
-                fprintf(stderr, "文件不存在： %s \n", filename);
-                return Image(name, width, height, transform);
+        Image Image::fromJpg(std::string name, Transform transform,
+                             const std::string &filename,
+                             double width, double height) {
+            FILE *infile;
+            if ((infile = fopen(filename.c_str(), "rb")) == nullptr) {
+                fprintf(stderr, "文件不存在： %s \n", filename.c_str());
+                return Image(name);
             }
 
-            struct jpeg_decompress_struct cinfo;
-
-            //出错处理
-            struct jpeg_error_mgr error_mgr;
+            //准备
+            jpeg_decompress_struct cinfo;
+            jpeg_error_mgr error_mgr; //出错处理
             cinfo.err = jpeg_std_error(&error_mgr);
             error_mgr.error_exit = [](j_common_ptr cinfo) {
                 (*cinfo->err->output_message)(cinfo);
             };
-
-            //准备
             jpeg_create_decompress(&cinfo);
             jpeg_stdio_src(&cinfo, infile);
             (void) jpeg_read_header(&cinfo, true);
             (void) jpeg_start_decompress(&cinfo);
 
-            row_stride = cinfo.output_width * cinfo.output_components;
-            buffer = (*cinfo.mem->alloc_sarray)((j_common_ptr) &cinfo, JPOOL_IMAGE, row_stride, 1);
+            int row_stride = cinfo.output_width * cinfo.output_components;
+            JSAMPARRAY buffer = (*cinfo.mem->alloc_sarray)((j_common_ptr) &cinfo, JPOOL_IMAGE, row_stride, 1);
 
             // 申请内存
             uint8_t *image_buffer = (uint8_t *) malloc(cinfo.output_width * cinfo.output_height * 4);
@@ -170,8 +163,9 @@ namespace ArtRobot {
                 // put_scanline_someplace(buffer[0], row_stride);
             }
 
-            auto ret = Image::fromRaw(name, width, height, transform,
-                                      image_buffer, cinfo.output_width, cinfo.output_height, cinfo.output_width * 4, ColorFormat::ARGB32);
+            auto ret = Image::fromRaw(name, transform,
+                                      image_buffer, cinfo.output_width, cinfo.output_height, cinfo.output_width * 4, ColorFormat::ARGB32,
+                                      width, height);
 
             free(image_buffer);
 
@@ -185,20 +179,23 @@ namespace ArtRobot {
 
 #endif
 
-        Image Image::fromFile(std::string name, double width, double height, Transform transform,
-                              const std::string &imageFilePath) {
+        Image Image::fromFile(std::string name, Transform transform,
+                              const std::string &imageFilePath,
+                              double width, double height) {
             const char *ext = imageFilePath.c_str() + imageFilePath.length() - 4;
             if (!strcasecmp(ext, ".png"))
-                return Image::fromPNG(name, width, height, transform, imageFilePath);
+                return Image::fromPng(name, transform, imageFilePath, width, height);
 #ifdef JPEG_FOUND
             else if (!strcasecmp(ext, ".jpg"))
-                return Image::fromJPG(name, width, height, transform, imageFilePath);
+                return Image::fromJpg(name, transform, imageFilePath, width, height);
 #endif
-            return Image(name, width, height, transform);
+            return Image(name);
         }
 
         Image::~Image() {
             finish();
+            if (imageSurface)
+                cairo_surface_destroy(imageSurface);
         }
 
     } // namespace Component

@@ -53,50 +53,59 @@ namespace ArtRobot {
                 }
             }
 
-            Image(std::string name, double width, double height, Transform transform);
+            Image(std::string name);
 
-            Image(std::string name, double width, double height, Transform transform,
-                  cairo_surface_t *imageSurface);
-
-            static Image fromRaw(std::string name, double width, double height, Transform transform,
+            static Image fromRaw(std::string name, Transform transform,
                                  unsigned char *imageData,
-                                 int imageW, int imageH,
+                                 int imageColums, int imageRows,
                                  int imageStride,
-                                 ColorFormat colorFormat);
+                                 ColorFormat colorFormat,
+                                 double width = 0., double height = 0.);
 
 #ifdef OpenCV_FOUND
 
-            static Image fromMat(std::string name, double width, double height, Transform transform,
-                                 const cv::Mat &imageMat);
+            static Image fromMat(std::string name, Transform transform,
+                                 const cv::Mat &imageMat,
+                                 double width = 0., double height = 0.);
 
 #endif
 
 #ifdef OpenCV_FOUND
 
-            static Image fromFileByCV(std::string name, double width, double height, Transform transform,
-                                      const std::string &imageFilePath);
+            static Image fromFileByCV(std::string name, Transform transform,
+                                      const std::string &imageFilePath,
+                                      double width = 0., double height = 0.);
 
 #endif
 
-            static Image fromPNG(std::string name, double width, double height, Transform transform,
-                                 const std::string &imageFilePath);
+            static Image fromPng(std::string name, Transform transform,
+                                 const std::string &imageFilePath,
+                                 double width = 0., double height = 0.);
 
 // todo webp
 
 #ifdef JPEG_FOUND
 
-            static Image fromJPG(std::string name, double width, double height, Transform transform,
-                                 const std::string &imageFilePath);
+            static Image fromJpg(std::string name, Transform transform,
+                                 const std::string &filename,
+                                 double width = 0., double height = 0.);
 
 #endif
 
-            static Image fromFile(std::string name, double width, double height, Transform transform,
-                                  const std::string &imageFilePath);
+            static Image fromFile(std::string name, Transform transform,
+                                  const std::string &imageFilePath,
+                                  double width = 0., double height = 0.);
 
 
             ~Image();
 
         private:
+            cairo_surface_t *imageSurface;
+
+            Image(std::string name, Transform transform,
+                  cairo_surface_t *imageSurface,
+                  double width = 0., double height = 0.);
+
             static _cairo_format toCairoFormat(ColorFormat format) {
                 switch (format) {
                     case ColorFormat::ARGB32:
