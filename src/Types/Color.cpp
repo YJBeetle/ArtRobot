@@ -16,10 +16,10 @@
 
 namespace ArtRobot {
 
-    Color::Color() : value(0x000000FF) {
+    Color::Color() : value({0x000000FF}) {
     }
 
-    Color::Color(uint32_t colorVal) : value(colorVal) {
+    Color::Color(uint32_t colorVal) : value({colorVal}) {
     }
 
     Color::Color(const char *colorStr) {
@@ -43,7 +43,7 @@ namespace ArtRobot {
                         << (4 * i);
                 colorStr++;
             }
-            value = intColor;
+            value = {intColor};
         } else {
             char colorStrLower[strlen(colorStr) + 1];
             for (int i = 0; i < sizeof(colorStrLower); ++i)
@@ -197,7 +197,7 @@ namespace ArtRobot {
             else if (strcmp(colorStrLower, "whitesmoke") == 0) value = WhiteSmoke.value;
             else if (strcmp(colorStrLower, "white") == 0) value = White.value;
             else if (strcmp(colorStrLower, "transparent") == 0) value = Transparent.value;
-            else value = 0x000000FF; // 黑不透明
+            else value = {0x000000FF}; // 黑不透明
         }
     }
 

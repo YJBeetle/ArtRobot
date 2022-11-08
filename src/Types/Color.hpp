@@ -17,7 +17,26 @@ namespace ArtRobot {
 
     class Color {
     private:
-        uint32_t value;
+        union Value {
+            uint32_t v;
+#ifdef _MSC_VER
+            __pragma( pack(push, 1) )
+#endif
+            struct {
+                uint8_t a;
+                uint8_t b;
+                uint8_t g;
+                uint8_t r;
+            }
+#ifdef __GNUC__
+                __attribute__((__packed__))
+#endif
+#ifdef _MSC_VER
+            __pragma( pack(pop))
+#endif
+                    rgba;
+        } value;
+
 
     public:
         Color();
@@ -33,19 +52,19 @@ namespace ArtRobot {
         Color &operator=(const Color &other);
 
         inline double r() {
-            return (double) (value >> 24 & 0xff) / (double) 0xff;
+            return (double) (value.rgba.r) / (double) 0xff;
         }
 
         inline double g() {
-            return (double) (value >> 16 & 0xff) / (double) 0xff;
+            return (double) (value.rgba.g) / (double) 0xff;
         }
 
         inline double b() {
-            return (double) (value >> 8 & 0xff) / (double) 0xff;
+            return (double) (value.rgba.b) / (double) 0xff;
         }
 
         inline double a() {
-            return (double) (value & 0xff) / (double) 0xff;
+            return (double) (value.rgba.a) / (double) 0xff;
         }
 
         const static Color Maroon;
