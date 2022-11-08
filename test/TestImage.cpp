@@ -67,6 +67,7 @@ int main(int argc, char *argv[]) {
     }
 
 #ifdef OpenCV_FOUND
+#ifndef OpenCV_WITHOUT_IMAPI
     // fromFileByCV
     {
         auto img = ArtRobot::Component::Image::fromFileByCV("img", {.x=256, .y=256}, "img.jpg");
@@ -74,6 +75,7 @@ int main(int argc, char *argv[]) {
         renderer.render(img.getSurface());
         renderer.saveToFile("TestImage-Result-fromFileByCV.png");
     }
+#endif
 #endif
 
     return 0;
