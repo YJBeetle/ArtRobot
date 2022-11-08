@@ -184,6 +184,7 @@ namespace ArtRobot {
                 cairo_format_t format;
                 if (cInfo.output_components == 1) format = CAIRO_FORMAT_A8;
                 else if (cInfo.output_components == 3) format = CAIRO_FORMAT_RGB24;
+                else if (cInfo.output_components == 4) format = CAIRO_FORMAT_RGB24;
                 else return false;
 
                 imageSurface = cairo_image_surface_create(format, cInfo.output_width, cInfo.output_height);
@@ -194,12 +195,18 @@ namespace ArtRobot {
                 while (cInfo.output_scanline < cInfo.output_height) {
                     (void) jpeg_read_scanlines(&cInfo, buffer, 1);
                     for (int col = 0; col < cInfo.output_width; col++) {
-                        if (format == CAIRO_FORMAT_RGB24) {
-                            imageSurfaceData[col * 4 + 0] = buffer[0][col * cInfo.output_components + 2];
-                            imageSurfaceData[col * 4 + 1] = buffer[0][col * cInfo.output_components + 1];
-                            imageSurfaceData[col * 4 + 2] = buffer[0][col * cInfo.output_components + 0];
-                        } else if (format == CAIRO_FORMAT_A8)
+                        if (cInfo.output_components == 1) {
                             imageSurfaceData[col] = buffer[0][col];
+                        } else if (cInfo.output_components == 3) {
+                            imageSurfaceData[col * 4 + 0] = buffer[0][col * 3 + 2];
+                            imageSurfaceData[col * 4 + 1] = buffer[0][col * 3 + 1];
+                            imageSurfaceData[col * 4 + 2] = buffer[0][col * 3 + 0];
+                        } else if (cInfo.output_components == 4) {
+                            imageSurfaceData[col * 4 + 0] = buffer[0][col * 4 + 2];
+                            imageSurfaceData[col * 4 + 1] = buffer[0][col * 4 + 1];
+                            imageSurfaceData[col * 4 + 2] = buffer[0][col * 4 + 0];
+                            imageSurfaceData[col * 4 + 3] = buffer[0][col * 4 + 3];
+                        }
                     }
                     imageSurfaceData += imageSurfaceStride;
                 }

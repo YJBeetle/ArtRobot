@@ -50,6 +50,22 @@ int main(int argc, char *argv[]) {
         }
     }
 
+    // JpegGray
+    {
+        auto img = ArtRobot::Component::Image::fromJpg("img", {.x=256, .y=256}, "img-Gray.jpg");
+        ArtRobot::Renderer renderer(ArtRobot::OutputTypePng, 512, 512, ArtRobot::Renderer::PX, 72);
+        renderer.render(img.getSurface());
+        renderer.saveToFile("TestImage-Result-JpegGray.png");
+    }
+
+    // JpegCmyk
+    {
+        auto img = ArtRobot::Component::Image::fromJpg("img", {.x=256, .y=256}, "img-CMYK.jpg");
+        ArtRobot::Renderer renderer(ArtRobot::OutputTypePng, 512, 512, ArtRobot::Renderer::PX, 72);
+        renderer.render(img.getSurface());
+        renderer.saveToFile("TestImage-Result-JpegCmyk.png");
+    }
+
 #ifdef OpenCV_FOUND
     // fromFileByCV
     {
