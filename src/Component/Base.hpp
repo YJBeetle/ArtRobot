@@ -45,8 +45,7 @@ namespace ArtRobot {
                 LT, CT, RT,
                 LC, CC, RC,
                 LD, CD, RD,
-            };
-            Anchor anchor = Anchor::CC;
+            } anchor = Anchor::CC;
             double scaleX = 1;
             double scaleY = 1;
         };
