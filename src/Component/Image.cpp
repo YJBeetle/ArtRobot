@@ -247,6 +247,20 @@ namespace ArtRobot {
 
 #endif
 
+
+        Image Image::fromFile(std::string name, Transform transform,
+                              const std::vector<uint8_t> &data,
+                              double width, double height) {
+            if (memcmp(data.data(), (uint8_t[]) {0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A}, 8) == 0)
+                return Image::fromPng(name, transform, data, width, height);
+#ifdef JPEG_FOUND
+            else if (memcmp(data.data(), (uint8_t[]) {0xFF, 0xD8, 0xFF}, 3) == 0)
+                return Image::fromJpg(name, transform, data, width, height);
+#endif
+            else
+                return Image(name);
+        }
+
         Image Image::fromFile(std::string name, Transform transform,
                               const std::string &imageFilePath,
                               double width, double height) {
@@ -257,7 +271,8 @@ namespace ArtRobot {
             else if (!strcasecmp(ext, ".jpg"))
                 return Image::fromJpg(name, transform, imageFilePath, width, height);
 #endif
-            return Image(name);
+            else
+                return Image(name);
         }
 
         Image::~Image() {
