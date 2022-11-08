@@ -25,7 +25,7 @@ namespace ArtRobot {
                            double lineSpacing,            // 行间距
                            double wordSpacing)            // 字间距
                 : Base({Property::Type::TextArea, name, width, height}, transform) {
-            cairo_set_source_rgba(cr, color.red(), color.green(), color.blue(), color.alpha());
+            cairo_set_source_rgba(cr, color.r(), color.g(), color.b(), color.a());
 
             PangoLayout *layout;
             PangoFontDescription *desc;
@@ -34,7 +34,7 @@ namespace ArtRobot {
             pango_layout_set_text(layout, content.c_str(), -1);                      // 文字内容
             desc = pango_font_description_new();                                     // 字体
             pango_font_description_set_family(desc, fontFamily.c_str());             // 字体
-            pango_font_description_set_weight(desc, (PangoWeight) fontWeight);        // 字体
+            pango_font_description_set_weight(desc, (PangoWeight) fontWeight);       // 字体
             pango_font_description_set_size(desc, fontSize * PANGO_SCALE * 72 / 96); // 字体
             pango_layout_set_font_description(layout, desc);                         // 字体
             pango_font_description_free(desc);                                       // 字体
