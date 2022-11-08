@@ -91,6 +91,10 @@ namespace ArtRobot {
 #ifdef JPEG_FOUND
 
             static Image fromJpg(std::string name, Transform transform,
+                                 const std::vector<uint8_t> &data,
+                                 double width = 0., double height = 0.);
+
+            static Image fromJpg(std::string name, Transform transform,
                                  const std::string &filename,
                                  double width = 0., double height = 0.);
 

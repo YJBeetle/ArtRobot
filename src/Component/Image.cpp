@@ -147,59 +147,100 @@ namespace ArtRobot {
 
 #ifdef JPEG_FOUND
 
+        class JepgReader {
+        private:
+            jpeg_decompress_struct cInfo;
+            jpeg_error_mgr errorMgr; //出错处理
+            cairo_surface_t *imageSurface;
+        public:
+            JepgReader() {
+                cInfo.err = jpeg_std_error(&errorMgr);
+                errorMgr.error_exit = [](j_common_ptr cInfo) {
+                    (*cInfo->err->output_message)(cInfo);
+                };
+                jpeg_create_decompress(&cInfo);
+            }
+
+            ~JepgReader() {
+                (void) jpeg_finish_decompress(&cInfo);
+                jpeg_destroy_decompress(&cInfo);
+            }
+
+            void loadFromMem(const unsigned char *inBuffer, unsigned long inSize) {
+                jpeg_mem_src(&cInfo, inBuffer, inSize);
+            }
+
+            void loadFromStdio(FILE *inFile) {
+                jpeg_stdio_src(&cInfo, inFile);
+            }
+
+            bool read() {
+                (void) jpeg_read_header(&cInfo, true);
+                (void) jpeg_start_decompress(&cInfo);
+
+                int row_stride = cInfo.output_width * cInfo.output_components;
+                JSAMPARRAY buffer = (*cInfo.mem->alloc_sarray)((j_common_ptr) &cInfo, JPOOL_IMAGE, row_stride, 1);
+
+                cairo_format_t format;
+                if (cInfo.output_components == 1) format = CAIRO_FORMAT_A8;
+                else if (cInfo.output_components == 3) format = CAIRO_FORMAT_RGB24;
+                else return false;
+
+                imageSurface = cairo_image_surface_create(format, cInfo.output_width, cInfo.output_height);
+                auto imageSurfaceData = cairo_image_surface_get_data(imageSurface);
+                auto imageSurfaceStride = cairo_image_surface_get_stride(imageSurface);
+
+                //开始读取
+                while (cInfo.output_scanline < cInfo.output_height) {
+                    (void) jpeg_read_scanlines(&cInfo, buffer, 1);
+                    for (int col = 0; col < cInfo.output_width; col++) {
+                        if (format == CAIRO_FORMAT_RGB24) {
+                            imageSurfaceData[col * 4 + 0] = buffer[0][col * cInfo.output_components + 2];
+                            imageSurfaceData[col * 4 + 1] = buffer[0][col * cInfo.output_components + 1];
+                            imageSurfaceData[col * 4 + 2] = buffer[0][col * cInfo.output_components + 0];
+                        } else if (format == CAIRO_FORMAT_A8)
+                            imageSurfaceData[col] = buffer[0][col];
+                    }
+                    imageSurfaceData += imageSurfaceStride;
+                }
+
+                return true;
+            }
+
+            cairo_surface_t *surface() {
+                return imageSurface;
+            }
+        };
+
+        Image Image::fromJpg(std::string name, Transform transform,
+                             const std::vector<uint8_t> &data,
+                             double width, double height) {
+            JepgReader r;
+            r.loadFromMem(data.data(), data.size());
+            if (r.read())
+                return Image(name, transform,
+                             r.surface(),
+                             width, height);
+            else
+                return Image(name);
+        }
+
         Image Image::fromJpg(std::string name, Transform transform,
                              const std::string &filename,
                              double width, double height) {
-            FILE *infile;
-            if ((infile = fopen(filename.c_str(), "rb")) == nullptr) {
-                fprintf(stderr, "文件不存在： %s \n", filename.c_str());
+            FILE *inFile;
+            if ((inFile = fopen(filename.c_str(), "rb")) == nullptr)
                 return Image(name);
-            }
-
-            //准备
-            jpeg_decompress_struct cinfo;
-            jpeg_error_mgr error_mgr; //出错处理
-            cinfo.err = jpeg_std_error(&error_mgr);
-            error_mgr.error_exit = [](j_common_ptr cinfo) {
-                (*cinfo->err->output_message)(cinfo);
-            };
-            jpeg_create_decompress(&cinfo);
-            jpeg_stdio_src(&cinfo, infile);
-            (void) jpeg_read_header(&cinfo, true);
-            (void) jpeg_start_decompress(&cinfo);
-
-            int row_stride = cinfo.output_width * cinfo.output_components;
-            JSAMPARRAY buffer = (*cinfo.mem->alloc_sarray)((j_common_ptr) &cinfo, JPOOL_IMAGE, row_stride, 1);
-
-            // 申请内存
-            uint8_t *image_buffer = (uint8_t *) malloc(cinfo.output_width * cinfo.output_height * 4);
-
-            //开始读取
-            uint8_t *image_buffer_p = image_buffer;
-            while (cinfo.output_scanline < cinfo.output_height) {
-                (void) jpeg_read_scanlines(&cinfo, buffer, 1);
-                memcpy(image_buffer_p, buffer[0], row_stride); // todo
-                for (int i = 0; i < cinfo.output_width; i++) {
-                    image_buffer_p[i * 4 + 1] = buffer[0][i * cinfo.output_components + 0];
-                    image_buffer_p[i * 4 + 2] = buffer[0][i * cinfo.output_components + 1];
-                    image_buffer_p[i * 4 + 3] = buffer[0][i * cinfo.output_components + 2];
-                }
-                image_buffer_p += cinfo.output_width * 4;
-                // put_scanline_someplace(buffer[0], row_stride);
-            }
-
-            auto ret = Image::fromRaw(name, transform,
-                                      image_buffer, cinfo.output_width, cinfo.output_height, cinfo.output_width * 4, ColorFormat::ARGB32,
-                                      width, height);
-
-            free(image_buffer);
-
-            //清理
-            (void) jpeg_finish_decompress(&cinfo);
-            jpeg_destroy_decompress(&cinfo);
-            fclose(infile);
-
-            return ret;
+            JepgReader r;
+            r.loadFromStdio(inFile);
+            auto rr = r.read();
+            fclose(inFile);
+            if (rr)
+                return Image(name, transform,
+                             r.surface(),
+                             width, height);
+            else
+                return Image(name);
         }
 
 #endif
