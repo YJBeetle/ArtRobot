@@ -26,7 +26,7 @@ namespace ArtRobot {
                 Circle,         // 圆形
                 Svg,
                 Image,
-                ImageMask,
+                Mask,
                 Text,     // 点状文字
                 TextArea, // 区域文字
                 Repeat,   // 重复对象
@@ -66,8 +66,6 @@ namespace ArtRobot {
             Base(Property property, Transform transform);
 
             virtual ~Base();
-
-            void finish();
 
             cairo_surface_t *getSurface() const;
 

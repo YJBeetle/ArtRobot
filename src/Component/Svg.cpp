@@ -58,7 +58,6 @@ namespace ArtRobot {
         }
 
         Svg::~Svg() {
-            finish();
         }
 
     } // namespace Component

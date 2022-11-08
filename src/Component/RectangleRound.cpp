@@ -14,14 +14,12 @@
 namespace ArtRobot {
     namespace Component {
 
-        RectangleRound::RectangleRound(std::string name, double width, double height, Transform transform,
-                                       double angleTL,
-                                       double angleTR,
-                                       double angleBR,
-                                       double angleBL,
+        RectangleRound::RectangleRound(std::string name, Transform transform,
+                                       double width, double height,
+                                       double angleTL, double angleTR, double angleBR, double angleBL,
                                        Color color)
                 : Base({Property::Type::RectangleRound, name, width, height}, transform) {
-            cairo_set_source_rgba(cr, color.red(), color.green(), color.blue(), color.alpha());
+            cairo_set_source_rgba(cr, color.r(), color.g(), color.b(), color.a());
 
             cairo_move_to(cr, angleTL, 0);
             cairo_line_to(cr, width - angleTL, 0);
@@ -44,7 +42,6 @@ namespace ArtRobot {
         }
 
         RectangleRound::~RectangleRound() {
-            finish();
         }
 
     } // namespace Component

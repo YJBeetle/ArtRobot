@@ -23,7 +23,6 @@ namespace ArtRobot {
         }
 
         Repeat::~Repeat() {
-            finish();
         }
 
     } // namespace Component

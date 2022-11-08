@@ -17,7 +17,7 @@
 #include "./Component/Base.hpp"
 #include "./Component/Group.hpp"
 #include "./Component/Image.hpp"
-#include "./Component/ImageMask.hpp"
+#include "./Component/Mask.hpp"
 #include "./Component/Rectangle.hpp"
 #include "./Component/RectangleRound.hpp"
 #include "./Component/Circle.hpp"

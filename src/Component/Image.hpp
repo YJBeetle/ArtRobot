@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 YJBeetle
+ * Copyright 2022 YJBeetle
  *
  * Authors:
  *  YJBeetle <YJBeetle@gmail.com>
@@ -12,7 +12,6 @@
 #pragma once
 
 #include <string>
-#include <memory>
 
 #include <ArtRobot/Features.hpp>
 
@@ -54,50 +53,69 @@ namespace ArtRobot {
                 }
             }
 
-            Image(std::string name, double width, double height, Transform transform);
+            Image(std::string name);
 
-            Image(std::string name, double width, double height, Transform transform,
-                  cairo_surface_t *imageSurface);
-
-            static std::shared_ptr<Image> fromRaw(std::string name, double width, double height, Transform transform,
-                                                  unsigned char *imageData,
-                                                  int imageW, int imageH,
-                                                  int imageStride,
-                                                  ColorFormat colorFormat);
+            static Image fromRaw(std::string name, Transform transform,
+                                 unsigned char *imageData,
+                                 int imageColums, int imageRows,
+                                 int imageStride,
+                                 ColorFormat colorFormat,
+                                 double width = 0., double height = 0.);
 
 #ifdef OpenCV_FOUND
 
-            static std::shared_ptr<Image> fromMat(std::string name, double width, double height, Transform transform,
-                                                  const cv::Mat &imageMat);
+            static Image fromMat(std::string name, Transform transform,
+                                 const cv::Mat &imageMat,
+                                 double width = 0., double height = 0.);
 
 #endif
 
 #ifdef OpenCV_FOUND
 
-            static std::shared_ptr<Image> fromFileByCV(std::string name, double width, double height, Transform transform,
-                                                       const std::string &imageFilePath);
+            static Image fromFileByCV(std::string name, Transform transform,
+                                      const std::string &imageFilePath,
+                                      double width = 0., double height = 0.);
 
 #endif
 
-            static std::shared_ptr<Image> fromPNG(std::string name, double width, double height, Transform transform,
-                                                  const std::string &imageFilePath);
+            static Image fromPng(std::string name, Transform transform,
+                                 const std::vector<uint8_t> &data,
+                                 double width = 0., double height = 0.);
+
+            static Image fromPng(std::string name, Transform transform,
+                                 const std::string &imageFilePath,
+                                 double width = 0., double height = 0.);
 
 // todo webp
 
 #ifdef JPEG_FOUND
 
-            static std::shared_ptr<Image> fromJPG(std::string name, double width, double height, Transform transform,
-                                                  const std::string &imageFilePath);
+            static Image fromJpg(std::string name, Transform transform,
+                                 const std::vector<uint8_t> &data,
+                                 double width = 0., double height = 0.);
+
+            static Image fromJpg(std::string name, Transform transform,
+                                 const std::string &filename,
+                                 double width = 0., double height = 0.);
 
 #endif
 
-            static std::shared_ptr<Image> fromFile(std::string name, double width, double height, Transform transform,
-                                                   const std::string &imageFilePath);
+            static Image fromFile(std::string name, Transform transform,
+                                  const std::string &imageFilePath,
+                                  double width = 0., double height = 0.);
 
 
             ~Image();
 
         private:
+            cairo_surface_t *imageSurface = nullptr;
+            int imageCols = 0;
+            int imageRows = 0;
+
+            Image(std::string name, Transform transform,
+                  cairo_surface_t *imageSurface,
+                  double width = 0., double height = 0.);
+
             static _cairo_format toCairoFormat(ColorFormat format) {
                 switch (format) {
                     case ColorFormat::ARGB32:
