@@ -14,41 +14,11 @@
 #include <string>
 #include <cmath>
 #include <cairo.h>
+#include "../Types/Property.hpp"
+#include "../Types/Transform.hpp"
 
 namespace ArtRobot {
     namespace Component {
-
-        struct Property {
-            enum class Type {
-                Unknow = 0,
-                Rectangle,      // 方形
-                RectangleRound, // 圆角方形
-                Circle,         // 圆形
-                Svg,
-                Image,
-                Mask,
-                Text,     // 点状文字
-                TextArea, // 区域文字
-                Repeat,   // 重复对象
-                Group,    // 群组对象
-            };
-            Type type = Type::Unknow;
-            std::string name = std::string();
-            double width = 0;
-            double height = 0;
-        };
-        struct Transform {
-            double x = 0;
-            double y = 0;
-            double rotate = 0;
-            enum class Anchor {
-                LT, CT, RT,
-                LC, CC, RC,
-                LD, CD, RD,
-            } anchor = Anchor::CC;
-            double scaleX = 1;
-            double scaleY = 1;
-        };
 
         class Base {
         protected:
