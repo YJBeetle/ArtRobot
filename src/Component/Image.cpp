@@ -185,25 +185,27 @@ namespace ArtRobot {
                 auto imageSurfaceData = cairo_image_surface_get_data(imageSurface);
                 auto imageSurfaceStride = cairo_image_surface_get_stride(imageSurface);
 
-                //开始读取
-                while (cInfo.output_scanline < cInfo.output_height) {
-                    (void) jpeg_read_scanlines(&cInfo, buffer, 1);
-                    for (int col = 0; col < cInfo.output_width; col++) {
-                        if (cInfo.output_components == 1) {
-                            imageSurfaceData[col * 4 + 0] = buffer[0][col];
-                            imageSurfaceData[col * 4 + 1] = buffer[0][col];
-                            imageSurfaceData[col * 4 + 2] = buffer[0][col];
-                        } else if (cInfo.output_components == 3) {
-                            imageSurfaceData[col * 4 + 0] = buffer[0][col * 3 + 2];
-                            imageSurfaceData[col * 4 + 1] = buffer[0][col * 3 + 1];
-                            imageSurfaceData[col * 4 + 2] = buffer[0][col * 3 + 0];
-                        } else if (cInfo.output_components == 4) {
-                            imageSurfaceData[col * 4 + 0] = buffer[0][col * 4 + 2];
-                            imageSurfaceData[col * 4 + 1] = buffer[0][col * 4 + 1];
-                            imageSurfaceData[col * 4 + 2] = buffer[0][col * 4 + 0];
+                if (cInfo.output_components == 1) {
+                    while (cInfo.output_scanline < cInfo.output_height) {
+                        (void) jpeg_read_scanlines(&cInfo, buffer, 1);
+                        for (int col = 0; col < cInfo.output_width; col++) {
+                            size_t ofsI = col * 4;
+                            imageSurfaceData[ofsI + 0] = imageSurfaceData[ofsI + 1] = imageSurfaceData[ofsI + 2] = buffer[0][col];
                         }
+                        imageSurfaceData += imageSurfaceStride;
                     }
-                    imageSurfaceData += imageSurfaceStride;
+                } else if (cInfo.output_components == 3 || cInfo.output_components == 4) {
+                    while (cInfo.output_scanline < cInfo.output_height) {
+                        (void) jpeg_read_scanlines(&cInfo, buffer, 1);
+                        for (int col = 0; col < cInfo.output_width; col++) {
+                            size_t ofsI = col * 4;
+                            size_t ofsJ = col * cInfo.output_components;
+                            imageSurfaceData[ofsI + 0] = buffer[0][ofsJ + 2];
+                            imageSurfaceData[ofsI + 1] = buffer[0][ofsJ + 1];
+                            imageSurfaceData[ofsI + 2] = buffer[0][ofsJ + 0];
+                        }
+                        imageSurfaceData += imageSurfaceStride;
+                    }
                 }
 
                 return true;
