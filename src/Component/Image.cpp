@@ -68,13 +68,9 @@ namespace ArtRobot {
                                                                                 imageRows,
                                                                                 imageStride);
 
-            Image ret = Image(name, transform,
-                              imageSurface,
-                              width, height);
-
-            cairo_surface_destroy(imageSurface); // 回收
-
-            return ret;
+            return Image(name, transform,
+                         imageSurface,
+                         width, height);
         }
 
 #ifdef OpenCV_FOUND
