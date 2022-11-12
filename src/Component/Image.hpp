@@ -10,10 +10,9 @@
  */
 
 #pragma once
+#include <ArtRobot/Features.hpp>
 
 #include <string>
-
-#include <ArtRobot/Features.hpp>
 
 #ifdef OpenCV_FOUND
 

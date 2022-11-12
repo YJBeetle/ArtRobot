@@ -9,13 +9,13 @@
  *
  */
 
+#include "./Renderer.hpp"
+
 #include <iostream>
 
 #ifdef WIN32
 #include <fcntl.h>
 #endif
-
-#include <ArtRobot/Features.hpp>
 
 #ifdef WEBP_FOUND
 
@@ -28,8 +28,6 @@
 #include <jpeglib.h>
 
 #endif
-
-#include "./Renderer.hpp"
 
 namespace ArtRobot {
 

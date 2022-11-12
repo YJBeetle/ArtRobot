@@ -10,6 +10,7 @@
  */
 
 #pragma once
+#include <ArtRobot/Features.hpp>
 
 #include <string>
 #include <tuple>

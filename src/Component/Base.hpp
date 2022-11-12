@@ -10,10 +10,12 @@
  */
 
 #pragma once
+#include <ArtRobot/Features.hpp>
 
 #include <string>
 #include <cmath>
 #include <cairo.h>
+
 #include "../Types/Property.hpp"
 #include "../Types/Transform.hpp"
 
