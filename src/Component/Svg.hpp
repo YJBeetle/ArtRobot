@@ -12,6 +12,8 @@
 #pragma once
 #include <ArtRobot/Features.hpp>
 
+#ifdef RSVG_FOUND
+
 #include <string>
 #include <librsvg/rsvg.h>
 
@@ -34,3 +36,5 @@ namespace ArtRobot {
 
     } // namespace Component
 } // namespace ArtRobot
+
+#endif

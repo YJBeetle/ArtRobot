@@ -11,6 +11,8 @@
 
 #include "./Svg.hpp"
 
+#ifdef RSVG_FOUND
+
 namespace ArtRobot {
     namespace Component {
 
@@ -62,3 +64,5 @@ namespace ArtRobot {
 
     } // namespace Component
 } // namespace ArtRobot
+
+#endif
