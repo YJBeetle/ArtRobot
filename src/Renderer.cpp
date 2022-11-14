@@ -42,33 +42,34 @@ namespace ArtRobot {
     inline double pixel2inch(double pixel, double ppi) { return pixel / ppi; }
 
     Renderer::Renderer(OutputType __outputType,
-                       double __width,
-                       double __height,
-                       Unit __unit,
-                       double __ppi)
-            : outputType(__outputType),
-              ppi(__ppi) {
+                       double widthWithUnit,
+                       double heightWithUnit,
+                       Unit unit,
+                       double ppi)
+            : outputType(__outputType) {
         double scale;
-        switch (__unit) {
+        double width;
+        double height;
+        switch (unit) {
             default:
             case Unit::Pixel:
-                this->surfaceWidth = pixel2inch(__width, ppi);
-                this->surfaceHeight = pixel2inch(__height, ppi);
+                width = pixel2inch(widthWithUnit, ppi);
+                height = pixel2inch(heightWithUnit, ppi);
                 scale = pixel2inch(1, ppi);
                 break;
             case Unit::Inch:
-                this->surfaceWidth = __width;
-                this->surfaceHeight = __height;
+                width = widthWithUnit;
+                height = heightWithUnit;
                 scale = 1;
                 break;
             case Unit::Millimeter:
-                this->surfaceWidth = millimeter2inch(__width);
-                this->surfaceHeight = millimeter2inch(__height);
+                width = millimeter2inch(widthWithUnit);
+                height = millimeter2inch(heightWithUnit);
                 scale = millimeter2inch(1);
                 break;
             case Unit::Centimeter:
-                this->surfaceWidth = millimeter2inch(__width) * 10;
-                this->surfaceHeight = millimeter2inch(__height) * 10;
+                width = millimeter2inch(widthWithUnit) * 10;
+                height = millimeter2inch(heightWithUnit) * 10;
                 scale = millimeter2inch(1) * 10;
                 break;
         }
@@ -78,16 +79,16 @@ namespace ArtRobot {
             case OutputType::Svg:
                 surface = cairo_svg_surface_create_for_stream(writeStreamToData,
                                                               (void *) &data,
-                                                              surfaceWidth * ppi,
-                                                              surfaceHeight * ppi); //默认单位pt
+                                                              width * ppi,
+                                                              height * ppi); //默认单位pt
                 break;
             case OutputType::Pdf:
                 surface = cairo_pdf_surface_create_for_stream(writeStreamToData,
                                                               (void *) &data,
-                                                              surfaceWidth * ppi,
-                                                              surfaceHeight * ppi); //默认单位是mm，所以需要mm转inch
-                cairo_surface_set_fallback_resolution(surface, ppi, ppi);           //设置分辨率
-                // cairo_show_page(cr);                                             // 多页
+                                                              width * ppi,
+                                                              height * ppi); //默认单位是mm，所以需要mm转inch
+                cairo_surface_set_fallback_resolution(surface, ppi, ppi);    //设置分辨率
+                // cairo_show_page(cr);                                      // 多页
                 break;
             case OutputType::Pixmap:
             case OutputType::Png:
@@ -98,8 +99,8 @@ namespace ArtRobot {
             case OutputType::Jpeg:
 #endif
                 surface = cairo_image_surface_create(CAIRO_FORMAT_ARGB32,
-                                                     surfaceWidth * ppi,
-                                                     surfaceHeight * ppi); //默认单位pt
+                                                     width * ppi,
+                                                     height * ppi); //默认单位pt
                 break;
         }
 

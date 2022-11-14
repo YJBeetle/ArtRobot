@@ -46,9 +46,6 @@ namespace ArtRobot {
     public:
 
     private:
-        double surfaceWidth;
-        double surfaceHeight;
-        double ppi;
         OutputType outputType;
 
         cairo_surface_t *surface; //介质
