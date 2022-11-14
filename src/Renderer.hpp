@@ -25,6 +25,13 @@
 
 namespace ArtRobot {
 
+    enum class Unit {
+        Pixel,
+        Inch,
+        Millimeter,
+        Centimeter,
+    };
+
     enum class OutputType {
         Svg,
         Pdf,
@@ -40,13 +47,6 @@ namespace ArtRobot {
 
     class Renderer {
     public:
-        enum unitType {
-            unitTypeUnknow = 0,
-            PX, // PT
-            IN, // INCH
-            MM,
-            CM,
-        };
 
     private:
         double surfaceWidth;
@@ -63,8 +63,8 @@ namespace ArtRobot {
         Renderer(OutputType __outputType,
                  double __width,
                  double __height,
-                 unitType __unit,
-                 double __ppi);
+                 Unit __unit = ArtRobot::Unit::Pixel,
+                 double __ppi = 72);
 
         ~Renderer();
 

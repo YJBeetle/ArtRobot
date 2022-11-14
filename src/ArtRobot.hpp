@@ -11,9 +11,6 @@
 
 #pragma once
 
-#include "./Types/OutputType.hpp"
-#include "./Types/Color.hpp"
-#include "./Renderer.hpp"
 #include "./Component/Base.hpp"
 #include "./Component/Group.hpp"
 #include "./Component/Image.hpp"
@@ -25,3 +22,4 @@
 #include "./Component/Svg.hpp"
 #include "./Component/Text.hpp"
 #include "./Component/TextArea.hpp"
+#include "./Renderer.hpp"

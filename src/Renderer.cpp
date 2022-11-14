@@ -40,30 +40,29 @@ namespace ArtRobot {
     Renderer::Renderer(OutputType __outputType,
                        double __width,
                        double __height,
-                       unitType __unit,
+                       Unit __unit,
                        double __ppi)
             : outputType(__outputType),
               ppi(__ppi) {
         double scale;
         switch (__unit) {
             default:
-            case unitTypeUnknow:
-            case PX:
+            case Unit::Pixel:
                 this->surfaceWidth = PX2IN(__width, ppi);
                 this->surfaceHeight = PX2IN(__height, ppi);
                 scale = PX2IN(1, ppi);
                 break;
-            case IN:
+            case Unit::Inch:
                 this->surfaceWidth = __width;
                 this->surfaceHeight = __height;
                 scale = 1;
                 break;
-            case MM:
+            case Unit::Millimeter:
                 this->surfaceWidth = MM2IN(__width);
                 this->surfaceHeight = MM2IN(__height);
                 scale = MM2IN(1);
                 break;
-            case CM:
+            case Unit::Centimeter:
                 this->surfaceWidth = MM2IN(__width) * 10;
                 this->surfaceHeight = MM2IN(__height) * 10;
                 scale = MM2IN(1) * 10;
