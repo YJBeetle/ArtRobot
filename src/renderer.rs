@@ -11,66 +11,15 @@ pub enum Unit {
     Centimeter,
 }
 
-pub enum ImageType {
-    Pixmap,
-    Png,
-    Webp,
-    Jpeg,
-}
-
-pub enum OutputType {
-    Svg,
-    Pdf,
-    Image(ImageType),
-}
-
-enum SurfaceType {
-    Svg(SvgSurface),
-    Pdf(PdfSurface),
-    Image(ImageSurface, ImageType),
-}
-
-impl SurfaceType {
-    fn get_surface(&self) -> &Surface {
-        match &self {
-            SurfaceType::Svg(s) => s,
-            SurfaceType::Pdf(s) => s,
-            SurfaceType::Image(s, _) => s,
-        }
-    }
-}
-
-struct WriteStreamToData {
-    data: Vec<u8>,
-}
-
-impl std::io::Write for WriteStreamToData {
-    fn write(&mut self, buf: &[u8]) -> std::io::Result<usize> {
-        let mut b = Vec::from(buf);
-        let ret = Ok(buf.len());
-        self.data.append(&mut b);
-        ret
-    }
-    fn flush(&mut self) -> std::io::Result<()> {
-        self.data.flush()
-    }
-}
-
-impl WriteStreamToData {
-    pub fn new() -> Self {
-        Self { data: Vec::new() }
-    }
-}
-
-pub struct Renderer {
-    data: WriteStreamToData,
-    surface: SurfaceType,
-    cr: Context,
+struct Renderer {
+    width: f64,
+    height: f64,
+    ppi: f64,
+    scale: f64,
 }
 
 impl Renderer {
-    pub fn new(
-        output_format: OutputType,
+    fn new(
         width_with_unit: f64,
         height_with_unit: f64,
         unit: Unit,
@@ -101,59 +50,101 @@ impl Renderer {
                 scale = millimeter2inch(1.) * 10.;
             }
         }
-
-        let data = WriteStreamToData::new();
-        let surface;
-        let w = std::fs::File::create("foo").unwrap(); // todo
-        match output_format {
-            OutputType::Svg => {
-                surface = SurfaceType::Svg(SvgSurface::for_stream(width * ppi, height * ppi, w).unwrap());
-            }
-            OutputType::Pdf => {
-                let s = PdfSurface::for_stream(width * ppi, height * ppi, w).unwrap();
-                s.set_fallback_resolution(ppi, ppi); //设置分辨率
-                surface = SurfaceType::Pdf(s);
-            }
-            OutputType::Image(image_format) => {
-                surface = SurfaceType::Image(
-                    ImageSurface::create(cairo::Format::ARgb32, (width * ppi).round() as i32, (height * ppi).round() as i32).unwrap(),
-                    image_format,
-                );
-            }
-        }
-
-        let cr = cairo::Context::new(surface.get_surface()).unwrap();
-        cr.scale(scale * ppi, scale * ppi);
-        // cr.show_page().unwrap(); // 多页
-
-        Self {
-            data,
-            surface,
-            cr,
-        }
+        Self { width, height, ppi, scale }
     }
+    fn render(&self, surface: &Surface, input_surface: &Surface) {
+        let cr = Context::new(surface).unwrap();
+        cr.scale(self.scale * self.ppi, self.scale * self.ppi);
 
-    pub fn render(&mut self, surface: &Surface) {
-        self.cr.set_source_surface(surface, 0., 0.).unwrap();
-        self.cr.paint().unwrap();
-
-        match &self.surface {
-            SurfaceType::Svg(surface) => { surface.finish(); }
-            SurfaceType::Pdf(surface) => { surface.finish(); }
-            SurfaceType::Image(surface, img_format) => {
-                match img_format {
-                    ImageType::Pixmap => {
-                        let mut d = Vec::new(); // todo
-                        surface.with_data(|v: &[u8]| { d = Vec::from(v) }).unwrap();
-                    }
-                    ImageType::Png => {
-                        // let mut f = std::fs::File::create("foo.png").unwrap(); // todo
-                        surface.write_to_png(&mut self.data).unwrap();
-                    }
-                    ImageType::Webp => {} // todo
-                    ImageType::Jpeg => {} // todo
-                }
-            }
-        }
+        cr.set_source_surface(input_surface, 0., 0.).unwrap();
+        cr.paint().unwrap();
     }
+}
+
+pub struct RendererSvg {
+    base: Renderer,
+    surface: SvgSurface,
+}
+
+impl RendererSvg {
+    pub fn new<W: std::io::Write + 'static>(
+        width_with_unit: f64,
+        height_with_unit: f64,
+        unit: Unit,
+        ppi: f64,
+        stream: W,
+    ) -> Self {
+        let base = Renderer::new(width_with_unit, height_with_unit, unit, ppi);
+        let surface = SvgSurface::for_stream(base.width * base.ppi, base.height * base.ppi, stream).unwrap();
+        Self { base, surface }
+    }
+    pub fn render(&self, input_surface: &Surface) {
+        self.base.render(&self.surface, input_surface);
+        self.surface.finish();
+    }
+}
+
+
+pub struct RendererPdf {
+    base: Renderer,
+    surface: PdfSurface,
+}
+
+impl RendererPdf {
+    pub fn new<W: std::io::Write + 'static>(
+        width_with_unit: f64,
+        height_with_unit: f64,
+        unit: Unit,
+        ppi: f64,
+        stream: W,
+    ) -> Self {
+        let base = Renderer::new(width_with_unit, height_with_unit, unit, ppi);
+        let surface = PdfSurface::for_stream(base.width * base.ppi, base.height * base.ppi, stream).unwrap();
+        surface.set_fallback_resolution(base.ppi, base.ppi); //设置分辨率
+        Self { base, surface }
+    }
+    pub fn render(&self, input_surface: &Surface) {
+        self.base.render(&self.surface, input_surface);
+        // cr.show_page().unwrap(); // PDF多页
+        self.surface.finish();
+    }
+}
+
+
+pub enum ImageType {
+    Pixmap,
+    Png,
+    Webp,
+    Jpeg,
+}
+
+pub struct RendererImage {
+    base: Renderer,
+    surface: ImageSurface,
+}
+
+
+impl RendererImage {
+    pub fn new(
+        width_with_unit: f64,
+        height_with_unit: f64,
+        unit: Unit,
+        ppi: f64,
+    ) -> Self {
+        let base = Renderer::new(width_with_unit, height_with_unit, unit, ppi);
+        let surface = ImageSurface::create(cairo::Format::ARgb32, (base.width * base.ppi).round() as i32, (base.height * base.ppi).round() as i32).unwrap();
+        Self { base, surface }
+    }
+    pub fn render(&self, input_surface: &Surface) {
+        self.base.render(&self.surface, input_surface);
+    }
+    pub fn pixmap(&self) {
+        let mut d = Vec::new(); // todo
+        self.surface.with_data(|v: &[u8]| { d = Vec::from(v) }).unwrap();
+    }
+    pub fn png<W: std::io::Write>(&self, stream: &mut W) {
+        self.surface.write_to_png(stream).unwrap();
+    }
+    pub fn webp(&self) {} // todo
+    pub fn jpeg(&self) {} // todo
 }
