@@ -6,7 +6,7 @@ pub mod types;
 mod tests {
     use super::*;
     use types::{Transform, Color, Anchor};
-    use component::{Base, Circle};
+    use component::{Circle};
     use renderer::{RendererImage, Unit};
 
     #[test]
