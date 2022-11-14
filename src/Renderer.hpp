@@ -10,6 +10,7 @@
  */
 
 #pragma once
+
 #include <ArtRobot/Features.hpp>
 
 #include <string>
@@ -19,12 +20,23 @@
 //#include <cairo-ps.h>
 #include <cairo-svg.h>
 
-#include "./Types/OutputType.hpp"
-
 #define MM2IN(MM) ((double)MM / 25.4)
 #define PX2IN(PX, PPI) ((double)PX / PPI)
 
 namespace ArtRobot {
+
+    enum class OutputType {
+        Svg,
+        Pdf,
+        Pixmap,
+        Png,
+#ifdef WEBP_FOUND
+        Webp,
+#endif
+#ifdef JPEG_FOUND
+        Jpeg,
+#endif
+    };
 
     class Renderer {
     public:
