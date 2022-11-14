@@ -48,9 +48,9 @@ namespace ArtRobot {
         switch (__unit) {
             default:
             case Unit::Pixel:
-                this->surfaceWidth = PX2IN(__width, ppi);
-                this->surfaceHeight = PX2IN(__height, ppi);
-                scale = PX2IN(1, ppi);
+                this->surfaceWidth = PIXEL2INCH(__width, ppi);
+                this->surfaceHeight = PIXEL2INCH(__height, ppi);
+                scale = PIXEL2INCH(1, ppi);
                 break;
             case Unit::Inch:
                 this->surfaceWidth = __width;
@@ -58,14 +58,14 @@ namespace ArtRobot {
                 scale = 1;
                 break;
             case Unit::Millimeter:
-                this->surfaceWidth = MM2IN(__width);
-                this->surfaceHeight = MM2IN(__height);
-                scale = MM2IN(1);
+                this->surfaceWidth = MILLIMETER2INCH(__width);
+                this->surfaceHeight = MILLIMETER2INCH(__height);
+                scale = MILLIMETER2INCH(1);
                 break;
             case Unit::Centimeter:
-                this->surfaceWidth = MM2IN(__width) * 10;
-                this->surfaceHeight = MM2IN(__height) * 10;
-                scale = MM2IN(1) * 10;
+                this->surfaceWidth = MILLIMETER2INCH(__width) * 10;
+                this->surfaceHeight = MILLIMETER2INCH(__height) * 10;
+                scale = MILLIMETER2INCH(1) * 10;
                 break;
         }
 
