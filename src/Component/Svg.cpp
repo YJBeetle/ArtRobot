@@ -32,7 +32,7 @@ namespace ArtRobot {
 
         Svg::Svg(std::string name, double width, double height, Transform transform,
                  const std::string &src)
-                : Base({Property::Type::Svg, name, width, height}, transform) {
+                : Base({name, width, height}, transform) {
             FILE *imageFile = fopen(src.c_str(), "rb"); // 判断文件存在
             if (imageFile) {
                 fclose(imageFile);
@@ -49,7 +49,7 @@ namespace ArtRobot {
 
         Svg::Svg(std::string name, double width, double height, Transform transform,
                  unsigned char *data, size_t len)
-                : Base({Property::Type::Svg, name, width, height}, transform) {
+                : Base({name, width, height}, transform) {
             RsvgHandle *svg = rsvg_handle_new_from_data(data, len, nullptr); // TODO 错误处理
 
             drawSvg(cr,

@@ -25,7 +25,7 @@ namespace ArtRobot {
                            VerticalAlign vAlign,          // 垂直对齐方式
                            double lineSpacing,            // 行间距
                            double wordSpacing)            // 字间距
-                : Base({Property::Type::TextArea, name, width, height}, transform) {
+                : Base({name, width, height}, transform) {
             cairo_set_source_rgba(cr, color.r(), color.g(), color.b(), color.a());
 
             PangoLayout *layout;

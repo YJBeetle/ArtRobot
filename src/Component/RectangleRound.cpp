@@ -18,7 +18,7 @@ namespace ArtRobot {
                                        double width, double height,
                                        double angleTL, double angleTR, double angleBR, double angleBL,
                                        Color color)
-                : Base({Property::Type::RectangleRound, name, width, height}, transform) {
+                : Base({name, width, height}, transform) {
             cairo_set_source_rgba(cr, color.r(), color.g(), color.b(), color.a());
 
             cairo_move_to(cr, angleTL, 0);

@@ -25,7 +25,7 @@ namespace ArtRobot {
                    double maxWidth,               // 最大宽度
                    double lineSpacing,            // 行间距
                    double wordSpacing)            // 字间距
-                : Base({Property::Type::Text, name, 0, 0}, transform) {
+                : Base({name, 0, 0}, transform) {
             cairo_set_source_rgba(cr, color.r(), color.g(), color.b(), color.a());
 
             PangoLayout *layout;

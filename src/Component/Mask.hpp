@@ -10,6 +10,7 @@
  */
 
 #pragma once
+
 #include <ArtRobot/Features.hpp>
 
 #include <string>
@@ -23,14 +24,14 @@ namespace ArtRobot {
         class Mask : public Base {
         public:
             Mask(std::string name, double width, double height, Transform transform,
-                      const Base &mask,
-                      const Base &child);
+                 const Base &mask,
+                 const Base &child);
 
 #ifdef OpenCV_FOUND
 
             static Mask fromCvMat(std::string name, double width, double height, Transform transform,
-                                       const cv::Mat &maskImageMatRead,
-                                       Base child);
+                                  const cv::Mat &maskImageMatRead,
+                                  Base child);
 
 #endif
 
@@ -38,8 +39,8 @@ namespace ArtRobot {
 #ifndef OpenCV_WITHOUT_IMAPI
 
             static Mask fromFile(std::string name, double width, double height, Transform transform,
-                                      const std::string &maskImageFilePath,
-                                      Base child);
+                                 const std::string &maskImageFilePath,
+                                 Base child);
 
 #endif
 #endif

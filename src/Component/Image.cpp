@@ -24,13 +24,13 @@ namespace ArtRobot {
     namespace Component {
 
         Image::Image(std::string name)
-                : Base({Property::Type::Image, name}) {
+                : Base({name}) {
         }
 
         Image::Image(std::string name, Transform transform,
                      cairo_surface_t *_imageSurface,
                      double width, double height)
-                : Base({Property::Type::Image, name,
+                : Base({name,
                         width ? width : height ? (height / cairo_image_surface_get_height(_imageSurface) * cairo_image_surface_get_width(_imageSurface)) : cairo_image_surface_get_width(_imageSurface),
                         height ? height : width ? (width / cairo_image_surface_get_width(_imageSurface) * cairo_image_surface_get_height(_imageSurface)) : cairo_image_surface_get_height(_imageSurface)},
                        transform),

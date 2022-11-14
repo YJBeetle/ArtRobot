@@ -17,7 +17,7 @@ namespace ArtRobot {
     namespace Component {
 
         Group::Group(std::string name, Transform transform)
-                : Base({Property::Type::Group, name, 0, 0}, transform) {
+                : Base({name, 0, 0}, transform) {
         }
 
         Group::~Group() {

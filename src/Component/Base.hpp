@@ -10,6 +10,7 @@
  */
 
 #pragma once
+
 #include <ArtRobot/Features.hpp>
 
 #include <string>
@@ -38,7 +39,7 @@ namespace ArtRobot {
 
             virtual ~Base();
 
-            cairo_surface_t *getSurface() const;
+            inline cairo_surface_t *getSurface() const { return surface; }
 
             inline double width() const {
                 return property.width;

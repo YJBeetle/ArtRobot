@@ -15,11 +15,11 @@ namespace ArtRobot {
     namespace Component {
 
         Repeat::Repeat(std::string name, double width, double height) // TODO
-                : Base({Property::Type::Repeat, name, width, height}) {
+                : Base({name, width, height}) {
         }
 
         Repeat::Repeat(std::string name, double width, double height, Transform transform) // TODO
-                : Base({Property::Type::Repeat, name, width, height}, transform) {
+                : Base({name, width, height}, transform) {
         }
 
         Repeat::~Repeat() {

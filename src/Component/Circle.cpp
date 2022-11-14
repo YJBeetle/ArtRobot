@@ -15,7 +15,7 @@ namespace ArtRobot {
     namespace Component {
 
         Circle::Circle(std::string name, Transform transform, double width, double height, Color color)
-                : Base({Property::Type::Circle, name, width, height}, transform) {
+                : Base({name, width, height}, transform) {
             cairo_set_source_rgba(cr, color.r(), color.g(), color.b(), color.a());
 
             cairo_scale(cr, width / 2.0, height / 2.0);

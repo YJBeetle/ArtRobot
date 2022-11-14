@@ -15,9 +15,9 @@ namespace ArtRobot {
     namespace Component {
 
         Mask::Mask(std::string name, double width, double height, Transform transform,
-                             const Base &mask,
-                             const Base &child)
-                : Base({Property::Type::Mask, name, width, height}, transform) {
+                   const Base &mask,
+                   const Base &child)
+                : Base({name, width, height}, transform) {
             cairo_set_source_surface(cr, child.getSurface(), 0.0, 0.0);
             cairo_mask_surface(cr, mask.getSurface(), 0, 0);
             cairo_fill(cr);
@@ -26,8 +26,8 @@ namespace ArtRobot {
 #ifdef OpenCV_FOUND
 
         Mask Mask::fromCvMat(std::string name, double width, double height, Transform transform,
-                                       const cv::Mat &maskImageMatRead,
-                                       Base __child) {
+                             const cv::Mat &maskImageMatRead,
+                             Base __child) {
             cv::Mat maskImageMat;
             if (maskImageMatRead.channels() == 3)
                 cvtColor(maskImageMatRead, maskImageMat, cv::COLOR_BGR2BGRA);
@@ -52,8 +52,8 @@ namespace ArtRobot {
 #ifndef OpenCV_WITHOUT_IMAPI
 
         Mask Mask::fromFile(std::string name, double width, double height, Transform transform,
-                                      const std::string &maskImageFilePath,
-                                      Base __child) {
+                            const std::string &maskImageFilePath,
+                            Base __child) {
             return Mask::fromCvMat(name, width, height, transform, cv::imread(maskImageFilePath, cv::IMREAD_UNCHANGED), __child);
         }
 
