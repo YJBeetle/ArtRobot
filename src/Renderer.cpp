@@ -37,6 +37,10 @@ namespace ArtRobot {
         return CAIRO_STATUS_SUCCESS;
     }
 
+    inline double millimeter2inch(double millimeter) { return millimeter / 25.4; }
+
+    inline double pixel2inch(double pixel, double ppi) { return pixel / ppi; }
+
     Renderer::Renderer(OutputType __outputType,
                        double __width,
                        double __height,
@@ -48,9 +52,9 @@ namespace ArtRobot {
         switch (__unit) {
             default:
             case Unit::Pixel:
-                this->surfaceWidth = PIXEL2INCH(__width, ppi);
-                this->surfaceHeight = PIXEL2INCH(__height, ppi);
-                scale = PIXEL2INCH(1, ppi);
+                this->surfaceWidth = pixel2inch(__width, ppi);
+                this->surfaceHeight = pixel2inch(__height, ppi);
+                scale = pixel2inch(1, ppi);
                 break;
             case Unit::Inch:
                 this->surfaceWidth = __width;
@@ -58,14 +62,14 @@ namespace ArtRobot {
                 scale = 1;
                 break;
             case Unit::Millimeter:
-                this->surfaceWidth = MILLIMETER2INCH(__width);
-                this->surfaceHeight = MILLIMETER2INCH(__height);
-                scale = MILLIMETER2INCH(1);
+                this->surfaceWidth = millimeter2inch(__width);
+                this->surfaceHeight = millimeter2inch(__height);
+                scale = millimeter2inch(1);
                 break;
             case Unit::Centimeter:
-                this->surfaceWidth = MILLIMETER2INCH(__width) * 10;
-                this->surfaceHeight = MILLIMETER2INCH(__height) * 10;
-                scale = MILLIMETER2INCH(1) * 10;
+                this->surfaceWidth = millimeter2inch(__width) * 10;
+                this->surfaceHeight = millimeter2inch(__height) * 10;
+                scale = millimeter2inch(1) * 10;
                 break;
         }
 

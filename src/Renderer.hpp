@@ -20,9 +20,6 @@
 //#include <cairo-ps.h>
 #include <cairo-svg.h>
 
-#define MILLIMETER2INCH(MM) ((double)MM / 25.4)
-#define PIXEL2INCH(PX, PPI) ((double)PX / PPI)
-
 namespace ArtRobot {
 
     enum class Unit {
