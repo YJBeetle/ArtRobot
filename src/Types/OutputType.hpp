@@ -15,17 +15,16 @@
 
 namespace ArtRobot {
 
-    enum OutputType {
-        OutputTypeUnknow = 0,
-        OutputTypeSvg,
-        OutputTypePdf,
-        OutputTypePng,
+    enum class OutputType {
+        Svg,
+        Pdf,
+        Pixmap,
+        Png,
 #ifdef WEBP_FOUND
-        OutputTypeWebp,
+        Webp,
 #endif
 #ifdef JPEG_FOUND
-        OutputTypeJpeg,
+        Jpeg,
 #endif
-        OutputTypePixmap,
     };
 }

@@ -5,7 +5,7 @@ int main(int argc, char *argv[]) {
     // fromPng
     {
         auto img = ArtRobot::Component::Image::fromPng("img", {.x=256, .y=256}, "img.png", 200);
-        ArtRobot::Renderer renderer(ArtRobot::OutputTypePng, 512, 512, ArtRobot::Renderer::PX, 72);
+        ArtRobot::Renderer renderer(ArtRobot::OutputType::Png, 512, 512, ArtRobot::Renderer::PX, 72);
         renderer.render(img.getSurface());
         renderer.saveToFile("TestImage-Result-fromPng.png");
     }
@@ -20,7 +20,7 @@ int main(int argc, char *argv[]) {
             is.seekg(0);
             is.read(reinterpret_cast<char *>(d.data()), d.size());
             auto img = ArtRobot::Component::Image::fromPng("img", {.x=256, .y=256}, d, 0, 200);
-            ArtRobot::Renderer renderer(ArtRobot::OutputTypePng, 512, 512, ArtRobot::Renderer::PX, 72);
+            ArtRobot::Renderer renderer(ArtRobot::OutputType::Png, 512, 512, ArtRobot::Renderer::PX, 72);
             renderer.render(img.getSurface());
             renderer.saveToFile("TestImage-Result-fromPngBinary.png");
         }
@@ -29,7 +29,7 @@ int main(int argc, char *argv[]) {
     // fromJpg
     {
         auto img = ArtRobot::Component::Image::fromJpg("img", {.x=256, .y=256}, "img.jpg");
-        ArtRobot::Renderer renderer(ArtRobot::OutputTypePng, 512, 512, ArtRobot::Renderer::PX, 72);
+        ArtRobot::Renderer renderer(ArtRobot::OutputType::Png, 512, 512, ArtRobot::Renderer::PX, 72);
         renderer.render(img.getSurface());
         renderer.saveToFile("TestImage-Result-fromJpg.png");
     }
@@ -44,7 +44,7 @@ int main(int argc, char *argv[]) {
             is.seekg(0);
             is.read(reinterpret_cast<char *>(d.data()), d.size());
             auto img = ArtRobot::Component::Image::fromJpg("img", {.x=256, .y=256}, d);
-            ArtRobot::Renderer renderer(ArtRobot::OutputTypePng, 512, 512, ArtRobot::Renderer::PX, 72);
+            ArtRobot::Renderer renderer(ArtRobot::OutputType::Png, 512, 512, ArtRobot::Renderer::PX, 72);
             renderer.render(img.getSurface());
             renderer.saveToFile("TestImage-Result-fromJpgBinary.png");
         }
@@ -53,7 +53,7 @@ int main(int argc, char *argv[]) {
     // JpegGray
     {
         auto img = ArtRobot::Component::Image::fromJpg("img", {.x=256, .y=256}, "img-Gray.jpg");
-        ArtRobot::Renderer renderer(ArtRobot::OutputTypePng, 512, 512, ArtRobot::Renderer::PX, 72);
+        ArtRobot::Renderer renderer(ArtRobot::OutputType::Png, 512, 512, ArtRobot::Renderer::PX, 72);
         renderer.render(img.getSurface());
         renderer.saveToFile("TestImage-Result-JpegGray.png");
     }
@@ -61,7 +61,7 @@ int main(int argc, char *argv[]) {
     // JpegCmyk
     {
         auto img = ArtRobot::Component::Image::fromJpg("img", {.x=256, .y=256}, "img-CMYK.jpg");
-        ArtRobot::Renderer renderer(ArtRobot::OutputTypePng, 512, 512, ArtRobot::Renderer::PX, 72);
+        ArtRobot::Renderer renderer(ArtRobot::OutputType::Png, 512, 512, ArtRobot::Renderer::PX, 72);
         renderer.render(img.getSurface());
         renderer.saveToFile("TestImage-Result-JpegCmyk.png");
     }
@@ -71,7 +71,7 @@ int main(int argc, char *argv[]) {
     // fromFileByCV
     {
         auto img = ArtRobot::Component::Image::fromFileByCV("img", {.x=256, .y=256}, "img.jpg");
-        ArtRobot::Renderer renderer(ArtRobot::OutputTypePng, 512, 512, ArtRobot::Renderer::PX, 72);
+        ArtRobot::Renderer renderer(ArtRobot::OutputType::Png, 512, 512, ArtRobot::Renderer::PX, 72);
         renderer.render(img.getSurface());
         renderer.saveToFile("TestImage-Result-fromFileByCV.png");
     }

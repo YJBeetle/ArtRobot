@@ -72,14 +72,13 @@ namespace ArtRobot {
 
         switch (outputType) {
             default:
-            case OutputTypeUnknow:
-            case OutputTypeSvg:
+            case OutputType::Svg:
                 surface = cairo_svg_surface_create_for_stream(writeStreamToData,
                                                               (void *) &data,
                                                               surfaceWidth * ppi,
                                                               surfaceHeight * ppi); //默认单位pt
                 break;
-            case OutputTypePdf:
+            case OutputType::Pdf:
                 surface = cairo_pdf_surface_create_for_stream(writeStreamToData,
                                                               (void *) &data,
                                                               surfaceWidth * ppi,
@@ -87,14 +86,14 @@ namespace ArtRobot {
                 cairo_surface_set_fallback_resolution(surface, ppi, ppi);           //设置分辨率
                 // cairo_show_page(cr);                                             // 多页
                 break;
-            case OutputTypePng:
+            case OutputType::Pixmap:
+            case OutputType::Png:
 #ifdef WEBP_FOUND
-            case OutputTypeWebp:
+            case OutputType::Webp:
 #endif
 #ifdef JPEG_FOUND
-            case OutputTypeJpeg:
+            case OutputType::Jpeg:
 #endif
-            case OutputTypePixmap:
                 surface = cairo_image_surface_create(CAIRO_FORMAT_ARGB32,
                                                      surfaceWidth * ppi,
                                                      surfaceHeight * ppi); //默认单位pt
@@ -115,16 +114,23 @@ namespace ArtRobot {
         cairo_paint(cr);
 
         switch (outputType) {
-            case OutputTypeSvg:
-            case OutputTypePdf:
+            case OutputType::Svg:
+            case OutputType::Pdf:
                 cairo_surface_finish(surface);
                 break;
-            case OutputTypePng: // PNG需要在渲染完成之后再写入data
+            case OutputType::Pixmap:
+                data.clear();
+                {
+                    auto pixData = cairo_image_surface_get_data(surface);
+                    data.insert(data.begin(), pixData, pixData + cairo_image_surface_get_stride(surface) * cairo_image_surface_get_height(surface));
+                }
+                break;
+            case OutputType::Png: // PNG需要在渲染完成之后再写入data
                 data.clear();   // 防止重复渲染
                 cairo_surface_write_to_png_stream(surface, writeStreamToData, (void *) &data);
                 break;
 #ifdef WEBP_FOUND
-            case OutputTypeWebp:
+            case OutputType::Webp:
                 data.clear();
                 {
                     uint8_t *output = nullptr;
@@ -162,7 +168,7 @@ namespace ArtRobot {
                 break;
 #endif
 #ifdef JPEG_FOUND
-            case OutputTypeJpeg:
+            case OutputType::Jpeg:
                 data.clear();
                 {
                     //get
@@ -215,15 +221,6 @@ namespace ArtRobot {
                 }
                 break;
 #endif
-            case OutputTypePixmap:
-                data.clear();
-                {
-                    auto pixData = cairo_image_surface_get_data(surface);
-                    data.insert(data.begin(), pixData, pixData + cairo_image_surface_get_stride(surface) * cairo_image_surface_get_height(surface));
-                }
-                break;
-            case OutputTypeUnknow:
-                break;
         }
     }
 
