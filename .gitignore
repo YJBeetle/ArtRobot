@@ -14,4 +14,4 @@ CMakeLists.txt.user.*
 /cmake-build-debug/
 
 # Build
-/build/
+/target/
