@@ -15,6 +15,8 @@
 #include <cmath>
 #include <cairo.h>
 
+#include "./Property.hpp"
+
 namespace ArtRobot {
 
     struct Transform {
@@ -28,6 +30,8 @@ namespace ArtRobot {
         } anchor = Anchor::CC;
         double scaleX = 1;
         double scaleY = 1;
+
+        void apply(const Property &property, cairo_t *cr) const;
     };
 
 } // namespace ArtRobot
