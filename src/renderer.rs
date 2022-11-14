@@ -138,13 +138,25 @@ impl RendererImage {
     pub fn render(&self, input_surface: &Surface) {
         self.base.render(&self.surface, input_surface);
     }
-    pub fn pixmap(&self) {
-        let mut d = Vec::new(); // todo
+    pub fn pixmap(&self) -> Vec<u8> {
+        let mut d = Vec::new();
         self.surface.with_data(|v: &[u8]| { d = Vec::from(v) }).unwrap();
+        d
     }
-    pub fn png<W: std::io::Write>(&self, stream: &mut W) {
+    pub fn pixmap_to_stream<W: std::io::Write>(&self, stream: &mut W) {
+        self.surface.with_data(
+            |v: &[u8]| {
+                stream.write(v).unwrap();
+            }
+        ).unwrap();
+    }
+    pub fn png_to_stream<W: std::io::Write>(&self, stream: &mut W) {
         self.surface.write_to_png(stream).unwrap();
     }
-    pub fn webp(&self) {} // todo
-    pub fn jpeg(&self) {} // todo
+    pub fn webp(&self) {
+        // todo
+    }
+    pub fn jpeg(&self) {
+        // todo
+    }
 }

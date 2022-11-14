@@ -25,6 +25,6 @@ mod tests {
         let r = RendererImage::new(512., 512., Unit::Pixel, 72.);
         r.render(s.surface());
         let mut f = std::fs::File::create("foo.png").unwrap(); // todo
-        r.png(&mut f);
+        r.png_to_stream(&mut f);
     }
 }
