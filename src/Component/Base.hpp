@@ -33,8 +33,6 @@ namespace ArtRobot {
         public:
             Base();
 
-            Base(Property property);
-
             Base(Property property, Transform transform);
 
             virtual ~Base();

@@ -24,7 +24,7 @@ namespace ArtRobot {
     namespace Component {
 
         Image::Image(std::string name)
-                : Base({name}) {
+                : Base({name}, {}) {
         }
 
         Image::Image(std::string name, Transform transform,

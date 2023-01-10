@@ -17,12 +17,6 @@ namespace ArtRobot {
         Base::Base() {
         }
 
-        Base::Base(Property property)
-                : property(property) {
-            surface = cairo_recording_surface_create(CAIRO_CONTENT_COLOR_ALPHA, nullptr);
-            cr = cairo_create(surface);
-        }
-
         Base::Base(Property property, Transform transform)
                 : property(property),
                   transform(transform) {
