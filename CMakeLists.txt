@@ -10,6 +10,17 @@ project(ArtRobotRender)
 
 add_subdirectory("ArtRobot")
 
+include(FetchContent)
+FetchContent_Declare(json
+        # GIT_REPOSITORY https://github.com/nlohmann/json.git
+        GIT_REPOSITORY https://github.com/ArthurSonzogni/nlohmann_json_cmake_fetchcontent
+        GIT_TAG v3.11.2)
+FetchContent_GetProperties(json)
+if (NOT json_POPULATED)
+    FetchContent_Populate(json)
+    add_subdirectory(${json_SOURCE_DIR} ${json_BINARY_DIR} EXCLUDE_FROM_ALL)
+endif ()
+
 # Project
 set(SRC_LIST
         src/main.cpp
@@ -17,6 +28,7 @@ set(SRC_LIST
         )
 add_executable(${PROJECT_NAME} ${SRC_LIST})
 target_link_libraries(${PROJECT_NAME} PRIVATE ArtRobot)
+target_link_libraries(${PROJECT_NAME} PRIVATE nlohmann_json::nlohmann_json)
 
 configure_file(template/demo/demo.json demo.json COPYONLY)
 configure_file(template/demo/bg-veins.svg bg-veins.svg COPYONLY)

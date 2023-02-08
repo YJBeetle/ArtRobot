@@ -15,7 +15,7 @@
 
 #endif // TIMER
 
-#include "3rdParty/json.hpp"
+#include <nlohmann/json.hpp>
 #include <opencv2/opencv.hpp>
 
 using namespace std;
