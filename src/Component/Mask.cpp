@@ -43,7 +43,7 @@ namespace ArtRobot {
                     p[0] = p[1] = p[2] = p[3] = MIN(a, b);
                 }
 
-            return Mask(name, width, height, transform, Image::fromMat(name, transform, maskImageMat, width, height), __child);
+            return Mask(name, width, height, transform, Image(name, transform, maskImageMat, width, height), __child);
         }
 
 #endif

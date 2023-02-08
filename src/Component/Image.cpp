@@ -28,6 +28,41 @@ namespace ArtRobot {
         }
 
         Image::Image(std::string name, Transform transform,
+                     unsigned char *imageData,
+                     int imageColums, int imageRows,
+                     int imageStride, bool isPremultiplied,
+                     double width, double height)
+                : Image(name, transform, surfaceFromRaw(imageData, imageColums, imageRows, imageStride, isPremultiplied), width, height) {
+        }
+
+        Image::Image(std::string name, Transform transform,
+                     const std::vector<uint8_t> &data,
+                     double width, double height)
+                : Image(name, transform, surfaceFromFile(data), width, height) {
+        }
+
+        Image::Image(std::string name, Transform transform,
+                     const std::string &filename,
+                     double width, double height)
+                : Image(name, transform, surfaceFromFile(filename), width, height) {
+        }
+
+#ifdef OpenCV_FOUND
+
+        Image::Image(std::string name, Transform transform,
+                     const cv::Mat &imageMat,
+                     double width, double height)
+                : Image(name, transform, surfaceFromRaw(imageMat.data, imageMat.cols, imageMat.rows, imageMat.step, false), width, height) {
+        }
+
+#endif
+
+        Image::~Image() {
+            if (imageSurface)
+                cairo_surface_destroy(imageSurface);
+        }
+
+        Image::Image(std::string name, Transform transform,
                      cairo_surface_t *_imageSurface,
                      double width, double height)
                 : Base({name,
@@ -45,11 +80,9 @@ namespace ArtRobot {
             cairo_paint(cr);
         }
 
-        Image Image::fromRaw(std::string name, Transform transform,
-                             unsigned char *imageData,
-                             int imageCols, int imageRows,
-                             int imageStride, bool isPremultiplied,
-                             double width, double height) {
+        cairo_surface_t *Image::surfaceFromRaw(unsigned char *imageData,
+                                               int imageCols, int imageRows,
+                                               int imageStride, bool isPremultiplied) {
             // 计算预乘
             if (!isPremultiplied) {
                 // 尝试 cairo_set_operator CAIRO_OPERATOR_OVER CAIRO_OPERATOR_SOURCE ?
@@ -62,81 +95,36 @@ namespace ArtRobot {
                     }
             }
 
-            cairo_surface_t *imageSurface = cairo_image_surface_create_for_data(imageData,
-                                                                                CAIRO_FORMAT_ARGB32,
-                                                                                imageCols,
-                                                                                imageRows,
-                                                                                imageStride);
-
-            return Image(name, transform,
-                         imageSurface,
-                         width, height);
+            return cairo_image_surface_create_for_data(imageData,
+                                                       CAIRO_FORMAT_ARGB32,
+                                                       imageCols,
+                                                       imageRows,
+                                                       imageStride);
         }
 
-#ifdef OpenCV_FOUND
-
-        Image Image::fromMat(std::string name, Transform transform,
-                             const cv::Mat &imageMat,
-                             double width, double height) {
-            if (imageMat.channels() == 1)
-                return Image(name); // todo
-            else if (imageMat.channels() == 3)
-                return Image(name); // todo
-            else if (imageMat.channels() == 4)
-                return Image::fromRaw(name, transform,
-                                      imageMat.data,
-                                      imageMat.cols, imageMat.rows,
-                                      imageMat.step, false,
-                                      width, height);
-            else
-                return Image(name);
-        }
-
-#endif
-
-#ifdef OpenCV_FOUND
-#ifndef OpenCV_WITHOUT_IMAPI
-
-        Image Image::fromFileByCV(std::string name, Transform transform,
-                                  const std::string &imageFilePath,
-                                  double width, double height) {
-            return Image::fromMat(name, transform,
-                                  cv::imread(imageFilePath, cv::IMREAD_UNCHANGED),
-                                  width, height);
-        }
-
-#endif
-#endif
-
-        Image Image::fromPng(std::string name, Transform transform,
-                             const std::vector<uint8_t> &data,
-                             double width, double height) {
+        cairo_surface_t *Image::surfaceFromPng(const std::vector<uint8_t> &data) {
             struct PngStreamClosure {
                 const uint8_t *data;
                 const size_t max_size;
                 size_t pos;
             } pngStreamClosure{data.data(), data.size(), 0};
-            return Image(name, transform,
-                         cairo_image_surface_create_from_png_stream(
-                                 [](void *_closure,
-                                    unsigned char *data,
-                                    unsigned int length) -> cairo_status_t {
-                                     PngStreamClosure *closure = (PngStreamClosure *) _closure;
-                                     if ((closure->pos + length) > (closure->max_size))
-                                         return CAIRO_STATUS_READ_ERROR;
-                                     memcpy(data, (closure->data + closure->pos), length);
-                                     closure->pos += length;
-                                     return CAIRO_STATUS_SUCCESS;
-                                 }, (void *) &pngStreamClosure),
-                         width, height);
+            return cairo_image_surface_create_from_png_stream(
+                    [](void *_closure,
+                       unsigned char *data,
+                       unsigned int length) -> cairo_status_t {
+                        PngStreamClosure *closure = (PngStreamClosure *) _closure;
+                        if ((closure->pos + length) > (closure->max_size))
+                            return CAIRO_STATUS_READ_ERROR;
+                        memcpy(data, (closure->data + closure->pos), length);
+                        closure->pos += length;
+                        return CAIRO_STATUS_SUCCESS;
+                    }, (void *) &pngStreamClosure);
         }
 
-        Image Image::fromPng(std::string name, Transform transform,
-                             const std::string &imageFilePath,
-                             double width, double height) {
-            if (std::filesystem::exists(imageFilePath))
-                return Image(name, transform, cairo_image_surface_create_from_png(imageFilePath.c_str()), width, height);
-            return Image(name);
+        cairo_surface_t *Image::surfaceFromPng(const std::string &filename) {
+            if (std::filesystem::exists(filename))
+                return cairo_image_surface_create_from_png(filename.c_str());
+            return nullptr;
         }
 
 #ifdef JPEG_FOUND
@@ -145,7 +133,6 @@ namespace ArtRobot {
         private:
             jpeg_decompress_struct cInfo;
             jpeg_error_mgr errorMgr; //出错处理
-            cairo_surface_t *imageSurface;
         public:
             JepgReader() {
                 cInfo.err = jpeg_std_error(&errorMgr);
@@ -168,14 +155,14 @@ namespace ArtRobot {
                 jpeg_stdio_src(&cInfo, inFile);
             }
 
-            bool read() {
+            cairo_surface_t *read() {
                 (void) jpeg_read_header(&cInfo, true);
                 (void) jpeg_start_decompress(&cInfo);
 
                 int row_stride = cInfo.output_width * cInfo.output_components;
                 JSAMPARRAY buffer = (*cInfo.mem->alloc_sarray)((j_common_ptr) &cInfo, JPOOL_IMAGE, row_stride, 1);
 
-                imageSurface = cairo_image_surface_create(CAIRO_FORMAT_RGB24, cInfo.output_width, cInfo.output_height);
+                cairo_surface_t *imageSurface = cairo_image_surface_create(CAIRO_FORMAT_RGB24, cInfo.output_width, cInfo.output_height);
                 auto imageSurfaceData = cairo_image_surface_get_data(imageSurface);
                 auto imageSurfaceStride = cairo_image_surface_get_stride(imageSurface);
 
@@ -202,78 +189,48 @@ namespace ArtRobot {
                     }
                 }
 
-                return true;
-            }
-
-            cairo_surface_t *surface() {
                 return imageSurface;
             }
         };
 
-        Image Image::fromJpg(std::string name, Transform transform,
-                             const std::vector<uint8_t> &data,
-                             double width, double height) {
+        cairo_surface_t *Image::surfaceFromJpg(const std::vector<uint8_t> &data) {
             JepgReader r;
             r.loadFromMem(data.data(), data.size());
-            if (r.read())
-                return Image(name, transform,
-                             r.surface(),
-                             width, height);
-            else
-                return Image(name);
+            return r.read();
         }
 
-        Image Image::fromJpg(std::string name, Transform transform,
-                             const std::string &filename,
-                             double width, double height) {
+        cairo_surface_t *Image::surfaceFromJpg(const std::string &filename) {
             FILE *inFile;
             if ((inFile = fopen(filename.c_str(), "rb")) == nullptr)
-                return Image(name);
+                return nullptr;
             JepgReader r;
             r.loadFromStdio(inFile);
             auto rr = r.read();
             fclose(inFile);
-            if (rr)
-                return Image(name, transform,
-                             r.surface(),
-                             width, height);
-            else
-                return Image(name);
+            return rr;
         }
 
 #endif
 
-
-        Image Image::fromFile(std::string name, Transform transform,
-                              const std::vector<uint8_t> &data,
-                              double width, double height) {
+        cairo_surface_t *Image::surfaceFromFile(const std::vector<uint8_t> &data) {
             if (memcmp(data.data(), (uint8_t[]) {0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A}, 8) == 0)
-                return Image::fromPng(name, transform, data, width, height);
+                return surfaceFromPng(data);
 #ifdef JPEG_FOUND
             else if (memcmp(data.data(), (uint8_t[]) {0xFF, 0xD8, 0xFF}, 3) == 0)
-                return Image::fromJpg(name, transform, data, width, height);
+                return surfaceFromJpg(data);
 #endif
-            else
-                return Image(name);
+            return nullptr;
         }
 
-        Image Image::fromFile(std::string name, Transform transform,
-                              const std::string &imageFilePath,
-                              double width, double height) {
-            const char *ext = imageFilePath.c_str() + imageFilePath.length() - 4;
+        cairo_surface_t *Image::surfaceFromFile(const std::string &filename) {
+            const char *ext = filename.c_str() + filename.length() - 4;
             if (!strcasecmp(ext, ".png"))
-                return Image::fromPng(name, transform, imageFilePath, width, height);
+                return surfaceFromPng(filename);
 #ifdef JPEG_FOUND
             else if (!strcasecmp(ext, ".jpg"))
-                return Image::fromJpg(name, transform, imageFilePath, width, height);
+                return surfaceFromJpg(filename);
 #endif
-            else
-                return Image(name);
-        }
-
-        Image::~Image() {
-            if (imageSurface)
-                cairo_surface_destroy(imageSurface);
+            return nullptr;
         }
 
     } // namespace Component

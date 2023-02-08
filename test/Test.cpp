@@ -25,7 +25,7 @@ int main(int argc, char *argv[]) {
     // Mask
     {
         auto mask = ArtRobot::Component::Circle("Circle", {.x=256, .y=256}, 200, 200, ArtRobot::Color::Red);
-        auto img = ArtRobot::Component::Image::fromJpg("Img", {.x=256, .y=256}, "img.jpg");
+        auto img = ArtRobot::Component::Image("Img", {.x=256, .y=256}, "img.jpg");
         auto c = ArtRobot::Component::Mask("Body", 512, 512, {.x=256, .y=256}, mask, img);
         ArtRobot::Renderer renderer(ArtRobot::OutputType::Png, 512, 512);
         renderer.render(c.getSurface());
