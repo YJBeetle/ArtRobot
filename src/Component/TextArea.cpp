@@ -28,7 +28,7 @@ namespace ArtRobot {
                 : Base({name, width, height}, transform) {
             cairo_set_source_rgba(cr, color.r(), color.g(), color.b(), color.a());
 
-            PangoLayout *layout;
+            PangoLayout * layout;
             PangoFontDescription *desc;
 
             layout = pango_cairo_create_layout(cr);

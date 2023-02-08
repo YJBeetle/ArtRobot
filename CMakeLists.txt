@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.13)
 
-set (CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 17)
 
 option(UsePango "Use Pango" ON)
 option(UseRsvg "Use Rsvg" ON)
@@ -15,9 +15,9 @@ include(cmake/FindLibrary.cmake)
 project(ArtRobot)
 
 file(GLOB_RECURSE SRC_LIST
-    ./src/*.cpp
-    ./src/*.hpp
-)
+        ./src/*.cpp
+        ./src/*.hpp
+        )
 
 add_library(${PROJECT_NAME} STATIC ${SRC_LIST})
 
@@ -50,23 +50,23 @@ configure_file("src/Features.hpp.in" "${CMAKE_CURRENT_BINARY_DIR}/include/ArtRob
 
 # Headers file
 file(GLOB_RECURSE HEADERS
-    ./src/*.hpp
-)
-foreach(HEADER ${HEADERS})
+        ./src/*.hpp
+        )
+foreach (HEADER ${HEADERS})
     file(RELATIVE_PATH HEADER ${CMAKE_CURRENT_SOURCE_DIR}/src ${HEADER})
     configure_file("${CMAKE_CURRENT_SOURCE_DIR}/src/${HEADER}" "${CMAKE_CURRENT_BINARY_DIR}/include/ArtRobot/${HEADER}" COPYONLY)
-endforeach()
+endforeach ()
 target_include_directories(${PROJECT_NAME} PUBLIC "${CMAKE_CURRENT_BINARY_DIR}/include/")
 
 # install
 install(TARGETS ${PROJECT_NAME}
-    RUNTIME DESTINATION bin
-    LIBRARY DESTINATION lib
-    ARCHIVE DESTINATION lib
-)
+        RUNTIME DESTINATION bin
+        LIBRARY DESTINATION lib
+        ARCHIVE DESTINATION lib
+        )
 install(DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/include/" DESTINATION include)
 
-if(BuildTest)
+if (BuildTest)
     # Test
     add_executable(Test test/Test.cpp)
     target_link_libraries(Test PUBLIC ${PROJECT_NAME})
@@ -79,4 +79,4 @@ if(BuildTest)
     configure_file(test/img-Gray.jpg img-Gray.jpg COPYONLY)
     configure_file(test/img.png img.png COPYONLY)
     configure_file(test/mask.png mask.png COPYONLY)
-endif()
+endif ()
