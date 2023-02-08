@@ -35,13 +35,13 @@ namespace ArtRobot {
                                  unsigned char *imageData,
                                  int imageColums, int imageRows,
                                  int imageStride, bool isPremultiplied = true,
-                                 double width = 0., double height = 0.);
+                                 double width = NAN, double height = NAN);
 
 #ifdef OpenCV_FOUND
 
             static Image fromMat(std::string name, Transform transform,
                                  const cv::Mat &imageMat,
-                                 double width = 0., double height = 0.);
+                                 double width = NAN, double height = NAN);
 
 #endif
 
@@ -50,18 +50,18 @@ namespace ArtRobot {
 
             static Image fromFileByCV(std::string name, Transform transform,
                                       const std::string &imageFilePath,
-                                      double width = 0., double height = 0.);
+                                      double width = NAN, double height = NAN);
 
 #endif
 #endif
 
             static Image fromPng(std::string name, Transform transform,
                                  const std::vector<uint8_t> &data,
-                                 double width = 0., double height = 0.);
+                                 double width = NAN, double height = NAN);
 
             static Image fromPng(std::string name, Transform transform,
                                  const std::string &imageFilePath,
-                                 double width = 0., double height = 0.);
+                                 double width = NAN, double height = NAN);
 
 // todo webp
 
@@ -69,21 +69,21 @@ namespace ArtRobot {
 
             static Image fromJpg(std::string name, Transform transform,
                                  const std::vector<uint8_t> &data,
-                                 double width = 0., double height = 0.);
+                                 double width = NAN, double height = NAN);
 
             static Image fromJpg(std::string name, Transform transform,
                                  const std::string &filename,
-                                 double width = 0., double height = 0.);
+                                 double width = NAN, double height = NAN);
 
 #endif
 
             static Image fromFile(std::string name, Transform transform,
                                   const std::vector<uint8_t> &data,
-                                  double width = 0., double height = 0.);
+                                  double width = NAN, double height = NAN);
 
             static Image fromFile(std::string name, Transform transform,
                                   const std::string &imageFilePath,
-                                  double width = 0., double height = 0.);
+                                  double width = NAN, double height = NAN);
 
 
             ~Image();
@@ -95,7 +95,7 @@ namespace ArtRobot {
 
             Image(std::string name, Transform transform,
                   cairo_surface_t *imageSurface,
-                  double width = 0., double height = 0.);
+                  double width = NAN, double height = NAN);
 
         };
 
