@@ -6,7 +6,7 @@
   "body": {
     "type": "group",
     "name": "body",
-		"child": [
+    "child": [
       {
         "type": "rectangle",
         "name": "bg",
@@ -61,7 +61,7 @@
         "name": "messageX",
         "src": "SaySticker2_messageX.png",
         "x": 88,
-        "y": 474, 
+        "y": 474,
         "w": 12,
         "h": 22
       },

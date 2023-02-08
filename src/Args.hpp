@@ -8,10 +8,10 @@
 
 using namespace ArtRobot;
 
-class Args
-{
+class Args {
 private:
     void args_help(const char *argv0);
+
     void args_usage(const char *argv0);
 
 public:

@@ -4,8 +4,8 @@
   "unit": "px",
   "ppi": 72,
   "body": {
-		"type": "group",
-		"child": [
+    "type": "group",
+    "child": [
       {
         "type": "rectangle",
         "color": "FF0000",
