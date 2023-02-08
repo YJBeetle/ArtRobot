@@ -27,6 +27,18 @@ namespace ArtRobot {
                  const Base &mask,
                  const Base &child);
 
+            Mask(std::string name, double width, double height, Transform transform,
+                 std::shared_ptr<Component::Base> mask,
+                 const Base &child);
+
+            Mask(std::string name, double width, double height, Transform transform,
+                 const Base &mask,
+                 std::shared_ptr<Component::Base> child);
+
+            Mask(std::string name, double width, double height, Transform transform,
+                 std::shared_ptr<Component::Base> mask,
+                 std::shared_ptr<Component::Base> child);
+
 #ifdef OpenCV_FOUND
 
             static Mask fromCvMat(std::string name, double width, double height, Transform transform,
@@ -47,6 +59,9 @@ namespace ArtRobot {
 
             ~Mask();
 
+        private:
+            std::shared_ptr<Component::Base> mask;
+            std::shared_ptr<Component::Base> child;
         };
 
     } // namespace Component

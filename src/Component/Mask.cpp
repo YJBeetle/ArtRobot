@@ -23,6 +23,25 @@ namespace ArtRobot {
             cairo_fill(cr);
         }
 
+        Mask::Mask(std::string name, double width, double height, Transform transform,
+                   std::shared_ptr<Component::Base> mask, const Base &child)
+                : Mask(name, width, height, transform, *mask, child) {
+            mask = mask;
+        }
+
+        Mask::Mask(std::string name, double width, double height, Transform transform,
+                   const Base &mask, std::shared_ptr<Component::Base> child)
+                : Mask(name, width, height, transform, mask, *child) {
+            child = child;
+        }
+
+        Mask::Mask(std::string name, double width, double height, Transform transform,
+                   std::shared_ptr<Component::Base> mask, std::shared_ptr<Component::Base> child)
+                : Mask(name, width, height, transform, *mask, *child) {
+            mask = mask;
+            child = child;
+        }
+
 #ifdef OpenCV_FOUND
 
         Mask Mask::fromCvMat(std::string name, double width, double height, Transform transform,
