@@ -12,33 +12,6 @@ inline bool lowercaseEq(string str1, string str2) {
 }
 
 shared_ptr<Component::Base> renderComponent(Json &componentJson) {
-    Component::Type componentType = Component::TypeUnknow;
-    {
-        auto &typeJson = componentJson["type"];
-        if (typeJson.is_string()) {
-            if (lowercaseEq(typeJson, "rectangle"))
-                componentType = Component::TypeRectangle;
-            else if (lowercaseEq(typeJson, "rectangleRound"))
-                componentType = Component::TypeRectangleRound;
-            else if (lowercaseEq(typeJson, "circle"))
-                componentType = Component::TypeCircle;
-            else if (lowercaseEq(typeJson, "svg"))
-                componentType = Component::TypeSvg;
-            else if (lowercaseEq(typeJson, "image"))
-                componentType = Component::TypeImage;
-            else if (lowercaseEq(typeJson, "imageMask"))
-                componentType = Component::TypeImageMask;
-            else if (lowercaseEq(typeJson, "text"))
-                componentType = Component::TypeText;
-            else if (lowercaseEq(typeJson, "textArea"))
-                componentType = Component::TypeTextArea;
-            else if (lowercaseEq(typeJson, "repeat"))
-                componentType = Component::TypeRepeat;
-            else if (lowercaseEq(typeJson, "group"))
-                componentType = Component::TypeGroup;
-        }
-    }
-
     auto &nameJ = componentJson["name"];
     auto &xJ = componentJson["x"];
     auto &yJ = componentJson["y"];
@@ -52,15 +25,13 @@ shared_ptr<Component::Base> renderComponent(Json &componentJson) {
     double h = hJ.is_number() ? (double) hJ : 100;
     double r = rJ.is_number() ? (double) rJ : 0;
 
-    switch (componentType) {
-        case Component::TypeRectangle: {
+    auto &typeJson = componentJson["type"];
+    if (typeJson.is_string()) {
+        if (lowercaseEq(typeJson, "rectangle")) {
             auto &colorJ = componentJson["color"];
             string color = colorJ.is_string() ? (string) colorJ : "000000";
-
-            return make_shared<Component::Rectangle>(name, x, y, w, h, r,
-                                                     color.c_str());
-        }
-        case Component::TypeRectangleRound: {
+            return make_shared<Component::Rectangle>(name, Transform{.x=x, .y=y, .rotate=r}, w, h, color.c_str());
+        } else if (lowercaseEq(typeJson, "rectangleRound")) {
             auto &colorJ = componentJson["color"];
             auto &angleJ = componentJson["angle"];
             auto &angleTLJ = componentJson["angleTL"];
@@ -72,41 +43,27 @@ shared_ptr<Component::Base> renderComponent(Json &componentJson) {
             double angleTR = angleTRJ.is_number() ? (double) angleTRJ : angleJ.is_number() ? (double) angleJ : 10;
             double angleBR = angleBLJ.is_number() ? (double) angleBLJ : angleJ.is_number() ? (double) angleJ : 10;
             double angleBL = angleBRJ.is_number() ? (double) angleBRJ : angleJ.is_number() ? (double) angleJ : 10;
-
-            return make_shared<Component::RectangleRound>(name, x, y, w, h, r,
+            return make_shared<Component::RectangleRound>(name, Transform{.x=x, .y=y, .rotate=r}, w, h,
                                                           angleTL, angleTR, angleBR, angleBL, color.c_str());
-        }
-        case Component::TypeCircle: {
+        } else if (lowercaseEq(typeJson, "circle")) {
             auto &colorJ = componentJson["color"];
             string color = colorJ.is_string() ? (string) colorJ : "000000";
-
-            return make_shared<Component::Circle>(name, x, y, w, h, r,
-                                                  color.c_str());
-        }
-        case Component::TypeSvg: {
+            return make_shared<Component::Circle>(name, Transform{.x=x, .y=y, .rotate=r}, w, h, color.c_str());
+        } else if (lowercaseEq(typeJson, "svg")) {
             auto &srcJ = componentJson["src"];
             string src = srcJ.is_string() ? (string) srcJ : "";
-
-            return make_shared<Component::Svg>(name, x, y, w, h, r,
-                                               src);
-        }
-        case Component::TypeImage: {
+            return make_shared<Component::Svg>(name, w, h, Transform{.x=x, .y=y, .rotate=r}, src);
+        } else if (lowercaseEq(typeJson, "image")) {
             auto &srcJ = componentJson["src"];
             string src = srcJ.is_string() ? (string) srcJ : "";
-
-            return Component::Image::fromFileByCV(name, x, y, w, h, r,
-                                                  src);
-        }
-        case Component::TypeImageMask: {
+            return make_shared<Component::Image>(name, Transform{.x=x, .y=y, .rotate=r}, src, w, h);
+        } else if (lowercaseEq(typeJson, "imageMask")) {
             auto &srcJ = componentJson["src"];
             auto &childJ = componentJson["child"];
-            string src = srcJ.is_string() ? (string) srcJ : "";
+            auto src = renderComponent(srcJ);
             auto child = renderComponent(childJ);
-
-            return make_shared<Component::ImageMask>(name, x, y, w, h, r,
-                                                     src, child);
-        }
-        case Component::TypeText: {
+            return make_shared<Component::Mask>(name, w, h, Transform{.x=x, .y=y, .rotate=r}, src, child);
+        } else if (lowercaseEq(typeJson, "text")) {
             auto &contentJ = componentJson["content"];
             auto &colorJ = componentJson["color"];
             auto &fontFamilyJ = componentJson["fontFamily"];
@@ -119,7 +76,6 @@ shared_ptr<Component::Base> renderComponent(Json &componentJson) {
             auto &wordSpacingJ = componentJson["wordSpacing"];
             auto &writingModeJ = componentJson["writingMode"]; // 待议
             auto &wordWrapJ = componentJson["wordWrap"];       // 待议
-
             string content = contentJ.is_string() ? (string) contentJ : "";
             string color = colorJ.is_string() ? (string) colorJ : "000000";
             string fontFamily = fontFamilyJ.is_string() ? (string) fontFamilyJ : "";
@@ -132,19 +88,17 @@ shared_ptr<Component::Base> renderComponent(Json &componentJson) {
             double wordSpacing = wordSpacingJ.is_number() ? (double) wordSpacingJ : 0;
             int writingMode = writingModeJ.is_number() ? (int) writingModeJ : 0;
             bool wordWrap = wordWrapJ.is_boolean() ? (bool) wordWrapJ : true;
-
-            return make_shared<Component::Text>(name, x, y, r,
+            return make_shared<Component::Text>(name, Transform{.x=x, .y=y, .rotate=r},
                                                 content, color.c_str(),
                                                 fontFamily,
                                                 fontWeight,
                                                 fontSize,
-                                                horizontalAlign,
-                                                verticalAlign,
+                                                HorizontalAlign(horizontalAlign),
+                                                VerticalAlign(verticalAlign),
                                                 maxWidth,
                                                 lineSpacing,
                                                 wordSpacing);
-        }
-        case Component::TypeTextArea: {
+        } else if (lowercaseEq(typeJson, "textArea")) {
             auto &contentJ = componentJson["content"];
             auto &colorJ = componentJson["color"];
             auto &fontFamilyJ = componentJson["fontFamily"];
@@ -156,7 +110,6 @@ shared_ptr<Component::Base> renderComponent(Json &componentJson) {
             auto &wordSpacingJ = componentJson["wordSpacing"];
             auto &writingModeJ = componentJson["writingMode"]; // 待议
             auto &wordWrapJ = componentJson["wordWrap"];       // 待议
-
             string content = contentJ.is_string() ? (string) contentJ : "";
             string color = colorJ.is_string() ? (string) colorJ : "000000";
             string fontFamily = fontFamilyJ.is_string() ? (string) fontFamilyJ : "";
@@ -168,24 +121,21 @@ shared_ptr<Component::Base> renderComponent(Json &componentJson) {
             double wordSpacing = wordSpacingJ.is_number() ? (double) wordSpacingJ : 0;
             int writingMode = writingModeJ.is_number() ? (int) writingModeJ : 0;
             bool wordWrap = wordWrapJ.is_boolean() ? (bool) wordWrapJ : true;
-
-            return make_shared<Component::TextArea>(name, x, y, w, h, r,
+            return make_shared<Component::TextArea>(name, Transform{.x=x, .y=y, .rotate=r}, w, h,
                                                     content, color.c_str(),
                                                     fontFamily,
                                                     fontWeight,
                                                     fontSize,
-                                                    horizontalAlign,
-                                                    verticalAlign,
+                                                    HorizontalAlign(horizontalAlign),
+                                                    VerticalAlign(verticalAlign),
                                                     lineSpacing,
                                                     wordSpacing);
-        }
-        case Component::TypeRepeat: {
-            return make_shared<Component::Repeat>(name, x, y, w, h, r);
-        }
-        case Component::TypeGroup: {
+        } else if (lowercaseEq(typeJson, "repeat")) {
+            return make_shared<Component::Repeat>(name, w, h, Transform{.x=x, .y=y, .rotate=r});
+        } else if (lowercaseEq(typeJson, "group")) {
             auto &childJson = componentJson["child"];
             if (childJson.is_array()) {
-                auto componentGroup = make_shared<Component::Group>(name);
+                auto componentGroup = make_shared<Component::Group>(name, Transform{.x=x, .y=y, .rotate=r});
                 for (auto &componentJson: childJson) // 循环处理该成员中的元素
                 {
                     auto component = renderComponent(componentJson);
@@ -195,9 +145,8 @@ shared_ptr<Component::Base> renderComponent(Json &componentJson) {
             } else
                 return make_shared<Component::Base>();
         }
-        default:
-            return make_shared<Component::Base>();
     }
+    return make_shared<Component::Base>();
 }
 
 int main(int argc, char *argv[]) {
@@ -221,19 +170,19 @@ int main(int argc, char *argv[]) {
     auto &hJ = json["h"];
     double w = wJ.is_number() ? (double) wJ : 200;
     double h = hJ.is_number() ? (double) hJ : 200;
-    Renderer::unitType unit = Renderer::PX; // 默认px
+    Unit unit = Unit::Pixel; // 默认px
     {
         auto &unitJ = json["unit"];
         if (unitJ.is_string()) { // Has "unit"
             string unitStr = unitJ;
             if (unitStr == "px" || unitStr == "pt")
-                unit = Renderer::PX;
+                unit = Unit::Pixel;
             else if (unitStr == "in" || unitStr == "inch")
-                unit = Renderer::IN;
+                unit = Unit::Inch;
             else if (unitStr == "mm")
-                unit = Renderer::MM;
+                unit = Unit::Millimeter;
             else if (unitStr == "cm")
-                unit = Renderer::CM;
+                unit = Unit::Centimeter;
         }
     }
     auto &ppiJ = json["ppi"];

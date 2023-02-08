@@ -60,15 +60,15 @@ Args::Args(int argc, char *argv[]) {
                 break;
             case 't':
                 if (!strcasecmp(optarg, "pdf"))
-                    type = OutputTypePdf;
+                    type = OutputType::Pdf;
                 else if (!strcasecmp(optarg, "svg"))
-                    type = OutputTypeSvg;
+                    type = OutputType::Svg;
                 else if (!strcasecmp(optarg, "png"))
-                    type = OutputTypePng;
+                    type = OutputType::Png;
                 else if (!strcasecmp(optarg, "jpg") || !strcasecmp(optarg, "jpeg"))
-                    type = OutputTypeJpeg;
+                    type = OutputType::Jpeg;
                 else if (!strcasecmp(optarg, "webp"))
-                    type = OutputTypeWebp;
+                    type = OutputType::Webp;
                 break;
             case 'V':
                 printf("version\n");

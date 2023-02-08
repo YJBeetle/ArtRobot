@@ -4,7 +4,7 @@
 #include <string>
 #include <cstring>
 
-#include <ArtRobot/Types/OutputType.hpp>
+#include <ArtRobot/Renderer.hpp>
 
 using namespace ArtRobot;
 
@@ -19,7 +19,7 @@ public:
 
     string output;
     string jsonfile;
-    OutputType type = OutputTypeSvg;
+    OutputType type = OutputType::Svg;
 };
 
 #endif // ARGS_H
