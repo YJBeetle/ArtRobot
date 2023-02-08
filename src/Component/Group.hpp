@@ -10,6 +10,7 @@
  */
 
 #pragma once
+
 #include <ArtRobot/Features.hpp>
 
 #include <memory>
@@ -27,6 +28,11 @@ namespace ArtRobot {
             ~Group();
 
             void addChild(const Base &child);
+
+            void addChild(std::shared_ptr<Component::Base> child);
+
+        private:
+            std::shared_ptr<Component::Base> child;
         };
 
     } // namespace Component

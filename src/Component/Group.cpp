@@ -30,5 +30,10 @@ namespace ArtRobot {
             cairo_restore(cr); //还原画笔
         }
 
+        void Group::addChild(std::shared_ptr<Component::Base> child) {
+            addChild(*child);
+            this->child = child;
+        }
+
     } // namespace Component
 } // namespace ArtRobot
