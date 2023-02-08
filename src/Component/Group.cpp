@@ -32,7 +32,7 @@ namespace ArtRobot {
 
         void Group::addChild(std::shared_ptr<Component::Base> child) {
             addChild(*child);
-            this->child = child;
+            childs.push_back(child);
         }
 
     } // namespace Component

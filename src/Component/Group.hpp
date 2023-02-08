@@ -32,7 +32,7 @@ namespace ArtRobot {
             void addChild(std::shared_ptr<Component::Base> child);
 
         private:
-            std::shared_ptr<Component::Base> child;
+            std::vector<std::shared_ptr<Component::Base>> childs;
         };
 
     } // namespace Component
