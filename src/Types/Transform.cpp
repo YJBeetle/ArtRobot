@@ -18,30 +18,30 @@ namespace ArtRobot {
         cairo_rotate(cr, rotate * M_PI / 180);
         cairo_scale(cr, scaleX, scaleY);
         switch (anchor) {
-            case Transform::Anchor::LT:
+            case Transform::LT:
                 break;
-            case Transform::Anchor::CT:
+            case Transform::CT:
                 cairo_translate(cr, -property.width / 2, 0);
                 break;
-            case Transform::Anchor::RT:
+            case Transform::RT:
                 cairo_translate(cr, -property.width, 0);
                 break;
-            case Transform::Anchor::LC:
+            case Transform::LC:
                 cairo_translate(cr, 0, -property.height / 2);
                 break;
-            case Transform::Anchor::CC:
+            case Transform::CC:
                 cairo_translate(cr, -property.width / 2, -property.height / 2);
                 break;
-            case Transform::Anchor::RC:
+            case Transform::RC:
                 cairo_translate(cr, -property.width, -property.height / 2);
                 break;
-            case Transform::Anchor::LD:
+            case Transform::LD:
                 cairo_translate(cr, 0, -property.height);
                 break;
-            case Transform::Anchor::CD:
+            case Transform::CD:
                 cairo_translate(cr, -property.width / 2, -property.height);
                 break;
-            case Transform::Anchor::RD:
+            case Transform::RD:
                 cairo_translate(cr, -property.width, -property.height);
                 break;
         }

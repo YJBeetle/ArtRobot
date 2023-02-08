@@ -23,11 +23,11 @@ namespace ArtRobot {
         double x = 0;
         double y = 0;
         double rotate = 0;
-        enum class Anchor {
+        enum Anchor {
             LT, CT, RT,
             LC, CC, RC,
             LD, CD, RD,
-        } anchor = Anchor::CC;
+        } anchor = CC;
         double scaleX = 1;
         double scaleY = 1;
 
