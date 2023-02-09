@@ -24,8 +24,8 @@ shared_ptr<Component::Base> renderComponent(Json &componentJson, int depth) {
     std::string name = nameJ.is_string() ? (std::string) nameJ : "";
     double x = xJ.is_number() ? (double) xJ : 0;
     double y = yJ.is_number() ? (double) yJ : 0;
-    double w = wJ.is_number() ? (double) wJ : 100;
-    double h = hJ.is_number() ? (double) hJ : 100;
+    double w = wJ.is_number() ? (double) wJ : 0;
+    double h = hJ.is_number() ? (double) hJ : 0;
     double r = rJ.is_number() ? (double) rJ : 0;
     Transform::Anchor anchor = anchorJ.is_number_integer() ? Transform::Anchor(anchorJ) : Transform::CC;
     double scaleX = scaleXJ.is_number() ? (double) scaleXJ : 1;
