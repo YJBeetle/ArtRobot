@@ -8,7 +8,7 @@
     "child": [
       {
         "type": "rectangle",
-        "color": "FF0000",
+        "color": "#FF0000",
         "x": 0,
         "y": 0,
         "w": 200,
@@ -16,7 +16,7 @@
       },
       {
         "type": "rectangle",
-        "color": "FFFF00",
+        "color": "#FFFF00",
         "x": 50,
         "y": 50,
         "w": 100,
@@ -25,7 +25,7 @@
       },
       {
         "type": "circle",
-        "color": "00FFFF",
+        "color": "#00FFFF",
         "x": 50,
         "y": 50,
         "w": 100,
@@ -42,7 +42,7 @@
       {
         "type": "text",
         "content": "喵喵喵",
-        "color": "00FF00",
+        "color": "#00FF00",
         "x": 20,
         "y": 20,
         "canedit": [
@@ -61,7 +61,7 @@
       {
         "type": "textArea",
         "content": "喵喵喵喵喵喵喵喵喵喵喵喵",
-        "color": "FFFFFF",
+        "color": "#FFFFFF",
         "x": 20,
         "y": 40
       }

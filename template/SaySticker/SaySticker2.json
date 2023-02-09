@@ -14,7 +14,7 @@
         "y": 0,
         "w": 512,
         "h": 512,
-        "color": "79B3E2"
+        "color": "#79B3E2"
       },
       {
         "type": "mask",
@@ -49,7 +49,7 @@
         "y": 496,
         "w": 398,
         "h": 4,
-        "color": "00000010"
+        "color": "#00000010"
       },
       {
         "type": "rectangleRound",
@@ -62,7 +62,7 @@
         "angleTR": 0,
         "angleBR": 10,
         "angleBL": 0,
-        "color": "00000010"
+        "color": "#00000010"
       },
       {
         "type": "image",
@@ -84,13 +84,13 @@
         "angleTR": 10,
         "angleBR": 10,
         "angleBL": 0,
-        "color": "FFFFFF"
+        "color": "#FFFFFF"
       },
       {
         "type": "Text",
         "name": "textName",
         "content": "喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵",
-        "color": "BD4332",
+        "color": "#BD4332",
         "fontFamily": "Noto Sans CJK SC",
         "fontWeight": 400,
         "fontSize": 28,
@@ -105,7 +105,7 @@
         "type": "TextArea",
         "name": "text",
         "content": "喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵",
-        "color": "000000",
+        "color": "#000000",
         "fontFamily": "Noto Sans CJK SC",
         "fontWeight": 200,
         "fontSize": 28,

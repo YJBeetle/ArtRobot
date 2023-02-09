@@ -14,7 +14,8 @@
         "y": 0,
         "w": 323,
         "h": 147,
-        "color": "F1F2F6"
+        "anchor": 0,
+        "color": "#F1F2F6"
       },
       {
         "type": "mask",
@@ -59,13 +60,13 @@
         "w": 172,
         "h": 87,
         "angle": 18,
-        "color": "FFFFFF"
+        "color": "#FFFFFF"
       },
       {
         "type": "TextArea",
         "name": "text",
         "content": "喵喵喵喵",
-        "color": "000000",
+        "color": "#000000",
         "fontFamily": "Noto Sans CJK SC",
         "fontWeight": 400,
         "fontSize": 34,
