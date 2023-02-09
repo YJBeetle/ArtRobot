@@ -26,9 +26,8 @@
         "h": 66,
         "anchor": 0,
         "mask": {
-          "type": "image",
-          "name": "maskPhoto",
-          "src": "SaySticker2_userPhotoMask.png",
+          "type": "circle",
+          "name": "mask",
           "w": 66,
           "h": 66,
           "anchor": 0
