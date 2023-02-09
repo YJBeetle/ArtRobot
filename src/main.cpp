@@ -18,12 +18,18 @@ shared_ptr<Component::Base> renderComponent(Json &componentJson, int depth) {
     auto &wJ = componentJson["w"];
     auto &hJ = componentJson["h"];
     auto &rJ = componentJson["r"];
+    auto &anchorJ = componentJson["anchor"];
+    auto &scaleXJ = componentJson["scaleX"];
+    auto &scaleYJ = componentJson["scaleY"];
     std::string name = nameJ.is_string() ? (std::string) nameJ : "";
     double x = xJ.is_number() ? (double) xJ : 0;
     double y = yJ.is_number() ? (double) yJ : 0;
     double w = wJ.is_number() ? (double) wJ : 100;
     double h = hJ.is_number() ? (double) hJ : 100;
     double r = rJ.is_number() ? (double) rJ : 0;
+    Transform::Anchor anchor = anchorJ.is_number_integer() ? Transform::Anchor(anchorJ) : Transform::CC;
+    double scaleX = scaleXJ.is_number() ? (double) scaleXJ : 1;
+    double scaleY = scaleYJ.is_number() ? (double) scaleYJ : 1;
 
     auto &typeJson = componentJson["type"];
     if (typeJson.is_string()) {
@@ -32,7 +38,7 @@ shared_ptr<Component::Base> renderComponent(Json &componentJson, int depth) {
             std::cout << "rectangle" << "-" << name << std::endl;
             auto &colorJ = componentJson["color"];
             string color = colorJ.is_string() ? (string) colorJ : "000000";
-            return make_shared<Component::Rectangle>(name, Transform{.x=x, .y=y, .rotate=r}, w, h, color.c_str());
+            return make_shared<Component::Rectangle>(name, Transform{.x=x, .y=y, .rotate=r, .anchor=anchor, .scaleX=scaleX, .scaleY=scaleY}, w, h, color.c_str());
         } else if (lowercaseEq(typeJson, "rectangleRound")) {
             for (int i = 0; i < depth; i++) std::cout << "\t";
             std::cout << "rectangleRound" << "-" << name << std::endl;
@@ -47,26 +53,26 @@ shared_ptr<Component::Base> renderComponent(Json &componentJson, int depth) {
             double angleTR = angleTRJ.is_number() ? (double) angleTRJ : angleJ.is_number() ? (double) angleJ : 10;
             double angleBR = angleBLJ.is_number() ? (double) angleBLJ : angleJ.is_number() ? (double) angleJ : 10;
             double angleBL = angleBRJ.is_number() ? (double) angleBRJ : angleJ.is_number() ? (double) angleJ : 10;
-            return make_shared<Component::RectangleRound>(name, Transform{.x=x, .y=y, .rotate=r}, w, h,
+            return make_shared<Component::RectangleRound>(name, Transform{.x=x, .y=y, .rotate=r, .anchor=anchor, .scaleX=scaleX, .scaleY=scaleY}, w, h,
                                                           angleTL, angleTR, angleBR, angleBL, color.c_str());
         } else if (lowercaseEq(typeJson, "circle")) {
             for (int i = 0; i < depth; i++) std::cout << "\t";
             std::cout << "circle" << "-" << name << std::endl;
             auto &colorJ = componentJson["color"];
             string color = colorJ.is_string() ? (string) colorJ : "000000";
-            return make_shared<Component::Circle>(name, Transform{.x=x, .y=y, .rotate=r}, w, h, color.c_str());
+            return make_shared<Component::Circle>(name, Transform{.x=x, .y=y, .rotate=r, .anchor=anchor, .scaleX=scaleX, .scaleY=scaleY}, w, h, color.c_str());
         } else if (lowercaseEq(typeJson, "svg")) {
             for (int i = 0; i < depth; i++) std::cout << "\t";
             std::cout << "svg" << "-" << name << std::endl;
             auto &srcJ = componentJson["src"];
             string src = srcJ.is_string() ? (string) srcJ : "";
-            return make_shared<Component::Svg>(name, w, h, Transform{.x=x, .y=y, .rotate=r}, src);
+            return make_shared<Component::Svg>(name, w, h, Transform{.x=x, .y=y, .rotate=r, .anchor=anchor, .scaleX=scaleX, .scaleY=scaleY}, src);
         } else if (lowercaseEq(typeJson, "image")) {
             for (int i = 0; i < depth; i++) std::cout << "\t";
             std::cout << "image" << "-" << name << std::endl;
             auto &srcJ = componentJson["src"];
             string src = srcJ.is_string() ? (string) srcJ : "";
-            return make_shared<Component::Image>(name, Transform{.x=x, .y=y, .rotate=r}, src, w, h);
+            return make_shared<Component::Image>(name, Transform{.x=x, .y=y, .rotate=r, .anchor=anchor, .scaleX=scaleX, .scaleY=scaleY}, src, w, h);
         } else if (lowercaseEq(typeJson, "mask")) {
             for (int i = 0; i < depth; i++) std::cout << "\t";
             std::cout << "mask" << "-" << name << std::endl;
@@ -74,7 +80,7 @@ shared_ptr<Component::Base> renderComponent(Json &componentJson, int depth) {
             auto &childJ = componentJson["child"];
             auto mask = renderComponent(maskJ, depth + 1);
             auto child = renderComponent(childJ, depth + 1);
-            return make_shared<Component::Mask>(name, w, h, Transform{.x=x, .y=y, .rotate=r}, mask, child);
+            return make_shared<Component::Mask>(name, w, h, Transform{.x=x, .y=y, .rotate=r, .anchor=anchor, .scaleX=scaleX, .scaleY=scaleY}, mask, child);
         } else if (lowercaseEq(typeJson, "text")) {
             for (int i = 0; i < depth; i++) std::cout << "\t";
             std::cout << "text" << "-" << name << std::endl;
@@ -95,20 +101,20 @@ shared_ptr<Component::Base> renderComponent(Json &componentJson, int depth) {
             string fontFamily = fontFamilyJ.is_string() ? (string) fontFamilyJ : "";
             int fontWeight = fontFamilyJ.is_number() ? (int) fontWeightJ : 400;
             double fontSize = fontSizeJ.is_number() ? (double) fontSizeJ : 14;
-            int horizontalAlign = horizontalAlignJ.is_number() ? (int) horizontalAlignJ : 0;
-            int verticalAlign = verticalAlignJ.is_number() ? (int) verticalAlignJ : 0;
+            HorizontalAlign horizontalAlign = horizontalAlignJ.is_number() ? HorizontalAlign(horizontalAlignJ) : HorizontalAlign::Left;
+            VerticalAlign verticalAlign = verticalAlignJ.is_number() ? VerticalAlign(verticalAlignJ) : VerticalAlign::BaseLine;
             int maxWidth = maxWidthJ.is_number() ? (int) maxWidthJ : 0;
             double lineSpacing = lineSpacingJ.is_number() ? (double) lineSpacingJ : 0;
             double wordSpacing = wordSpacingJ.is_number() ? (double) wordSpacingJ : 0;
             int writingMode = writingModeJ.is_number() ? (int) writingModeJ : 0;
             bool wordWrap = wordWrapJ.is_boolean() ? (bool) wordWrapJ : true;
-            return make_shared<Component::Text>(name, Transform{.x=x, .y=y, .rotate=r},
+            return make_shared<Component::Text>(name, Transform{.x=x, .y=y, .rotate=r, .anchor=anchor, .scaleX=scaleX, .scaleY=scaleY},
                                                 content, color.c_str(),
                                                 fontFamily,
                                                 fontWeight,
                                                 fontSize,
-                                                HorizontalAlign(horizontalAlign),
-                                                VerticalAlign(verticalAlign),
+                                                horizontalAlign,
+                                                verticalAlign,
                                                 maxWidth,
                                                 lineSpacing,
                                                 wordSpacing);
@@ -131,31 +137,31 @@ shared_ptr<Component::Base> renderComponent(Json &componentJson, int depth) {
             string fontFamily = fontFamilyJ.is_string() ? (string) fontFamilyJ : "";
             int fontWeight = fontFamilyJ.is_number() ? (int) fontWeightJ : 400;
             double fontSize = fontSizeJ.is_number() ? (double) fontSizeJ : 14;
-            int horizontalAlign = horizontalAlignJ.is_number() ? (int) horizontalAlignJ : 0;
-            int verticalAlign = verticalAlignJ.is_number() ? (int) verticalAlignJ : 0;
+            HorizontalAlign horizontalAlign = horizontalAlignJ.is_number() ? HorizontalAlign(horizontalAlignJ) : HorizontalAlign::Left;
+            VerticalAlign verticalAlign = verticalAlignJ.is_number() ? VerticalAlign(verticalAlignJ) : VerticalAlign::BaseLine;
             double lineSpacing = lineSpacingJ.is_number() ? (double) lineSpacingJ : 0;
             double wordSpacing = wordSpacingJ.is_number() ? (double) wordSpacingJ : 0;
             int writingMode = writingModeJ.is_number() ? (int) writingModeJ : 0;
             bool wordWrap = wordWrapJ.is_boolean() ? (bool) wordWrapJ : true;
-            return make_shared<Component::TextArea>(name, Transform{.x=x, .y=y, .rotate=r}, w, h,
+            return make_shared<Component::TextArea>(name, Transform{.x=x, .y=y, .rotate=r, .anchor=anchor, .scaleX=scaleX, .scaleY=scaleY}, w, h,
                                                     content, color.c_str(),
                                                     fontFamily,
                                                     fontWeight,
                                                     fontSize,
-                                                    HorizontalAlign(horizontalAlign),
-                                                    VerticalAlign(verticalAlign),
+                                                    horizontalAlign,
+                                                    verticalAlign,
                                                     lineSpacing,
                                                     wordSpacing);
         } else if (lowercaseEq(typeJson, "repeat")) {
             for (int i = 0; i < depth; i++) std::cout << "\t";
             std::cout << "repeat" << "-" << name << std::endl;
-            return make_shared<Component::Repeat>(name, w, h, Transform{.x=x, .y=y, .rotate=r});
+            return make_shared<Component::Repeat>(name, w, h, Transform{.x=x, .y=y, .rotate=r, .anchor=anchor, .scaleX=scaleX, .scaleY=scaleY});
         } else if (lowercaseEq(typeJson, "group")) {
             for (int i = 0; i < depth; i++) std::cout << "\t";
             std::cout << "group" << "-" << name << std::endl;
             auto &childJson = componentJson["child"];
             if (childJson.is_array()) {
-                auto componentGroup = make_shared<Component::Group>(name, Transform{.x=x, .y=y, .rotate=r});
+                auto componentGroup = make_shared<Component::Group>(name, Transform{.x=x, .y=y, .rotate=r, .anchor=anchor, .scaleX=scaleX, .scaleY=scaleY});
                 for (auto &componentJson: childJson) // 循环处理该成员中的元素
                 {
                     auto component = renderComponent(componentJson, depth + 1);
