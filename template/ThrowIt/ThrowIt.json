@@ -23,9 +23,8 @@
         "x": 87,
         "y": 249,
         "mask": {
-          "type": "image",
-          "name": "userPhoto",
-          "src": "p_mask.png",
+          "type": "circle",
+          "name": "mask",
           "w": 136,
           "h": 136,
           "anchor": 4
