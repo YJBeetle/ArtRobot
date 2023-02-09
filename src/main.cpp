@@ -67,9 +67,9 @@ shared_ptr<Component::Base> renderComponent(Json &componentJson, int depth) {
             auto &srcJ = componentJson["src"];
             string src = srcJ.is_string() ? (string) srcJ : "";
             return make_shared<Component::Image>(name, Transform{.x=x, .y=y, .rotate=r}, src, w, h);
-        } else if (lowercaseEq(typeJson, "imageMask")) {
+        } else if (lowercaseEq(typeJson, "mask")) {
             for (int i = 0; i < depth; i++) std::cout << "\t";
-            std::cout << "imageMask" << "-" << name << std::endl;
+            std::cout << "mask" << "-" << name << std::endl;
             auto &maskJ = componentJson["mask"];
             auto &childJ = componentJson["child"];
             auto mask = renderComponent(maskJ, depth + 1);
