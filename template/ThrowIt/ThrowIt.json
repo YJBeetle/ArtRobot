@@ -14,34 +14,30 @@
         "x": 0,
         "y": 0,
         "w": 512,
-        "h": 512
+        "h": 512,
+        "anchor": 0
       },
       {
         "type": "mask",
         "name": "mask",
-        "x": 19,
-        "y": 181,
-        "w": 136,
-        "h": 136,
+        "x": 87,
+        "y": 249,
         "mask": {
           "type": "image",
           "name": "userPhoto",
           "src": "p_mask.png",
-          "x": 19,
-          "y": 181,
           "w": 136,
           "h": 136,
-          "r": -160
+          "anchor": 4
         },
         "child": {
           "type": "image",
           "name": "userPhoto",
           "src": "pp.jpg",
-          "x": 19,
-          "y": 181,
           "w": 136,
           "h": 136,
           "r": -160,
+          "anchor": 4,
           "canedit": [
             {
               "attributes": "src",
