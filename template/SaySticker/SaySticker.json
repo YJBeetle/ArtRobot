@@ -19,11 +19,19 @@
       {
         "type": "imageMask",
         "name": "userPhotoMask",
-        "src": "SaySticker_userPhotoMask.png",
         "x": 20,
         "y": 30,
         "w": 80,
         "h": 80,
+        "mask": {
+          "type": "image",
+          "name": "maskPhoto",
+          "src": "SaySticker_userPhotoMask.png",
+          "x": 20,
+          "y": 30,
+          "w": 80,
+          "h": 80
+        },
         "child": {
           "type": "image",
           "name": "userPhoto",
