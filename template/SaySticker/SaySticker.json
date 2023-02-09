@@ -24,23 +24,22 @@
         "y": 30,
         "w": 80,
         "h": 80,
+        "anchor": 0,
         "mask": {
           "type": "image",
           "name": "maskPhoto",
           "src": "SaySticker_userPhotoMask.png",
-          "x": 20,
-          "y": 30,
           "w": 80,
-          "h": 80
+          "h": 80,
+          "anchor": 0
         },
         "child": {
           "type": "image",
           "name": "userPhoto",
           "src": "pp.jpg",
-          "x": 20,
-          "y": 30,
           "w": 80,
-          "h": 80
+          "h": 80,
+          "anchor": 0
         }
       },
       {
@@ -50,7 +49,8 @@
         "x": 115,
         "y": 40,
         "w": 19,
-        "h": 19
+        "h": 19,
+        "anchor": 0
       },
       {
         "type": "rectangleRound",
@@ -60,7 +60,8 @@
         "w": 172,
         "h": 87,
         "angle": 18,
-        "color": "#FFFFFF"
+        "color": "#FFFFFF",
+        "anchor": 0
       },
       {
         "type": "TextArea",
@@ -76,7 +77,8 @@
         "y": 56,
         "w": 136,
         "h": 38,
-        "r": 0
+        "r": 0,
+        "anchor": 0
       }
     ]
   }
