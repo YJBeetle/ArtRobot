@@ -29,13 +29,13 @@ shared_ptr<Component::Base> renderComponent(Json &componentJson, int depth) {
     if (typeJson.is_string()) {
         if (lowercaseEq(typeJson, "rectangle")) {
             for (int i = 0; i < depth; i++) std::cout << "\t";
-            std::cout << "rectangle" << std::endl;
+            std::cout << "rectangle" << "-" << name << std::endl;
             auto &colorJ = componentJson["color"];
             string color = colorJ.is_string() ? (string) colorJ : "000000";
             return make_shared<Component::Rectangle>(name, Transform{.x=x, .y=y, .rotate=r}, w, h, color.c_str());
         } else if (lowercaseEq(typeJson, "rectangleRound")) {
             for (int i = 0; i < depth; i++) std::cout << "\t";
-            std::cout << "rectangleRound" << std::endl;
+            std::cout << "rectangleRound" << "-" << name << std::endl;
             auto &colorJ = componentJson["color"];
             auto &angleJ = componentJson["angle"];
             auto &angleTLJ = componentJson["angleTL"];
@@ -51,25 +51,25 @@ shared_ptr<Component::Base> renderComponent(Json &componentJson, int depth) {
                                                           angleTL, angleTR, angleBR, angleBL, color.c_str());
         } else if (lowercaseEq(typeJson, "circle")) {
             for (int i = 0; i < depth; i++) std::cout << "\t";
-            std::cout << "circle" << std::endl;
+            std::cout << "circle" << "-" << name << std::endl;
             auto &colorJ = componentJson["color"];
             string color = colorJ.is_string() ? (string) colorJ : "000000";
             return make_shared<Component::Circle>(name, Transform{.x=x, .y=y, .rotate=r}, w, h, color.c_str());
         } else if (lowercaseEq(typeJson, "svg")) {
             for (int i = 0; i < depth; i++) std::cout << "\t";
-            std::cout << "svg" << std::endl;
+            std::cout << "svg" << "-" << name << std::endl;
             auto &srcJ = componentJson["src"];
             string src = srcJ.is_string() ? (string) srcJ : "";
             return make_shared<Component::Svg>(name, w, h, Transform{.x=x, .y=y, .rotate=r}, src);
         } else if (lowercaseEq(typeJson, "image")) {
             for (int i = 0; i < depth; i++) std::cout << "\t";
-            std::cout << "image" << std::endl;
+            std::cout << "image" << "-" << name << std::endl;
             auto &srcJ = componentJson["src"];
             string src = srcJ.is_string() ? (string) srcJ : "";
             return make_shared<Component::Image>(name, Transform{.x=x, .y=y, .rotate=r}, src, w, h);
         } else if (lowercaseEq(typeJson, "imageMask")) {
             for (int i = 0; i < depth; i++) std::cout << "\t";
-            std::cout << "imageMask" << std::endl;
+            std::cout << "imageMask" << "-" << name << std::endl;
             auto &maskJ = componentJson["mask"];
             auto &childJ = componentJson["child"];
             auto mask = renderComponent(maskJ, depth + 1);
@@ -77,7 +77,7 @@ shared_ptr<Component::Base> renderComponent(Json &componentJson, int depth) {
             return make_shared<Component::Mask>(name, w, h, Transform{.x=x, .y=y, .rotate=r}, mask, child);
         } else if (lowercaseEq(typeJson, "text")) {
             for (int i = 0; i < depth; i++) std::cout << "\t";
-            std::cout << "text" << std::endl;
+            std::cout << "text" << "-" << name << std::endl;
             auto &contentJ = componentJson["content"];
             auto &colorJ = componentJson["color"];
             auto &fontFamilyJ = componentJson["fontFamily"];
@@ -114,7 +114,7 @@ shared_ptr<Component::Base> renderComponent(Json &componentJson, int depth) {
                                                 wordSpacing);
         } else if (lowercaseEq(typeJson, "textArea")) {
             for (int i = 0; i < depth; i++) std::cout << "\t";
-            std::cout << "textArea" << std::endl;
+            std::cout << "textArea" << "-" << name << std::endl;
             auto &contentJ = componentJson["content"];
             auto &colorJ = componentJson["color"];
             auto &fontFamilyJ = componentJson["fontFamily"];
@@ -148,11 +148,11 @@ shared_ptr<Component::Base> renderComponent(Json &componentJson, int depth) {
                                                     wordSpacing);
         } else if (lowercaseEq(typeJson, "repeat")) {
             for (int i = 0; i < depth; i++) std::cout << "\t";
-            std::cout << "repeat" << std::endl;
+            std::cout << "repeat" << "-" << name << std::endl;
             return make_shared<Component::Repeat>(name, w, h, Transform{.x=x, .y=y, .rotate=r});
         } else if (lowercaseEq(typeJson, "group")) {
             for (int i = 0; i < depth; i++) std::cout << "\t";
-            std::cout << "group" << std::endl;
+            std::cout << "group" << "-" << name << std::endl;
             auto &childJson = componentJson["child"];
             if (childJson.is_array()) {
                 auto componentGroup = make_shared<Component::Group>(name, Transform{.x=x, .y=y, .rotate=r});
@@ -164,9 +164,16 @@ shared_ptr<Component::Base> renderComponent(Json &componentJson, int depth) {
                 return componentGroup;
             } else
                 return make_shared<Component::Base>();
+        } else {
+            for (int i = 0; i < depth; i++) std::cout << "\t";
+            std::cout << "unknow" << "-" << name << std::endl;
+            return make_shared<Component::Base>();
         }
+    } else {
+        for (int i = 0; i < depth; i++) std::cout << "\t";
+        std::cout << "invalid" << "-" << name << std::endl;
+        return make_shared<Component::Base>();
     }
-    return make_shared<Component::Base>();
 }
 
 int main(int argc, char *argv[]) {
