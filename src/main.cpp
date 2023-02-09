@@ -11,7 +11,7 @@ inline bool lowercaseEq(string str1, string str2) {
     return str1 == str2;
 }
 
-shared_ptr<Component::Base> renderComponent(Json &componentJson) {
+shared_ptr<Component::Base> renderComponent(Json &componentJson, int depth) {
     auto &nameJ = componentJson["name"];
     auto &xJ = componentJson["x"];
     auto &yJ = componentJson["y"];
@@ -28,10 +28,14 @@ shared_ptr<Component::Base> renderComponent(Json &componentJson) {
     auto &typeJson = componentJson["type"];
     if (typeJson.is_string()) {
         if (lowercaseEq(typeJson, "rectangle")) {
+            for (int i = 0; i < depth; i++) std::cout << "\t";
+            std::cout << "rectangle" << std::endl;
             auto &colorJ = componentJson["color"];
             string color = colorJ.is_string() ? (string) colorJ : "000000";
             return make_shared<Component::Rectangle>(name, Transform{.x=x, .y=y, .rotate=r}, w, h, color.c_str());
         } else if (lowercaseEq(typeJson, "rectangleRound")) {
+            for (int i = 0; i < depth; i++) std::cout << "\t";
+            std::cout << "rectangleRound" << std::endl;
             auto &colorJ = componentJson["color"];
             auto &angleJ = componentJson["angle"];
             auto &angleTLJ = componentJson["angleTL"];
@@ -46,24 +50,34 @@ shared_ptr<Component::Base> renderComponent(Json &componentJson) {
             return make_shared<Component::RectangleRound>(name, Transform{.x=x, .y=y, .rotate=r}, w, h,
                                                           angleTL, angleTR, angleBR, angleBL, color.c_str());
         } else if (lowercaseEq(typeJson, "circle")) {
+            for (int i = 0; i < depth; i++) std::cout << "\t";
+            std::cout << "circle" << std::endl;
             auto &colorJ = componentJson["color"];
             string color = colorJ.is_string() ? (string) colorJ : "000000";
             return make_shared<Component::Circle>(name, Transform{.x=x, .y=y, .rotate=r}, w, h, color.c_str());
         } else if (lowercaseEq(typeJson, "svg")) {
+            for (int i = 0; i < depth; i++) std::cout << "\t";
+            std::cout << "svg" << std::endl;
             auto &srcJ = componentJson["src"];
             string src = srcJ.is_string() ? (string) srcJ : "";
             return make_shared<Component::Svg>(name, w, h, Transform{.x=x, .y=y, .rotate=r}, src);
         } else if (lowercaseEq(typeJson, "image")) {
+            for (int i = 0; i < depth; i++) std::cout << "\t";
+            std::cout << "image" << std::endl;
             auto &srcJ = componentJson["src"];
             string src = srcJ.is_string() ? (string) srcJ : "";
             return make_shared<Component::Image>(name, Transform{.x=x, .y=y, .rotate=r}, src, w, h);
         } else if (lowercaseEq(typeJson, "imageMask")) {
+            for (int i = 0; i < depth; i++) std::cout << "\t";
+            std::cout << "imageMask" << std::endl;
             auto &srcJ = componentJson["src"];
             auto &childJ = componentJson["child"];
-            auto src = renderComponent(srcJ);
-            auto child = renderComponent(childJ);
+            auto src = renderComponent(srcJ, depth + 1);
+            auto child = renderComponent(childJ, depth + 1);
             return make_shared<Component::Mask>(name, w, h, Transform{.x=x, .y=y, .rotate=r}, src, child);
         } else if (lowercaseEq(typeJson, "text")) {
+            for (int i = 0; i < depth; i++) std::cout << "\t";
+            std::cout << "text" << std::endl;
             auto &contentJ = componentJson["content"];
             auto &colorJ = componentJson["color"];
             auto &fontFamilyJ = componentJson["fontFamily"];
@@ -99,6 +113,8 @@ shared_ptr<Component::Base> renderComponent(Json &componentJson) {
                                                 lineSpacing,
                                                 wordSpacing);
         } else if (lowercaseEq(typeJson, "textArea")) {
+            for (int i = 0; i < depth; i++) std::cout << "\t";
+            std::cout << "textArea" << std::endl;
             auto &contentJ = componentJson["content"];
             auto &colorJ = componentJson["color"];
             auto &fontFamilyJ = componentJson["fontFamily"];
@@ -131,14 +147,18 @@ shared_ptr<Component::Base> renderComponent(Json &componentJson) {
                                                     lineSpacing,
                                                     wordSpacing);
         } else if (lowercaseEq(typeJson, "repeat")) {
+            for (int i = 0; i < depth; i++) std::cout << "\t";
+            std::cout << "repeat" << std::endl;
             return make_shared<Component::Repeat>(name, w, h, Transform{.x=x, .y=y, .rotate=r});
         } else if (lowercaseEq(typeJson, "group")) {
+            for (int i = 0; i < depth; i++) std::cout << "\t";
+            std::cout << "group" << std::endl;
             auto &childJson = componentJson["child"];
             if (childJson.is_array()) {
                 auto componentGroup = make_shared<Component::Group>(name, Transform{.x=x, .y=y, .rotate=r});
                 for (auto &componentJson: childJson) // 循环处理该成员中的元素
                 {
-                    auto component = renderComponent(componentJson);
+                    auto component = renderComponent(componentJson, depth + 1);
                     componentGroup->addChild(component);
                 }
                 return componentGroup;
@@ -190,7 +210,7 @@ int main(int argc, char *argv[]) {
 
     // 绘制body
     auto &bodyJson = json["body"];
-    auto body = renderComponent(bodyJson);
+    auto body = renderComponent(bodyJson, 0);
 
     // 渲染
     Renderer renderer(args.type, w, h, unit, ppi);
