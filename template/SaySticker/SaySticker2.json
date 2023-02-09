@@ -17,13 +17,21 @@
         "color": "79B3E2"
       },
       {
-        "type": "imageMask",
+        "type": "mask",
         "name": "userPhotoMask",
-        "src": "SaySticker2_userPhotoMask.png",
         "x": 16,
         "y": 430,
         "w": 66,
         "h": 66,
+        "mask": {
+          "type": "image",
+          "name": "maskPhoto",
+          "src": "SaySticker2_userPhotoMask.png",
+          "x": 16,
+          "y": 430,
+          "w": 66,
+          "h": 66
+        },
         "child": {
           "type": "image",
           "name": "userPhoto",
