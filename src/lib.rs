@@ -4,10 +4,9 @@ pub mod types;
 
 #[cfg(test)]
 mod tests {
-    use super::*;
-    use types::{Transform, Color, Anchor};
-    use component::{Circle};
-    use renderer::{RendererImage, Unit};
+    use crate::types::{Transform, Color, Anchor};
+    use crate::component::{Circle};
+    use crate::renderer::{RendererImage, Unit};
 
     #[test]
     fn it_works() {
