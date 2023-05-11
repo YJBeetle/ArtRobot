@@ -141,7 +141,7 @@ impl Text {
         let line_spacing = line_spacing.unwrap_or(0.);
         let _word_spacing = _word_spacing.unwrap_or(0.);
 
-        let base = Base::new(Some(Property { name, width: f64::NAN, height: f64::NAN }), Some(transform));
+        let mut base = Base::new(Some(Property { name, width: f64::NAN, height: f64::NAN }), Some(transform));
         base.cr.set_source_rgba(color.r(), color.g(), color.b(), color.a());
 
         let layout = pangocairo::create_layout(&base.cr);
@@ -208,6 +208,9 @@ impl Text {
         base.cr.move_to(x_move, y_move);
 
         pangocairo::show_layout(&base.cr, &layout);
+
+        base.property.width = real_w;
+        base.property.height = real_h;
 
         Self { base }
     }
