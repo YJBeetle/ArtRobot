@@ -445,3 +445,16 @@ impl Color {
     pub const WHITE: Self = Self { r: 255, g: 255, b: 255, a: 255 };                    /* #FFFFFFFF ( 255, 255, 255, 255 ) White                */
     pub const TRANSPARENT: Self = Self { r: 0, g: 0, b: 0, a: 0 };                      /* #00000000 ( 0,   0,   0,   0   ) Transparent          */
 }
+
+pub enum HorizontalAlign {
+    Left,
+    Center,
+    Right,
+}
+
+pub enum VerticalAlign {
+    BaseLine,
+    Top,
+    Center,
+    Bottom,
+}

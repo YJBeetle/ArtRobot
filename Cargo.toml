@@ -7,3 +7,4 @@ edition = "2021"
 
 [dependencies]
 cairo-rs = { version = "0.17.0", features = ["v1_16", "png", "pdf", "ps", "svg"] }
+pangocairo = "0.17.0"
