@@ -26,7 +26,6 @@ mod tests {
             Transform {
                 x: 256.,
                 y: 256.,
-                anchor: Anchor::LT,
                 ..Default::default()
             },
             String::from("喵喵喵"),

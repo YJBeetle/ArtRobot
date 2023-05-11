@@ -56,17 +56,19 @@ impl Transform {
         cr.translate(self.x, self.y);
         cr.rotate(self.rotate * PI / 180.);
         cr.scale(self.scale_x, self.scale_y);
-        match self.anchor {
-            Anchor::LT => {}
-            Anchor::CT => cr.translate(-property.width / 2., 0.),
-            Anchor::RT => cr.translate(-property.width, 0.),
-            Anchor::LC => cr.translate(0., -property.height / 2.),
-            Anchor::CC => cr.translate(-property.width / 2., -property.height / 2.),
-            Anchor::RC => cr.translate(-property.width, -property.height / 2.),
-            Anchor::LD => cr.translate(0., -property.height),
-            Anchor::CD => cr.translate(-property.width / 2., -property.height),
-            Anchor::RD => cr.translate(-property.width, -property.height),
-        };
+        if !property.width.is_nan() && !property.height.is_nan() {
+            match self.anchor {
+                Anchor::LT => {}
+                Anchor::CT => cr.translate(-property.width / 2., 0.),
+                Anchor::RT => cr.translate(-property.width, 0.),
+                Anchor::LC => cr.translate(0., -property.height / 2.),
+                Anchor::CC => cr.translate(-property.width / 2., -property.height / 2.),
+                Anchor::RC => cr.translate(-property.width, -property.height / 2.),
+                Anchor::LD => cr.translate(0., -property.height),
+                Anchor::CD => cr.translate(-property.width / 2., -property.height),
+                Anchor::RD => cr.translate(-property.width, -property.height),
+            }
+        }
     }
 }
 
