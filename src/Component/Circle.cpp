@@ -18,7 +18,7 @@ namespace ArtRobot {
                 : Base({name, width, height}, transform) {
             cairo_set_source_rgba(cr, color.r(), color.g(), color.b(), color.a());
 
-            cairo_scale(cr, width / 2.0, height / 2.0);
+            cairo_scale(cr, width / 2., height / 2.);
             cairo_arc(cr, 1., 1., 1., 0., 2. * M_PI);
 
             cairo_fill(cr);

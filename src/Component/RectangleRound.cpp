@@ -21,8 +21,8 @@ namespace ArtRobot {
                 : Base({name, width, height}, transform) {
             cairo_set_source_rgba(cr, color.r(), color.g(), color.b(), color.a());
 
-            cairo_move_to(cr, angleTL, 0);
-            cairo_line_to(cr, width - angleTL, 0);
+            cairo_move_to(cr, angleTL, 0.);
+            cairo_line_to(cr, width - angleTL, 0.);
 
             cairo_move_to(cr, width, angleTR);
             cairo_line_to(cr, width, height - angleTR);
@@ -30,13 +30,13 @@ namespace ArtRobot {
             cairo_move_to(cr, width - angleBR, height);
             cairo_line_to(cr, angleBR, height);
 
-            cairo_move_to(cr, 0, height - angleBL);
-            cairo_line_to(cr, 0, angleBL);
+            cairo_move_to(cr, 0., height - angleBL);
+            cairo_line_to(cr, 0., angleBL);
 
-            cairo_arc(cr, angleTL, angleTL, angleTL, M_PI, 3 * M_PI / 2.0);
-            cairo_arc(cr, width - angleTR, angleTR, angleTR, 3 * M_PI / 2, 2 * M_PI);
-            cairo_arc(cr, width - angleBR, height - angleBR, angleBR, 0, M_PI / 2);
-            cairo_arc(cr, angleBL, height - angleBL, angleBL, M_PI / 2, M_PI);
+            cairo_arc(cr, angleTL, angleTL, angleTL, M_PI, 3. * M_PI / 2.);
+            cairo_arc(cr, width - angleTR, angleTR, angleTR, 3. * M_PI / 2., 2. * M_PI);
+            cairo_arc(cr, width - angleBR, height - angleBR, angleBR, 0., M_PI / 2.);
+            cairo_arc(cr, angleBL, height - angleBL, angleBL, M_PI / 2., M_PI);
 
             cairo_fill(cr);
         }
