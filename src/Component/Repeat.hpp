@@ -24,7 +24,7 @@ namespace ArtRobot {
         public:
             Repeat(std::string name, double width, double height);
 
-            Repeat(std::string name, double width, double height, Transform transform);
+            Repeat(std::string name, Transform transform, double width, double height);
 
             ~Repeat();
         };

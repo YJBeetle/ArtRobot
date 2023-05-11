@@ -14,7 +14,7 @@
 namespace ArtRobot {
     namespace Component {
 
-        Repeat::Repeat(std::string name, double width, double height, Transform transform) // TODO
+        Repeat::Repeat(std::string name, Transform transform, double width, double height) // TODO
                 : Base({name, width, height}, transform) {
         }
 

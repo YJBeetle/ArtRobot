@@ -30,7 +30,7 @@ namespace ArtRobot {
             rsvg_handle_render_cairo(svg, cr);
         }
 
-        Svg::Svg(std::string name, double width, double height, Transform transform,
+        Svg::Svg(std::string name, Transform transform, double width, double height,
                  const std::string &src)
                 : Base({name, width, height}, transform) {
             FILE *imageFile = fopen(src.c_str(), "rb"); // 判断文件存在
@@ -47,7 +47,7 @@ namespace ArtRobot {
             }
         }
 
-        Svg::Svg(std::string name, double width, double height, Transform transform,
+        Svg::Svg(std::string name, Transform transform, double width, double height,
                  unsigned char *data, size_t len)
                 : Base({name, width, height}, transform) {
             RsvgHandle *svg = rsvg_handle_new_from_data(data, len, nullptr); // TODO 错误处理
