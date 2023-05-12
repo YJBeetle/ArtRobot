@@ -4,14 +4,14 @@ use pangocairo::pango;
 use pangocairo::pango::{Alignment, EllipsizeMode, FontDescription, Weight, WrapMode};
 use crate::types::{Color, HorizontalAlign, Property, Transform, VerticalAlign};
 
-struct Base {
+struct ComponentBase {
     surface: RecordingSurface,
     cr: Context,
     property: Property,
     transform: Transform,
 }
 
-impl Base {
+impl ComponentBase {
     fn new(property: Option<Property>, transform: Option<Transform>) -> Self {
         let surface = RecordingSurface::create(cairo::Content::Alpha, None).unwrap();
         let cr = Context::new(&surface).unwrap();
@@ -31,26 +31,34 @@ impl Base {
 }
 
 
+pub trait Component {
+    fn surface(&self) -> &RecordingSurface;
+}
+
+
 pub struct Rectangle {
-    base: Base,
+    base: ComponentBase,
 }
 
 impl Rectangle {
     pub fn new(name: String, transform: Transform,
                width: f64, height: f64,
                color: Color) -> Self {
-        let base = Base::new(Some(Property { name, width, height }), Some(transform));
+        let base = ComponentBase::new(Some(Property { name, width, height }), Some(transform));
         base.cr.set_source_rgba(color.r(), color.g(), color.b(), color.a());
         base.cr.rectangle(0., 0., width, height);
         base.cr.fill().unwrap();
         Self { base }
     }
-    pub fn surface(&self) -> &RecordingSurface { &self.base.surface() }
+}
+
+impl Component for Rectangle {
+    fn surface(&self) -> &RecordingSurface { &self.base.surface() }
 }
 
 
 pub struct RectangleRound {
-    base: Base,
+    base: ComponentBase,
 }
 
 impl RectangleRound {
@@ -58,7 +66,7 @@ impl RectangleRound {
                width: f64, height: f64,
                angle_tl: f64, angle_tr: f64, angle_br: f64, angle_bl: f64,
                color: Color) -> Self {
-        let base = Base::new(Some(Property { name, width, height }), Some(transform));
+        let base = ComponentBase::new(Some(Property { name, width, height }), Some(transform));
 
         base.cr.set_source_rgba(color.r(), color.g(), color.b(), color.a());
 
@@ -83,26 +91,32 @@ impl RectangleRound {
 
         Self { base }
     }
-    pub fn surface(&self) -> &RecordingSurface { &self.base.surface() }
+}
+
+impl Component for RectangleRound {
+    fn surface(&self) -> &RecordingSurface { &self.base.surface() }
 }
 
 
 pub struct Circle {
-    base: Base,
+    base: ComponentBase,
 }
 
 impl Circle {
     pub fn new(name: String, transform: Transform,
                width: f64, height: f64,
                color: Color) -> Self {
-        let base = Base::new(Some(Property { name, width, height }), Some(transform));
+        let base = ComponentBase::new(Some(Property { name, width, height }), Some(transform));
         base.cr.set_source_rgba(color.r(), color.g(), color.b(), color.a());
         base.cr.scale(width / 2., height / 2.);
         base.cr.arc(1., 1., 1., 0., 2. * PI);
         base.cr.fill().unwrap();
         Self { base }
     }
-    pub fn surface(&self) -> &RecordingSurface { &self.base.surface() }
+}
+
+impl Component for Circle {
+    fn surface(&self) -> &RecordingSurface { &self.base.surface() }
 }
 
 
@@ -116,7 +130,7 @@ pub struct Mask {}
 
 
 pub struct Text {
-    base: Base,
+    base: ComponentBase,
 }
 
 impl Text {
@@ -142,7 +156,7 @@ impl Text {
         let line_spacing = line_spacing.unwrap_or(0.);
         let _word_spacing = _word_spacing.unwrap_or(0.);
 
-        let base = Base::new(Some(Property { name, width: f64::NAN, height: f64::NAN }), Some(transform));
+        let base = ComponentBase::new(Some(Property { name, width: f64::NAN, height: f64::NAN }), Some(transform));
         base.cr.set_source_rgba(color.r(), color.g(), color.b(), color.a());
 
         let layout = pangocairo::create_layout(&base.cr);
@@ -211,12 +225,15 @@ impl Text {
 
         Self { base }
     }
-    pub fn surface(&self) -> &RecordingSurface { &self.base.surface() }
+}
+
+impl Component for Text {
+    fn surface(&self) -> &RecordingSurface { &self.base.surface() }
 }
 
 
 pub struct TextArea {
-    base: Base,
+    base: ComponentBase,
 }
 
 impl TextArea {
@@ -241,7 +258,7 @@ impl TextArea {
         let line_spacing = line_spacing.unwrap_or(0.);
         let _word_spacing = _word_spacing.unwrap_or(0.);
 
-        let base = Base::new(Some(Property { name, width, height }), Some(transform));
+        let base = ComponentBase::new(Some(Property { name, width, height }), Some(transform));
         base.cr.set_source_rgba(color.r(), color.g(), color.b(), color.a());
 
 
@@ -301,11 +318,33 @@ impl TextArea {
 
         Self { base }
     }
-    pub fn surface(&self) -> &RecordingSurface { &self.base.surface() }
+}
+
+impl Component for TextArea {
+    fn surface(&self) -> &RecordingSurface { &self.base.surface() }
 }
 
 
 pub struct Repeat {}
 
 
-pub struct Group {}
+pub struct Group {
+    base: ComponentBase,
+}
+
+impl Group {
+    pub fn new(name: String, transform: Transform) -> Self {
+        let base = ComponentBase::new(Some(Property { name, width: f64::NAN, height: f64::NAN }), Some(transform));
+        Self { base }
+    }
+    pub fn add_child<T: Component>(&self, child: T) {
+        self.base.cr.save().unwrap();
+        self.base.cr.set_source_surface(child.surface(), 0., 0.).unwrap();
+        self.base.cr.paint().unwrap();
+        self.base.cr.restore().unwrap();
+    }
+}
+
+impl Component for Group {
+    fn surface(&self) -> &RecordingSurface { &self.base.surface() }
+}

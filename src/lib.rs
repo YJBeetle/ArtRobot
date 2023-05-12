@@ -5,7 +5,7 @@ pub mod types;
 #[cfg(test)]
 mod tests {
     use crate::types::{Transform, Color, Anchor};
-    use crate::component::{Circle, Text, TextArea};
+    use crate::component::{Circle, Component, Text, TextArea};
     use crate::renderer::{RendererImage, Unit};
 
     #[test]
