@@ -6,7 +6,7 @@ pub mod types;
 mod tests {
     use crate::types::{Transform, Color, Anchor};
     use crate::component::{Circle, Component, Group, Text, TextArea};
-    use crate::renderer::{RendererImage, Unit};
+    use crate::renderer::{RendererImage, RendererPdf, Unit};
 
     #[test]
     fn it_works() {
@@ -21,6 +21,7 @@ mod tests {
             100., 100.,
             Color::RED,
         );
+
         let str = Text::new(
             String::from("test"),
             Transform {
@@ -39,6 +40,7 @@ mod tests {
             None,
             None,
         );
+
         let str2 = TextArea::new(
             String::from("test"),
             Transform {
@@ -59,6 +61,7 @@ mod tests {
             None,
             None,
         );
+
         let g: Group = Group::new(
             String::from("group"),
             Transform {
@@ -70,9 +73,14 @@ mod tests {
         g.add_child(c);
         g.add_child(str);
         g.add_child(str2);
+
         let r = RendererImage::new(512., 512., Unit::Pixel, 72.);
         r.render(g.surface());
         let mut f = std::fs::File::create("foo.png").unwrap(); // todo
         r.png_to_stream(&mut f);
+
+        let f = std::fs::File::create("foo.pdf").unwrap(); // todo
+        let r = RendererPdf::new(512., 512., Unit::Pixel, 72., f);
+        r.render(g.surface());
     }
 }
