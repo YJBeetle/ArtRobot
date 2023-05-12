@@ -11,14 +11,14 @@ pub enum Unit {
     Centimeter,
 }
 
-struct Base {
+struct RendererBase {
     width: f64,
     height: f64,
     ppi: f64,
     scale: f64,
 }
 
-impl Base {
+impl RendererBase {
     fn new(
         width_with_unit: f64,
         height_with_unit: f64,
@@ -62,7 +62,7 @@ impl Base {
 }
 
 pub struct RendererSvg {
-    base: Base,
+    base: RendererBase,
     surface: SvgSurface,
 }
 
@@ -74,7 +74,7 @@ impl RendererSvg {
         ppi: f64,
         stream: W,
     ) -> Self {
-        let base = Base::new(width_with_unit, height_with_unit, unit, ppi);
+        let base = RendererBase::new(width_with_unit, height_with_unit, unit, ppi);
         let surface = SvgSurface::for_stream(base.width * base.ppi, base.height * base.ppi, stream).unwrap();
         Self { base, surface }
     }
@@ -86,7 +86,7 @@ impl RendererSvg {
 
 
 pub struct RendererPdf {
-    base: Base,
+    base: RendererBase,
     surface: PdfSurface,
 }
 
@@ -98,7 +98,7 @@ impl RendererPdf {
         ppi: f64,
         stream: W,
     ) -> Self {
-        let base = Base::new(width_with_unit, height_with_unit, unit, ppi);
+        let base = RendererBase::new(width_with_unit, height_with_unit, unit, ppi);
         let surface = PdfSurface::for_stream(base.width * base.ppi, base.height * base.ppi, stream).unwrap();
         surface.set_fallback_resolution(base.ppi, base.ppi); //设置分辨率
         Self { base, surface }
@@ -119,7 +119,7 @@ pub enum ImageType {
 }
 
 pub struct RendererImage {
-    base: Base,
+    base: RendererBase,
     surface: ImageSurface,
 }
 
@@ -131,7 +131,7 @@ impl RendererImage {
         unit: Unit,
         ppi: f64,
     ) -> Self {
-        let base = Base::new(width_with_unit, height_with_unit, unit, ppi);
+        let base = RendererBase::new(width_with_unit, height_with_unit, unit, ppi);
         let surface = ImageSurface::create(cairo::Format::ARgb32, (base.width * base.ppi).round() as i32, (base.height * base.ppi).round() as i32).unwrap();
         Self { base, surface }
     }
