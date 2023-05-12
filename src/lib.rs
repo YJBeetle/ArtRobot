@@ -5,12 +5,12 @@ pub mod types;
 #[cfg(test)]
 mod tests {
     use crate::types::{Transform, Color, Anchor};
-    use crate::component::{Circle, Component, Text, TextArea};
+    use crate::component::{Circle, Component, Group, Text, TextArea};
     use crate::renderer::{RendererImage, Unit};
 
     #[test]
     fn it_works() {
-        let _c = Circle::new(
+        let c = Circle::new(
             String::from("test"),
             Transform {
                 x: 50.,
@@ -21,7 +21,7 @@ mod tests {
             100., 100.,
             Color::RED,
         );
-        let _str = Text::new(
+        let str = Text::new(
             String::from("test"),
             Transform {
                 x: 256.,
@@ -29,7 +29,7 @@ mod tests {
                 ..Default::default()
             },
             String::from("喵喵喵"),
-            None,
+            Some(Color::BLUE),
             None,
             None,
             Some(40.),
@@ -59,8 +59,19 @@ mod tests {
             None,
             None,
         );
+        let g: Group = Group::new(
+            String::from("group"),
+            Transform {
+                x: 0.,
+                y: 0.,
+                ..Default::default()
+            },
+        );
+        g.add_child(c);
+        g.add_child(str);
+        g.add_child(str2);
         let r = RendererImage::new(512., 512., Unit::Pixel, 72.);
-        r.render(str2.surface());
+        r.render(g.surface());
         let mut f = std::fs::File::create("foo.png").unwrap(); // todo
         r.png_to_stream(&mut f);
     }
