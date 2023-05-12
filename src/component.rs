@@ -122,7 +122,7 @@ pub struct Text {
 impl Text {
     pub fn new(name: String, transform: Transform,
                content: String,                  // 内容
-               color: Color,                     // 颜色
+               color: Option<Color>,             // 颜色
                font_family: Option<String>,      // 字体
                font_weight: Option<i32>,         // 粗细
                font_size: Option<f64>,           // 字号
@@ -132,6 +132,7 @@ impl Text {
                line_spacing: Option<f64>,        // 行间距
                _word_spacing: Option<f64>,       // 字间距
     ) -> Self {
+        let color = color.unwrap_or(Color::BLACK);
         let font_family = font_family.unwrap_or(String::new());
         let font_weight = font_weight.unwrap_or(500);
         let font_size = font_size.unwrap_or(10.);

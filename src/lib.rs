@@ -29,7 +29,7 @@ mod tests {
                 ..Default::default()
             },
             String::from("喵喵喵"),
-            Color::RED,
+            None,
             None,
             None,
             Some(40.),
