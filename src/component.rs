@@ -178,15 +178,15 @@ impl Text {
             901..=1000 => Weight::Ultraheavy,
             _ => Weight::Normal,
         });
-        desc.set_size((font_size * pango::SCALE as f64 * 72. / 96.) as i32);
+        desc.set_size((font_size * pango::SCALE as f64 * 72. / 96.).round() as i32);
         layout.set_font_description(Some(&desc));
 
         if !max_width.is_nan() {
-            layout.set_width((max_width * pango::SCALE as f64) as i32); // 设置界定框
+            layout.set_width((max_width * pango::SCALE as f64).round() as i32); // 设置界定框
             layout.set_ellipsize(EllipsizeMode::End); // 超出用省略号
         }
 
-        layout.set_spacing((line_spacing * pango::SCALE as f64) as i32); // 行距
+        layout.set_spacing((line_spacing * pango::SCALE as f64).round() as i32); // 行距
 
         // 水平对齐
         match h_align {
@@ -281,15 +281,15 @@ impl TextArea {
             901..=1000 => Weight::Ultraheavy,
             _ => Weight::Normal,
         });
-        desc.set_size((font_size * pango::SCALE as f64 * 72. / 96.) as i32);
+        desc.set_size((font_size * pango::SCALE as f64 * 72. / 96.).round() as i32);
         layout.set_font_description(Some(&desc));
 
-        layout.set_width((width * pango::SCALE as f64) as i32);  // 设置界定框
-        layout.set_height((height * pango::SCALE as f64) as i32); // 设置界定框
+        layout.set_width((width * pango::SCALE as f64).round() as i32);  // 设置界定框
+        layout.set_height((height * pango::SCALE as f64).round() as i32); // 设置界定框
 
         layout.set_wrap(WrapMode::WordChar);         // 换行方式
         layout.set_ellipsize(EllipsizeMode::End); // 超出用省略号
-        layout.set_spacing((line_spacing * pango::SCALE as f64) as i32); // 行距
+        layout.set_spacing((line_spacing * pango::SCALE as f64).round() as i32); // 行距
 
         // 水平对齐
         match h_align {
