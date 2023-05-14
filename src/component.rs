@@ -13,7 +13,7 @@ struct ComponentBase {
 
 impl ComponentBase {
     fn new(property: Option<Property>, transform: Option<Transform>) -> Self {
-        let surface = RecordingSurface::create(cairo::Content::Alpha, None).unwrap();
+        let surface = RecordingSurface::create(cairo::Content::ColorAlpha, None).unwrap();
         let cr = Context::new(&surface).unwrap();
         let property = property.unwrap_or_default();
         let transform = transform.unwrap_or_default();
