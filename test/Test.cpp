@@ -1,5 +1,7 @@
 #include <ArtRobot/ArtRobot.hpp>
 
+#include <cstring>
+
 int main(int argc, char *argv[]) {
     // Rectangle
     {
@@ -101,6 +103,23 @@ int main(int argc, char *argv[]) {
         ArtRobot::Renderer renderer(ArtRobot::OutputType::Jpeg, 320, 200);
         renderer.render(background.getSurface());
         renderer.saveToFile("Test-Result-Renderer-Jpeg.jpg");
+    }
+#endif
+#ifdef RSVG_FOUND
+    // Svg
+    {
+        unsigned char data[] = R"(<svg xmlns="http://www.w3.org/2000/svg" width="120" height="80"><rect width="120" height="80" fill="#00ffff"/></svg>)";
+        auto svg = ArtRobot::Component::Svg("Svg", {.x=256, .y=256}, 240, 160, data, std::strlen(reinterpret_cast<char *>(data)));
+        ArtRobot::Renderer renderer(ArtRobot::OutputType::Png, 512, 512);
+        renderer.render(svg.getSurface());
+        renderer.saveToFile("Test-Result-Component-Svg.png");
+
+        unsigned char invalid[] = "not svg";
+        try {
+            auto invalidSvg = ArtRobot::Component::Svg("Invalid", {}, 100, 100, invalid, sizeof(invalid) - 1);
+            return 1;
+        } catch (const std::exception &) {
+        }
     }
 #endif
 
