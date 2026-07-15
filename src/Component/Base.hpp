@@ -43,12 +43,6 @@ namespace ArtRobot {
 
             inline double height() const { return property.height; }
 
-            inline void setX(double x) { transform.x = x; }
-
-            inline void setY(double y) { transform.y = y; }
-
-            inline void setRotate(double rotate) { transform.rotate = rotate; }
-
             inline double x() const { return transform.x; }
 
             inline double y() const { return transform.y; }
