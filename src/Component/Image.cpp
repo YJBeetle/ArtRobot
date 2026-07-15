@@ -24,6 +24,12 @@
 
 #endif
 
+#ifdef WEBP_FOUND
+
+#include <webp/decode.h>
+
+#endif
+
 namespace ArtRobot {
     namespace Component {
 
@@ -147,6 +153,44 @@ namespace ArtRobot {
             return nullptr;
         }
 
+#ifdef WEBP_FOUND
+
+        cairo_surface_t *Image::surfaceFromWebp(const std::vector<uint8_t> &data) {
+            int width = 0;
+            int height = 0;
+            if (!WebPGetInfo(data.data(), data.size(), &width, &height))
+                return nullptr;
+
+            auto *surface = cairo_image_surface_create(CAIRO_FORMAT_ARGB32, width, height);
+            if (cairo_surface_status(surface) != CAIRO_STATUS_SUCCESS)
+                return surface;
+
+            auto *surfaceData = cairo_image_surface_get_data(surface);
+            const auto stride = cairo_image_surface_get_stride(surface);
+            if (!WebPDecodeBGRAInto(data.data(), data.size(), surfaceData, stride * height, stride)) {
+                cairo_surface_destroy(surface);
+                return nullptr;
+            }
+            cairo_surface_mark_dirty(surface);
+            return surface;
+        }
+
+        cairo_surface_t *Image::surfaceFromWebp(const std::string &filename) {
+            std::ifstream input(filename, std::ios::binary | std::ios::ate);
+            if (!input)
+                return nullptr;
+            const auto size = input.tellg();
+            if (size <= 0)
+                return nullptr;
+            std::vector<uint8_t> data(static_cast<size_t>(size));
+            input.seekg(0);
+            if (!input.read(reinterpret_cast<char *>(data.data()), size))
+                return nullptr;
+            return surfaceFromWebp(data);
+        }
+
+#endif
+
 #ifdef JPEG_FOUND
 
         class JpegReader {
@@ -251,8 +295,16 @@ namespace ArtRobot {
         cairo_surface_t *Image::surfaceFromFile(const std::vector<uint8_t> &data) {
             static const uint8_t pngSignature[] = {0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A};
             static const uint8_t jpegSignature[] = {0xFF, 0xD8, 0xFF};
+            static const uint8_t riffSignature[] = {'R', 'I', 'F', 'F'};
+            static const uint8_t webpSignature[] = {'W', 'E', 'B', 'P'};
             if (data.size() >= sizeof(pngSignature) && memcmp(data.data(), pngSignature, sizeof(pngSignature)) == 0)
                 return surfaceFromPng(data);
+#ifdef WEBP_FOUND
+            else if (data.size() >= 12 &&
+                     memcmp(data.data(), riffSignature, sizeof(riffSignature)) == 0 &&
+                     memcmp(data.data() + 8, webpSignature, sizeof(webpSignature)) == 0)
+                return surfaceFromWebp(data);
+#endif
 #ifdef JPEG_FOUND
             else if (data.size() >= sizeof(jpegSignature) && memcmp(data.data(), jpegSignature, sizeof(jpegSignature)) == 0)
                 return surfaceFromJpg(data);
@@ -264,6 +316,10 @@ namespace ArtRobot {
             const auto extension = std::filesystem::path(filename).extension().string();
             if (!strcasecmp(extension.c_str(), ".png"))
                 return surfaceFromPng(filename);
+#ifdef WEBP_FOUND
+            else if (!strcasecmp(extension.c_str(), ".webp"))
+                return surfaceFromWebp(filename);
+#endif
 #ifdef JPEG_FOUND
             else if (!strcasecmp(extension.c_str(), ".jpg") || !strcasecmp(extension.c_str(), ".jpeg"))
                 return surfaceFromJpg(filename);

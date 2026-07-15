@@ -97,5 +97,26 @@ int main(int argc, char *argv[]) {
 #endif
 #endif
 
+#ifdef WEBP_FOUND
+    // WebP output and input round trip
+    {
+        auto source = ArtRobot::Component::Rectangle("source", {.anchor=ArtRobot::Transform::LT}, 160, 120, ArtRobot::Color::Lime);
+        ArtRobot::Renderer webpRenderer(ArtRobot::OutputType::Webp, 160, 120);
+        webpRenderer.render(source.getSurface());
+        const auto webpData = webpRenderer.getData();
+        webpRenderer.saveToFile("TestImage-Source.webp");
+
+        auto memoryImage = ArtRobot::Component::Image("webp-memory", {.anchor=ArtRobot::Transform::LT}, webpData);
+        ArtRobot::Renderer memoryRenderer(ArtRobot::OutputType::Png, 160, 120);
+        memoryRenderer.render(memoryImage.getSurface());
+        memoryRenderer.saveToFile("TestImage-Result-fromWebpBinary.png");
+
+        auto fileImage = ArtRobot::Component::Image("webp-file", {.anchor=ArtRobot::Transform::LT}, "TestImage-Source.webp");
+        ArtRobot::Renderer fileRenderer(ArtRobot::OutputType::Png, 160, 120);
+        fileRenderer.render(fileImage.getSurface());
+        fileRenderer.saveToFile("TestImage-Result-fromWebp.png");
+    }
+#endif
+
     return 0;
 }
