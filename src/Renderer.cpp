@@ -175,52 +175,47 @@ namespace ArtRobot {
             case OutputType::Jpeg:
                 data.clear();
                 {
-                    //get
-                    JSAMPLE *image_buffer = cairo_image_surface_get_data(surface);
-                    uint32_t image_width = cairo_image_surface_get_width(surface);
-                    uint32_t image_height = cairo_image_surface_get_height(surface);
-                    uint32_t row_stride = cairo_image_surface_get_stride(surface);
-                    int quality = 100;
-
-                    /* More stuff */
-                    FILE *outfile;           /* target file */
-                    JSAMPROW row_pointer[1]; /* pointer to JSAMPLE row[s] */
+                    cairo_surface_flush(surface);
+                    const auto *imageBuffer = cairo_image_surface_get_data(surface);
+                    const uint32_t imageWidth = cairo_image_surface_get_width(surface);
+                    const uint32_t imageHeight = cairo_image_surface_get_height(surface);
+                    const uint32_t rowStride = cairo_image_surface_get_stride(surface);
 
                     struct jpeg_compress_struct cinfo;
-
-                    //出错处理
                     struct jpeg_error_mgr error_mgr;
                     cinfo.err = jpeg_std_error(&error_mgr);
-                    error_mgr.error_exit = [](j_common_ptr cinfo) {
-                        (*cinfo->err->output_message)(cinfo);
-                    };
 
                     jpeg_create_compress(&cinfo);
                     unsigned char *buf{};
                     unsigned long buf_sz{};
                     jpeg_mem_dest(&cinfo, &buf, &buf_sz);
 
-                    cinfo.image_width = image_width; /* image width and height, in pixels */
-                    cinfo.image_height = image_height;
-                    cinfo.input_components = 3;     /* # of color components per pixel */
-                    cinfo.in_color_space = JCS_RGB; /* colorspace of input image */
+                    cinfo.image_width = imageWidth;
+                    cinfo.image_height = imageHeight;
+                    cinfo.input_components = 3;
+                    cinfo.in_color_space = JCS_RGB;
 
                     jpeg_set_defaults(&cinfo);
-
-                    jpeg_set_quality(&cinfo, quality, TRUE /* limit to baseline-JPEG values */);
-
+                    jpeg_set_quality(&cinfo, 100, TRUE);
                     jpeg_start_compress(&cinfo, TRUE);
 
+                    std::vector<JSAMPLE> rgbRow(imageWidth * 3);
                     while (cinfo.next_scanline < cinfo.image_height) {
-                        row_pointer[0] = &image_buffer[cinfo.next_scanline * row_stride];
-                        (void) jpeg_write_scanlines(&cinfo, row_pointer, 1);
+                        const auto *sourceRow = imageBuffer + cinfo.next_scanline * rowStride;
+                        for (uint32_t x = 0; x < imageWidth; ++x) {
+                            uint32_t argb;
+                            memcpy(&argb, sourceRow + x * 4, sizeof(argb));
+                            rgbRow[x * 3] = (argb >> 16) & 0xff;
+                            rgbRow[x * 3 + 1] = (argb >> 8) & 0xff;
+                            rgbRow[x * 3 + 2] = argb & 0xff;
+                        }
+                        JSAMPROW rowPointer = rgbRow.data();
+                        (void) jpeg_write_scanlines(&cinfo, &rowPointer, 1);
                     }
 
-                    data.insert(data.begin(), buf, buf + buf_sz);
-                    free(buf);
-
                     jpeg_finish_compress(&cinfo);
-                    fclose(outfile);
+                    data.assign(buf, buf + buf_sz);
+                    free(buf);
                     jpeg_destroy_compress(&cinfo);
                 }
                 break;

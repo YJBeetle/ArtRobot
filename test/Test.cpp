@@ -94,6 +94,15 @@ int main(int argc, char *argv[]) {
         renderer.render(repeat.getSurface());
         renderer.saveToFile("Test-Result-Component-Repeat.png");
     }
+#ifdef JPEG_FOUND
+    // Jpeg output
+    {
+        auto background = ArtRobot::Component::Rectangle("Background", {.anchor=ArtRobot::Transform::LT}, 320, 200, ArtRobot::Color::Red);
+        ArtRobot::Renderer renderer(ArtRobot::OutputType::Jpeg, 320, 200);
+        renderer.render(background.getSurface());
+        renderer.saveToFile("Test-Result-Renderer-Jpeg.jpg");
+    }
+#endif
 
     return 0;
 }
