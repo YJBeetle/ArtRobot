@@ -2,6 +2,7 @@
 
 #include <ArtRobot/ArtRobot.hpp>
 
+#include <algorithm>
 #include <cstdint>
 #include <cstring>
 #include <fstream>
@@ -10,6 +11,17 @@
 #include <vector>
 
 namespace TestSupport {
+    struct Bounds {
+        int left = 0;
+        int top = 0;
+        int right = -1;
+        int bottom = -1;
+
+        bool empty() const {
+            return right < left || bottom < top;
+        }
+    };
+
     class Context {
     public:
         void expect(bool condition, const std::string &message) {
@@ -68,6 +80,22 @@ namespace TestSupport {
             }
         }
         return count;
+    }
+
+    inline Bounds opaqueBounds(const std::vector<unsigned char> &data,
+                               int width, int height) {
+        Bounds bounds{width, height, -1, -1};
+        for (int y = 0; y < height; ++y) {
+            for (int x = 0; x < width; ++x) {
+                if (alpha(pixelAt(data, width, x, y)) == 0)
+                    continue;
+                bounds.left = std::min(bounds.left, x);
+                bounds.top = std::min(bounds.top, y);
+                bounds.right = std::max(bounds.right, x);
+                bounds.bottom = std::max(bounds.bottom, y);
+            }
+        }
+        return bounds;
     }
 
     inline bool readBinaryFile(const std::string &path, std::vector<uint8_t> &data) {
