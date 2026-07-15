@@ -78,6 +78,11 @@ if (BuildTest)
     add_executable(TestImage test/TestImage.cpp)
     target_link_libraries(TestImage PUBLIC ${PROJECT_NAME})
     add_test(NAME Image COMMAND TestImage)
+
+    # TestRenderer
+    add_executable(TestRenderer test/TestRenderer.cpp)
+    target_link_libraries(TestRenderer PUBLIC ${PROJECT_NAME})
+    add_test(NAME Renderer COMMAND TestRenderer)
     configure_file(test/img.jpg img.jpg COPYONLY)
     configure_file(test/img-CMYK.jpg img-CMYK.jpg COPYONLY)
     configure_file(test/img-Gray.jpg img-Gray.jpg COPYONLY)
