@@ -8,16 +8,6 @@
 #include <string>
 
 namespace {
-    void expectColor(TestSupport::Context &test, uint32_t argb,
-                     uint8_t red, uint8_t green, uint8_t blue,
-                     const std::string &message) {
-        test.expect(TestSupport::alpha(argb) == 0xff &&
-                    TestSupport::red(argb) == red &&
-                    TestSupport::green(argb) == green &&
-                    TestSupport::blue(argb) == blue,
-                    message);
-    }
-
     void expectTransparent(TestSupport::Context &test, uint32_t argb,
                            const std::string &message) {
         test.expect(TestSupport::alpha(argb) == 0, message);
@@ -54,7 +44,7 @@ int main() {
         auto component = ArtRobot::Component::Rectangle(
                 "Rectangle", {.x=256, .y=256}, 100, 200, ArtRobot::Color::Red);
         const auto pixels = TestSupport::renderPixmap(component, 512, 512);
-        expectColor(test, TestSupport::pixelAt(pixels, 512, 256, 256), 255, 0, 0,
+        TestSupport::expectColor(test, TestSupport::pixelAt(pixels, 512, 256, 256), 255, 0, 0, 0,
                     "Rectangle center color");
         expectTransparent(test, TestSupport::pixelAt(pixels, 512, 100, 100),
                           "Rectangle outside must be transparent");
@@ -69,7 +59,7 @@ int main() {
                 "RectangleRound", {.x=256, .y=256}, 100, 200,
                 10, 20, 30, 40, ArtRobot::Color::Red);
         const auto pixels = TestSupport::renderPixmap(component, 512, 512);
-        expectColor(test, TestSupport::pixelAt(pixels, 512, 256, 256), 255, 0, 0,
+        TestSupport::expectColor(test, TestSupport::pixelAt(pixels, 512, 256, 256), 255, 0, 0, 0,
                     "Rounded rectangle center color");
         expectTransparent(test, TestSupport::pixelAt(pixels, 512, 206, 156),
                           "Rounded rectangle corner must be transparent");
@@ -81,7 +71,7 @@ int main() {
         auto component = ArtRobot::Component::Circle(
                 "Circle", {.x=256, .y=256}, 100, 200, ArtRobot::Color::Red);
         const auto pixels = TestSupport::renderPixmap(component, 512, 512);
-        expectColor(test, TestSupport::pixelAt(pixels, 512, 256, 256), 255, 0, 0,
+        TestSupport::expectColor(test, TestSupport::pixelAt(pixels, 512, 256, 256), 255, 0, 0, 0,
                     "Circle center color");
         expectTransparent(test, TestSupport::pixelAt(pixels, 512, 206, 156),
                           "Circle corner must be transparent");
@@ -114,7 +104,7 @@ int main() {
         maskShape.reset();
         child.reset();
         const auto pixels = TestSupport::renderPixmap(mask, 256, 256);
-        expectColor(test, TestSupport::pixelAt(pixels, 256, 128, 128), 255, 0, 255,
+        TestSupport::expectColor(test, TestSupport::pixelAt(pixels, 256, 128, 128), 255, 0, 255, 0,
                     "Owned mask center color");
         expectTransparent(test, TestSupport::pixelAt(pixels, 256, 0, 0),
                           "Owned mask outside must be transparent");
@@ -208,9 +198,9 @@ int main() {
         auto repeat = ArtRobot::Component::Repeat("Repeat", {.x=256, .y=256}, 200, 120);
         repeat.addChild(tile);
         const auto pixels = TestSupport::renderPixmap(repeat, 512, 512);
-        expectColor(test, TestSupport::pixelAt(pixels, 512, 176, 211), 0, 255, 255,
+        TestSupport::expectColor(test, TestSupport::pixelAt(pixels, 512, 176, 211), 0, 255, 255, 0,
                     "Repeat first tile center");
-        expectColor(test, TestSupport::pixelAt(pixels, 512, 336, 301), 0, 255, 255,
+        TestSupport::expectColor(test, TestSupport::pixelAt(pixels, 512, 336, 301), 0, 255, 255, 0,
                     "Repeat last tile center");
         expectTransparent(test, TestSupport::pixelAt(pixels, 512, 155, 211),
                           "Repeat must clip outside its left edge");
@@ -225,7 +215,7 @@ int main() {
                 "Svg", {.x=256, .y=256}, 240, 160,
                 data, std::strlen(reinterpret_cast<char *>(data)));
         const auto pixels = TestSupport::renderPixmap(component, 512, 512);
-        expectColor(test, TestSupport::pixelAt(pixels, 512, 256, 256), 0, 255, 255,
+        TestSupport::expectColor(test, TestSupport::pixelAt(pixels, 512, 256, 256), 0, 255, 255, 0,
                     "SVG center color");
         expectTransparent(test, TestSupport::pixelAt(pixels, 512, 100, 100),
                           "SVG outside must be transparent");

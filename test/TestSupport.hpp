@@ -3,6 +3,7 @@
 #include <ArtRobot/ArtRobot.hpp>
 
 #include <algorithm>
+#include <cmath>
 #include <cstdint>
 #include <cstring>
 #include <fstream>
@@ -68,6 +69,22 @@ namespace TestSupport {
 
     inline uint8_t blue(uint32_t argb) {
         return argb & 0xff;
+    }
+
+    inline void expectColor(Context &test, uint32_t argb,
+                            uint8_t expectedRed, uint8_t expectedGreen, uint8_t expectedBlue,
+                            uint8_t tolerance, const std::string &message) {
+        test.expect(alpha(argb) == 0xff &&
+                    std::abs(static_cast<int>(red(argb)) - expectedRed) <= tolerance &&
+                    std::abs(static_cast<int>(green(argb)) - expectedGreen) <= tolerance &&
+                    std::abs(static_cast<int>(blue(argb)) - expectedBlue) <= tolerance,
+                    message);
+    }
+
+    inline bool startsWith(const std::vector<unsigned char> &data,
+                           const std::vector<unsigned char> &signature) {
+        return data.size() >= signature.size() &&
+               std::equal(signature.begin(), signature.end(), data.begin());
     }
 
     inline size_t opaquePixelCount(const std::vector<unsigned char> &data,

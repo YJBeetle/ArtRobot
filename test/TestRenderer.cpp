@@ -1,48 +1,10 @@
-#include <ArtRobot/ArtRobot.hpp>
+#include "TestSupport.hpp"
 
-#include <algorithm>
-#include <cmath>
-#include <cstdint>
 #include <cstring>
-#include <iostream>
 #include <string>
 #include <vector>
 
 namespace {
-    int failures = 0;
-
-    void expect(bool condition, const std::string &message) {
-        if (!condition) {
-            std::cerr << "FAILED: " << message << '\n';
-            ++failures;
-        }
-    }
-
-    bool startsWith(const std::vector<unsigned char> &data,
-                    const std::vector<unsigned char> &signature) {
-        return data.size() >= signature.size() &&
-               std::equal(signature.begin(), signature.end(), data.begin());
-    }
-
-    uint32_t pixelAt(const std::vector<unsigned char> &data,
-                     int width, int x, int y) {
-        const auto stride = cairo_format_stride_for_width(CAIRO_FORMAT_ARGB32, width);
-        uint32_t pixel = 0;
-        std::memcpy(&pixel, data.data() + y * stride + x * 4, sizeof(pixel));
-        return pixel;
-    }
-
-    void expectColor(uint32_t argb, uint8_t red, uint8_t green, uint8_t blue,
-                     uint8_t tolerance, const std::string &message) {
-        const auto actualRed = static_cast<int>((argb >> 16) & 0xff);
-        const auto actualGreen = static_cast<int>((argb >> 8) & 0xff);
-        const auto actualBlue = static_cast<int>(argb & 0xff);
-        expect(std::abs(actualRed - red) <= tolerance &&
-               std::abs(actualGreen - green) <= tolerance &&
-               std::abs(actualBlue - blue) <= tolerance,
-               message);
-    }
-
     std::vector<unsigned char> renderRectangle(ArtRobot::OutputType type,
                                                 ArtRobot::Color color,
                                                 int width = 32,
@@ -54,7 +16,8 @@ namespace {
         return renderer.getData();
     }
 
-    void expectRasterSize(double width, double height,
+    void expectRasterSize(TestSupport::Context &test,
+                          double width, double height,
                           ArtRobot::Unit unit, double ppi,
                           int expectedWidth, int expectedHeight,
                           const std::string &message) {
@@ -64,52 +27,55 @@ namespace {
         renderer.render(rectangle.getSurface());
         const auto expectedSize = static_cast<size_t>(
                 cairo_format_stride_for_width(CAIRO_FORMAT_ARGB32, expectedWidth) * expectedHeight);
-        expect(renderer.getDataCSize() == expectedSize, message);
+        test.expect(renderer.getDataCSize() == expectedSize, message);
     }
 
-    void expectRoundTrip(const std::vector<unsigned char> &encoded,
+    void expectRoundTrip(TestSupport::Context &test,
+                         const std::vector<unsigned char> &encoded,
                          uint8_t red, uint8_t green, uint8_t blue,
                          uint8_t tolerance, const std::string &message) {
         auto image = ArtRobot::Component::Image(
                 "Image", {.anchor=ArtRobot::Transform::LT}, encoded);
-        ArtRobot::Renderer renderer(ArtRobot::OutputType::Pixmap, 32, 24);
-        renderer.render(image.getSurface());
-        expectColor(pixelAt(renderer.getData(), 32, 16, 12),
-                    red, green, blue, tolerance, message);
+        const auto pixels = TestSupport::renderPixmap(image, 32, 24);
+        TestSupport::expectColor(test, TestSupport::pixelAt(pixels, 32, 16, 12),
+                                 red, green, blue, tolerance, message);
     }
 }
 
 int main() {
+    TestSupport::Context test;
+
     const auto pixmap = renderRectangle(ArtRobot::OutputType::Pixmap, ArtRobot::Color::Red);
-    expect(pixmap.size() == static_cast<size_t>(cairo_format_stride_for_width(CAIRO_FORMAT_ARGB32, 32) * 24),
-           "Pixmap byte length");
-    expectColor(pixelAt(pixmap, 32, 16, 12), 255, 0, 0, 0, "Pixmap center pixel");
+    test.expect(pixmap.size() == static_cast<size_t>(cairo_format_stride_for_width(CAIRO_FORMAT_ARGB32, 32) * 24),
+                "Pixmap byte length");
+    TestSupport::expectColor(test, TestSupport::pixelAt(pixmap, 32, 16, 12),
+                             255, 0, 0, 0, "Pixmap center pixel");
 
     const auto png = renderRectangle(ArtRobot::OutputType::Png, ArtRobot::Color::Aqua);
-    expect(startsWith(png, {0x89, 'P', 'N', 'G', 0x0d, 0x0a, 0x1a, 0x0a}),
-           "PNG signature");
-    expectRoundTrip(png, 0, 255, 255, 0, "PNG round trip color");
+    test.expect(TestSupport::startsWith(png, {0x89, 'P', 'N', 'G', 0x0d, 0x0a, 0x1a, 0x0a}),
+                "PNG signature");
+    expectRoundTrip(test, png, 0, 255, 255, 0, "PNG round trip color");
 
     const auto pdf = renderRectangle(ArtRobot::OutputType::Pdf, ArtRobot::Color::Black);
-    expect(startsWith(pdf, {'%', 'P', 'D', 'F', '-'}), "PDF signature");
+    test.expect(TestSupport::startsWith(pdf, {'%', 'P', 'D', 'F', '-'}), "PDF signature");
 
     const auto svg = renderRectangle(ArtRobot::OutputType::Svg, ArtRobot::Color::Lime);
     const std::string svgText(svg.begin(), svg.end());
-    expect(svgText.find("<svg") != std::string::npos, "SVG document element");
+    test.expect(svgText.find("<svg") != std::string::npos, "SVG document element");
 
 #ifdef JPEG_FOUND
     const auto jpeg = renderRectangle(ArtRobot::OutputType::Jpeg, ArtRobot::Color::Red);
-    expect(startsWith(jpeg, {0xff, 0xd8, 0xff}), "JPEG signature");
-    expectRoundTrip(jpeg, 255, 0, 0, 4, "JPEG round trip color");
+    test.expect(TestSupport::startsWith(jpeg, {0xff, 0xd8, 0xff}), "JPEG signature");
+    expectRoundTrip(test, jpeg, 255, 0, 0, 4, "JPEG round trip color");
 #endif
 
 #ifdef WEBP_FOUND
     const auto webp = renderRectangle(ArtRobot::OutputType::Webp, ArtRobot::Color::Lime);
-    expect(webp.size() >= 12 &&
-           std::memcmp(webp.data(), "RIFF", 4) == 0 &&
-           std::memcmp(webp.data() + 8, "WEBP", 4) == 0,
-           "WebP container signature");
-    expectRoundTrip(webp, 0, 255, 0, 4, "WebP round trip color");
+    test.expect(webp.size() >= 12 &&
+                std::memcmp(webp.data(), "RIFF", 4) == 0 &&
+                std::memcmp(webp.data() + 8, "WEBP", 4) == 0,
+                "WebP container signature");
+    expectRoundTrip(test, webp, 0, 255, 0, 4, "WebP round trip color");
 #endif
 
     std::vector<uint32_t> rawPixels(4, 0xff0000ff);
@@ -117,14 +83,14 @@ int main() {
             "Raw", {.anchor=ArtRobot::Transform::LT},
             reinterpret_cast<unsigned char *>(rawPixels.data()),
             2, 2, 2 * 4, true);
-    ArtRobot::Renderer rawRenderer(ArtRobot::OutputType::Pixmap, 2, 2);
-    rawRenderer.render(rawImage.getSurface());
-    expectColor(pixelAt(rawRenderer.getData(), 2, 1, 1), 0, 0, 255, 0, "Raw BGRA input color");
+    const auto rawOutput = TestSupport::renderPixmap(rawImage, 2, 2);
+    TestSupport::expectColor(test, TestSupport::pixelAt(rawOutput, 2, 1, 1),
+                             0, 0, 255, 0, "Raw BGRA input color");
 
-    expectRasterSize(37, 19, ArtRobot::Unit::Pixel, 96, 37, 19, "Pixel dimensions");
-    expectRasterSize(1, 0.5, ArtRobot::Unit::Inch, 72, 72, 36, "Inch conversion");
-    expectRasterSize(25.4, 12.7, ArtRobot::Unit::Millimeter, 72, 72, 36, "Millimeter conversion");
-    expectRasterSize(2.54, 1.27, ArtRobot::Unit::Centimeter, 72, 72, 36, "Centimeter conversion");
+    expectRasterSize(test, 37, 19, ArtRobot::Unit::Pixel, 96, 37, 19, "Pixel dimensions");
+    expectRasterSize(test, 1, 0.5, ArtRobot::Unit::Inch, 72, 72, 36, "Inch conversion");
+    expectRasterSize(test, 25.4, 12.7, ArtRobot::Unit::Millimeter, 72, 72, 36, "Millimeter conversion");
+    expectRasterSize(test, 2.54, 1.27, ArtRobot::Unit::Centimeter, 72, 72, 36, "Centimeter conversion");
 
-    return failures == 0 ? 0 : 1;
+    return test.result();
 }

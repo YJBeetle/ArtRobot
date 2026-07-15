@@ -69,10 +69,10 @@ install(DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/include/" DESTINATION include)
 if (BuildTest)
     enable_testing()
 
-    # Test
-    add_executable(Test test/Test.cpp)
-    target_link_libraries(Test PUBLIC ${PROJECT_NAME})
-    add_test(NAME Component COMMAND Test)
+    # TestComponent
+    add_executable(TestComponent test/TestComponent.cpp)
+    target_link_libraries(TestComponent PUBLIC ${PROJECT_NAME})
+    add_test(NAME Component COMMAND TestComponent)
 
     # TestImage
     add_executable(TestImage test/TestImage.cpp)
