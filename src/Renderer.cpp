@@ -113,7 +113,7 @@ namespace ArtRobot {
         cairo_surface_destroy(surface); //回收介质
     }
 
-    void Renderer::render(cairo_surface_t *__surface) { // todo 传入base 应用变换
+    void Renderer::render(cairo_surface_t *__surface) {
         cairo_set_source_surface(cr, __surface, 0.0, 0.0);
         cairo_paint(cr);
 
