@@ -85,6 +85,15 @@ int main(int argc, char *argv[]) {
         renderer.render(g.getSurface());
         renderer.saveToFile("Test-Result-Transform-Anchor.png");
     }
+    // Repeat
+    {
+        auto tile = ArtRobot::Component::Circle("Tile", {.anchor=ArtRobot::Transform::LT}, 40, 30, ArtRobot::Color::Aqua);
+        auto repeat = ArtRobot::Component::Repeat("Repeat", {.x=256, .y=256}, 200, 120);
+        repeat.addChild(tile);
+        ArtRobot::Renderer renderer(ArtRobot::OutputType::Png, 512, 512);
+        renderer.render(repeat.getSurface());
+        renderer.saveToFile("Test-Result-Component-Repeat.png");
+    }
 
     return 0;
 }

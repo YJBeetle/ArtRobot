@@ -13,20 +13,28 @@
 
 #include <ArtRobot/Features.hpp>
 
+#include <memory>
+#include <vector>
+
 #include "./Base.hpp"
 
 namespace ArtRobot {
     namespace Component {
 
-        class Repeat : public Base // TODO
-        {
-        private:
+        class Repeat : public Base {
         public:
             Repeat(std::string name, double width, double height);
 
             Repeat(std::string name, Transform transform, double width, double height);
 
             ~Repeat();
+
+            void addChild(const Base &child);
+
+            void addChild(std::shared_ptr<Component::Base> child);
+
+        private:
+            std::vector<std::shared_ptr<Component::Base>> children;
         };
 
     } // namespace Component
