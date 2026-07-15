@@ -14,6 +14,7 @@
 #include <ArtRobot/Features.hpp>
 
 #include <string>
+#include <vector>
 
 #ifdef OpenCV_FOUND
 

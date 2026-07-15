@@ -1,4 +1,5 @@
 #include <fstream>
+#include <iostream>
 #include <ArtRobot/ArtRobot.hpp>
 
 int main(int argc, char *argv[]) {
