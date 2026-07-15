@@ -11,8 +11,19 @@
 
 #include "./Mask.hpp"
 
+#include <stdexcept>
+#include <utility>
+
 namespace ArtRobot {
     namespace Component {
+
+        namespace {
+            const Base &requireComponent(const std::shared_ptr<Component::Base> &component, const char *role) {
+                if (!component)
+                    throw std::invalid_argument(std::string("Mask ") + role + " component is null");
+                return *component;
+            }
+        }
 
         Mask::Mask(std::string name, double width, double height, Transform transform,
                    const Base &mask,
@@ -25,21 +36,22 @@ namespace ArtRobot {
 
         Mask::Mask(std::string name, double width, double height, Transform transform,
                    std::shared_ptr<Component::Base> mask, const Base &child)
-                : Mask(name, width, height, transform, *mask, child) {
-            mask = mask;
+                : Mask(name, width, height, transform, requireComponent(mask, "mask"), child) {
+            this->mask = std::move(mask);
         }
 
         Mask::Mask(std::string name, double width, double height, Transform transform,
                    const Base &mask, std::shared_ptr<Component::Base> child)
-                : Mask(name, width, height, transform, mask, *child) {
-            child = child;
+                : Mask(name, width, height, transform, mask, requireComponent(child, "child")) {
+            this->child = std::move(child);
         }
 
         Mask::Mask(std::string name, double width, double height, Transform transform,
                    std::shared_ptr<Component::Base> mask, std::shared_ptr<Component::Base> child)
-                : Mask(name, width, height, transform, *mask, *child) {
-            mask = mask;
-            child = child;
+                : Mask(name, width, height, transform,
+                       requireComponent(mask, "mask"), requireComponent(child, "child")) {
+            this->mask = std::move(mask);
+            this->child = std::move(child);
         }
 
 #ifdef OpenCV_FOUND

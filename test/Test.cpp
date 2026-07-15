@@ -1,6 +1,7 @@
 #include <ArtRobot/ArtRobot.hpp>
 
 #include <cstring>
+#include <memory>
 
 int main(int argc, char *argv[]) {
     // Rectangle
@@ -32,6 +33,24 @@ int main(int argc, char *argv[]) {
         ArtRobot::Renderer renderer(ArtRobot::OutputType::Png, 512, 512);
         renderer.render(c.getSurface());
         renderer.saveToFile("Test-Result-Component-Mask.png");
+    }
+    // Mask ownership
+    {
+        auto maskShape = std::make_shared<ArtRobot::Component::Circle>("Circle", ArtRobot::Transform{.x=128, .y=128}, 160, 160, ArtRobot::Color::White);
+        auto child = std::make_shared<ArtRobot::Component::Rectangle>("Rectangle", ArtRobot::Transform{.anchor=ArtRobot::Transform::LT}, 256, 256, ArtRobot::Color::Fuchsia);
+        auto mask = ArtRobot::Component::Mask("OwnedMask", 256, 256, {.x=128, .y=128}, maskShape, child);
+        maskShape.reset();
+        child.reset();
+        ArtRobot::Renderer renderer(ArtRobot::OutputType::Png, 256, 256);
+        renderer.render(mask.getSurface());
+        renderer.saveToFile("Test-Result-Component-MaskOwnership.png");
+
+        try {
+            maskShape.reset();
+            auto invalidMask = ArtRobot::Component::Mask("Invalid", 10, 10, {}, maskShape, mask);
+            return 1;
+        } catch (const std::invalid_argument &) {
+        }
     }
     // Text
     {
