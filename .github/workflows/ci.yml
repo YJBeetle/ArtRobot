@@ -1,0 +1,54 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes --no-install-recommends \
+            build-essential \
+            cmake \
+            ninja-build \
+            pkg-config \
+            libpixman-1-dev \
+            libcairo2-dev \
+            libpango1.0-dev \
+            librsvg2-dev \
+            libjpeg-dev \
+            libwebp-dev \
+            fonts-noto-cjk
+
+      - name: Configure
+        run: >-
+          cmake -S . -B build-ci -G Ninja
+          -DCMAKE_BUILD_TYPE=Release
+          -DBuildTest=ON
+          -DUseOpenCV=OFF
+
+      - name: Build
+        run: cmake --build build-ci --parallel 4
+
+      - name: Test
+        run: ctest --test-dir build-ci --output-on-failure --no-tests=error
+
+      - name: Upload test log
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: ctest-log
+          path: build-ci/Testing/Temporary/LastTest.log
+          if-no-files-found: ignore
+          retention-days: 7
