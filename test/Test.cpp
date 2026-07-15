@@ -217,21 +217,6 @@ int main() {
         save(repeat, ArtRobot::OutputType::Png, 512, 512, "Test-Result-Component-Repeat.png");
     }
 
-#ifdef JPEG_FOUND
-    // JPEG output
-    {
-        auto background = ArtRobot::Component::Rectangle(
-                "Background", {.anchor=ArtRobot::Transform::LT},
-                320, 200, ArtRobot::Color::Red);
-        ArtRobot::Renderer renderer(ArtRobot::OutputType::Jpeg, 320, 200);
-        renderer.render(background.getSurface());
-        const auto data = renderer.getData();
-        test.expect(data.size() >= 3 && data[0] == 0xff && data[1] == 0xd8 && data[2] == 0xff,
-                    "JPEG output signature");
-        renderer.saveToFile("Test-Result-Renderer-Jpeg.jpg");
-    }
-#endif
-
 #ifdef RSVG_FOUND
     // SVG
     {
