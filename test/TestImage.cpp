@@ -3,6 +3,23 @@
 #include <ArtRobot/ArtRobot.hpp>
 
 int main(int argc, char *argv[]) {
+    auto expectImageError = [](auto source) {
+        try {
+            auto image = ArtRobot::Component::Image("invalid", {}, source);
+        } catch (const std::exception &) {
+            return true;
+        }
+        return false;
+    };
+
+    if (!expectImageError(std::vector<uint8_t>{}) ||
+        !expectImageError(std::vector<uint8_t>{0x89, 0x50}) ||
+        !expectImageError(std::vector<uint8_t>{0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A}) ||
+        !expectImageError(std::vector<uint8_t>{0xFF, 0xD8, 0xFF}) ||
+        !expectImageError(std::string("missing.png")) ||
+        !expectImageError(std::string("unsupported.webp")))
+        return 1;
+
     // fromPng
     {
         auto img = ArtRobot::Component::Image("img", {.x=256, .y=256}, "img.png", 200);

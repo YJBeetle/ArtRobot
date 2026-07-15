@@ -11,8 +11,12 @@
 
 #include "./Image.hpp"
 
+#include <csetjmp>
+#include <cstring>
+#include <filesystem>
 #include <fstream>
 #include <iostream>
+#include <stdexcept>
 
 #ifdef JPEG_FOUND
 
@@ -38,13 +42,13 @@ namespace ArtRobot {
         Image::Image(std::string name, Transform transform,
                      const std::vector<uint8_t> &data,
                      double width, double height)
-                : Image(name, transform, surfaceFromFile(data), width, height) {
+                : Image(name, transform, validateSurface(surfaceFromFile(data)), width, height) {
         }
 
         Image::Image(std::string name, Transform transform,
                      const std::string &filename,
                      double width, double height)
-                : Image(name, transform, surfaceFromFile(filename), width, height) {
+                : Image(name, transform, validateSurface(surfaceFromFile(filename)), width, height) {
         }
 
 #ifdef OpenCV_FOUND
@@ -80,9 +84,25 @@ namespace ArtRobot {
             cairo_paint(cr);
         }
 
+        cairo_surface_t *Image::validateSurface(cairo_surface_t *surface) {
+            if (!surface)
+                throw std::invalid_argument("Unsupported image source");
+            const auto status = cairo_surface_status(surface);
+            if (status != CAIRO_STATUS_SUCCESS) {
+                const std::string message = cairo_status_to_string(status);
+                cairo_surface_destroy(surface);
+                throw std::runtime_error("Failed to decode image: " + message);
+            }
+            return surface;
+        }
+
         cairo_surface_t *Image::surfaceFromRaw(unsigned char *imageData,
                                                int imageCols, int imageRows,
                                                int imageStride, bool isPremultiplied) {
+            if (!imageData || imageCols <= 0 || imageRows <= 0 ||
+                imageStride < cairo_format_stride_for_width(CAIRO_FORMAT_ARGB32, imageCols))
+                throw std::invalid_argument("Invalid raw image buffer");
+
             // 计算预乘
             if (!isPremultiplied) {
                 // 尝试 cairo_set_operator CAIRO_OPERATOR_OVER CAIRO_OPERATOR_SOURCE ?
@@ -129,21 +149,31 @@ namespace ArtRobot {
 
 #ifdef JPEG_FOUND
 
-        class JepgReader {
+        class JpegReader {
         private:
+            struct ErrorManager {
+                jpeg_error_mgr base;
+                std::jmp_buf jumpBuffer;
+                char message[JMSG_LENGTH_MAX]{};
+            } errorManager;
+
             jpeg_decompress_struct cInfo;
-            jpeg_error_mgr errorMgr; //出错处理
+            cairo_surface_t *imageSurface = nullptr;
+
         public:
-            JepgReader() {
-                cInfo.err = jpeg_std_error(&errorMgr);
-                errorMgr.error_exit = [](j_common_ptr cInfo) {
-                    (*cInfo->err->output_message)(cInfo);
+            JpegReader() {
+                cInfo.err = jpeg_std_error(&errorManager.base);
+                errorManager.base.error_exit = [](j_common_ptr cInfo) {
+                    auto *manager = reinterpret_cast<ErrorManager *>(cInfo->err);
+                    (*cInfo->err->format_message)(cInfo, manager->message);
+                    std::longjmp(manager->jumpBuffer, 1);
                 };
                 jpeg_create_decompress(&cInfo);
             }
 
-            ~JepgReader() {
-                (void) jpeg_finish_decompress(&cInfo);
+            ~JpegReader() {
+                if (imageSurface)
+                    cairo_surface_destroy(imageSurface);
                 jpeg_destroy_decompress(&cInfo);
             }
 
@@ -156,13 +186,16 @@ namespace ArtRobot {
             }
 
             cairo_surface_t *read() {
+                if (setjmp(errorManager.jumpBuffer))
+                    throw std::runtime_error("Failed to decode JPEG: " + std::string(errorManager.message));
+
                 (void) jpeg_read_header(&cInfo, true);
                 (void) jpeg_start_decompress(&cInfo);
 
                 int row_stride = cInfo.output_width * cInfo.output_components;
                 JSAMPARRAY buffer = (*cInfo.mem->alloc_sarray)((j_common_ptr) &cInfo, JPOOL_IMAGE, row_stride, 1);
 
-                cairo_surface_t *imageSurface = cairo_image_surface_create(CAIRO_FORMAT_RGB24, cInfo.output_width, cInfo.output_height);
+                imageSurface = cairo_image_surface_create(CAIRO_FORMAT_RGB24, cInfo.output_width, cInfo.output_height);
                 auto imageSurfaceData = cairo_image_surface_get_data(imageSurface);
                 auto imageSurfaceStride = cairo_image_surface_get_stride(imageSurface);
 
@@ -189,12 +222,15 @@ namespace ArtRobot {
                     }
                 }
 
-                return imageSurface;
+                (void) jpeg_finish_decompress(&cInfo);
+                auto *result = imageSurface;
+                imageSurface = nullptr;
+                return result;
             }
         };
 
         cairo_surface_t *Image::surfaceFromJpg(const std::vector<uint8_t> &data) {
-            JepgReader r;
+            JpegReader r;
             r.loadFromMem(data.data(), data.size());
             return r.read();
         }
@@ -203,7 +239,7 @@ namespace ArtRobot {
             FILE *inFile;
             if ((inFile = fopen(filename.c_str(), "rb")) == nullptr)
                 return nullptr;
-            JepgReader r;
+            JpegReader r;
             r.loadFromStdio(inFile);
             auto rr = r.read();
             fclose(inFile);
@@ -213,21 +249,23 @@ namespace ArtRobot {
 #endif
 
         cairo_surface_t *Image::surfaceFromFile(const std::vector<uint8_t> &data) {
-            if (memcmp(data.data(), (uint8_t[]) {0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A}, 8) == 0)
+            static const uint8_t pngSignature[] = {0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A};
+            static const uint8_t jpegSignature[] = {0xFF, 0xD8, 0xFF};
+            if (data.size() >= sizeof(pngSignature) && memcmp(data.data(), pngSignature, sizeof(pngSignature)) == 0)
                 return surfaceFromPng(data);
 #ifdef JPEG_FOUND
-            else if (memcmp(data.data(), (uint8_t[]) {0xFF, 0xD8, 0xFF}, 3) == 0)
+            else if (data.size() >= sizeof(jpegSignature) && memcmp(data.data(), jpegSignature, sizeof(jpegSignature)) == 0)
                 return surfaceFromJpg(data);
 #endif
             return nullptr;
         }
 
         cairo_surface_t *Image::surfaceFromFile(const std::string &filename) {
-            const char *ext = filename.c_str() + filename.length() - 4;
-            if (!strcasecmp(ext, ".png"))
+            const auto extension = std::filesystem::path(filename).extension().string();
+            if (!strcasecmp(extension.c_str(), ".png"))
                 return surfaceFromPng(filename);
 #ifdef JPEG_FOUND
-            else if (!strcasecmp(ext, ".jpg"))
+            else if (!strcasecmp(extension.c_str(), ".jpg") || !strcasecmp(extension.c_str(), ".jpeg"))
                 return surfaceFromJpg(filename);
 #endif
             return nullptr;

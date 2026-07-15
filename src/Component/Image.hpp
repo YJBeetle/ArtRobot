@@ -66,6 +66,8 @@ namespace ArtRobot {
                   cairo_surface_t *imageSurface,
                   double width = NAN, double height = NAN);
 
+            static cairo_surface_t *validateSurface(cairo_surface_t *surface);
+
             // 因为 cairo 的特性 只支持 BGRA 排列
             static cairo_surface_t *surfaceFromRaw(unsigned char *imageData,
                                                    int imageColums, int imageRows,
