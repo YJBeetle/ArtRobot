@@ -1,0 +1,37 @@
+stages:
+  - test
+
+variables:
+  CMAKE_BUILD_PARALLEL_LEVEL: "4"
+
+test:
+  stage: test
+  image: ubuntu:24.04
+  before_script:
+    - apt-get update
+    - >-
+      DEBIAN_FRONTEND=noninteractive apt-get install --yes --no-install-recommends
+      build-essential
+      cmake
+      ninja-build
+      pkg-config
+      libpixman-1-dev
+      libcairo2-dev
+      libpango1.0-dev
+      librsvg2-dev
+      libjpeg-dev
+      libwebp-dev
+      fonts-noto-cjk
+  script:
+    - >-
+      cmake -S . -B build-ci -G Ninja
+      -DCMAKE_BUILD_TYPE=Release
+      -DBuildTest=ON
+      -DUseOpenCV=OFF
+    - cmake --build build-ci
+    - ctest --test-dir build-ci --output-on-failure --no-tests=error
+  artifacts:
+    when: always
+    paths:
+      - build-ci/Testing/Temporary/LastTest.log
+    expire_in: 1 week
