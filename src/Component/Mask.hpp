@@ -13,6 +13,7 @@
 
 #include <ArtRobot/Features.hpp>
 
+#include <memory>
 #include <string>
 
 #include "./Base.hpp"

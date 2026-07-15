@@ -13,6 +13,7 @@
 
 #include <ArtRobot/Features.hpp>
 
+#include <cstdint>
 #include <string>
 #include <vector>
 
