@@ -76,13 +76,13 @@ namespace ArtRobot {
                      cairo_surface_t *_imageSurface,
                      double width, double height)
                 : Base({name,
-                        !isnan(width) ? width : !isnan(height) ? (height / cairo_image_surface_get_height(_imageSurface) * cairo_image_surface_get_width(_imageSurface)) : cairo_image_surface_get_width(_imageSurface),
-                        !isnan(height) ? height : !isnan(width) ? (width / cairo_image_surface_get_width(_imageSurface) * cairo_image_surface_get_height(_imageSurface)) : cairo_image_surface_get_height(_imageSurface)},
+                        !std::isnan(width) ? width : !std::isnan(height) ? (height / cairo_image_surface_get_height(_imageSurface) * cairo_image_surface_get_width(_imageSurface)) : cairo_image_surface_get_width(_imageSurface),
+                        !std::isnan(height) ? height : !std::isnan(width) ? (width / cairo_image_surface_get_width(_imageSurface) * cairo_image_surface_get_height(_imageSurface)) : cairo_image_surface_get_height(_imageSurface)},
                        transform),
                   imageSurface(_imageSurface),
                   imageCols(cairo_image_surface_get_width(imageSurface)),
                   imageRows(cairo_image_surface_get_height(imageSurface)) {
-            if (!isnan(width) || !isnan(height))
+            if (!std::isnan(width) || !std::isnan(height))
                 cairo_scale(cr,
                             property.width / imageCols,
                             property.height / imageRows);
