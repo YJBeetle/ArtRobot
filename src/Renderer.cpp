@@ -11,6 +11,7 @@
 
 #include "./Renderer.hpp"
 
+#include <cstring>
 #include <iostream>
 
 #ifdef WIN32
@@ -204,7 +205,7 @@ namespace ArtRobot {
                         const auto *sourceRow = imageBuffer + cinfo.next_scanline * rowStride;
                         for (uint32_t x = 0; x < imageWidth; ++x) {
                             uint32_t argb;
-                            memcpy(&argb, sourceRow + x * 4, sizeof(argb));
+                            std::memcpy(&argb, sourceRow + x * 4, sizeof(argb));
                             rgbRow[x * 3] = (argb >> 16) & 0xff;
                             rgbRow[x * 3 + 1] = (argb >> 8) & 0xff;
                             rgbRow[x * 3 + 2] = argb & 0xff;
