@@ -1,0 +1,66 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          submodules: recursive
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes --no-install-recommends \
+            build-essential \
+            cmake \
+            ninja-build \
+            pkg-config \
+            libpixman-1-dev \
+            libcairo2-dev \
+            libpango1.0-dev \
+            librsvg2-dev \
+            libjpeg-dev \
+            libwebp-dev \
+            fonts-noto-cjk \
+            file
+
+      - name: Configure
+        run: >-
+          cmake -S . -B build-ci -G Ninja
+          -DCMAKE_BUILD_TYPE=Release
+          -DCMAKE_POLICY_VERSION_MINIMUM=3.5
+          -DBuildTest=ON
+          -DUseOpenCV=OFF
+
+      - name: Build
+        run: cmake --build build-ci --parallel 4
+
+      - name: Test
+        run: ctest --test-dir build-ci/ArtRobot --output-on-failure --no-tests=error
+
+      - name: Render demo
+        working-directory: build-ci
+        run: |
+          ./ArtRobotRender -t png demo.json demo-output.png
+          file demo-output.png | grep --quiet "PNG image data"
+
+      - name: Upload diagnostics
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: ci-output
+          path: |
+            build-ci/ArtRobot/Testing/Temporary/LastTest.log
+            build-ci/demo-output.png
+          if-no-files-found: ignore
+          retention-days: 7
