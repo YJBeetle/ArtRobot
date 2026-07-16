@@ -5,7 +5,6 @@
 * cairo
 * pango
 * librsvg
-* opencv
 * webp
 
 ## 格式

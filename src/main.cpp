@@ -66,7 +66,7 @@ shared_ptr<Component::Base> renderComponent(Json &componentJson, int depth) {
             std::cout << "svg" << "-" << name << std::endl;
             auto &srcJ = componentJson["src"];
             string src = srcJ.is_string() ? (string) srcJ : "";
-            return make_shared<Component::Svg>(name, w, h, Transform{.x=x, .y=y, .rotate=r, .anchor=anchor, .scaleX=scaleX, .scaleY=scaleY}, src);
+            return make_shared<Component::Svg>(name, Transform{.x=x, .y=y, .rotate=r, .anchor=anchor, .scaleX=scaleX, .scaleY=scaleY}, w, h, src);
         } else if (lowercaseEq(typeJson, "image")) {
             for (int i = 0; i < depth; i++) std::cout << "\t";
             std::cout << "image" << "-" << name << std::endl;
@@ -155,7 +155,7 @@ shared_ptr<Component::Base> renderComponent(Json &componentJson, int depth) {
         } else if (lowercaseEq(typeJson, "repeat")) {
             for (int i = 0; i < depth; i++) std::cout << "\t";
             std::cout << "repeat" << "-" << name << std::endl;
-            return make_shared<Component::Repeat>(name, w, h, Transform{.x=x, .y=y, .rotate=r, .anchor=anchor, .scaleX=scaleX, .scaleY=scaleY});
+            return make_shared<Component::Repeat>(name, Transform{.x=x, .y=y, .rotate=r, .anchor=anchor, .scaleX=scaleX, .scaleY=scaleY}, w, h);
         } else if (lowercaseEq(typeJson, "group")) {
             for (int i = 0; i < depth; i++) std::cout << "\t";
             std::cout << "group" << "-" << name << std::endl;

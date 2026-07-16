@@ -8,6 +8,7 @@
 #include <cstdio>
 #include <cmath>
 #include <cstring>
+#include <algorithm>
 
 #ifdef TIMER
 
@@ -16,8 +17,6 @@
 #endif // TIMER
 
 #include <nlohmann/json.hpp>
-#include <opencv2/opencv.hpp>
 
 using namespace std;
 using Json = nlohmann::json;
-using namespace cv;
