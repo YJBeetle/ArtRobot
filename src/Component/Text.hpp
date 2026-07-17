@@ -13,6 +13,8 @@
 
 #include <ArtRobot/Features.hpp>
 
+#ifdef PANGO_FOUND
+
 #include <string>
 #include <tuple>
 #include <pango/pangocairo.h>
@@ -58,3 +60,5 @@ namespace ArtRobot {
 
     } // namespace Component
 } // namespace ArtRobot
+
+#endif

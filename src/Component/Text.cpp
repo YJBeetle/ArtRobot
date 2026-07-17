@@ -11,6 +11,8 @@
 
 #include "./Text.hpp"
 
+#ifdef PANGO_FOUND
+
 namespace ArtRobot {
     namespace Component {
 
@@ -115,3 +117,5 @@ namespace ArtRobot {
 
     } // namespace Component
 } // namespace ArtRobot
+
+#endif
