@@ -9,6 +9,7 @@ ArtRobot 是一个面向简易绘图与排版场景的 C++17 静态库，在 Cai
 - 变换：位置、旋转、缩放和九宫格锚点
 - 输出格式：SVG、PDF、原始像素、PNG、JPEG 和 WebP
 - 图片输入：PNG、JPEG、WebP、BGRA 原始数据，可选 OpenCV `cv::Mat`
+- 可选 `ArtRobotJson`：将 JSON 模板解析为同一套组件树
 
 组件的 `Transform` 在构造时应用。图片或 SVG 数据无法载入时，构造函数会抛出 `std::invalid_argument` 或 `std::runtime_error`。
 
@@ -23,6 +24,7 @@ Pixman 和 Cairo 是必需依赖。以下功能默认启用，可以通过对应
 | JPEG | libjpeg 或 jpeg-turbo | `UseJpeg` |
 | WebP | libwebp | `UseWebP` |
 | `cv::Mat` | OpenCV | `UseOpenCV` |
+| JSON 模板 | nlohmann/json 子模块 | `UseJsonTemplate` |
 
 ## 编译
 
@@ -36,6 +38,45 @@ cmake --build build -j8
 ```sh
 cmake -S . -B build -DUseOpenCV=OFF
 ```
+
+启用 JSON 模板模块前需要递归初始化子模块：
+
+```sh
+git submodule update --init --recursive
+cmake -S . -B build -DUseJsonTemplate=ON
+```
+
+启用后会额外提供 `ArtRobotJson` target 和 `ArtRobot::Json` alias；核心
+`ArtRobot` target 不会强制链接 JSON 依赖。
+
+## JSON 模板
+
+`ArtRobotJson` 负责画布参数、组件树、默认值和字段校验。资源由调用方通过
+`ResourceLoader` 提供，因此同一解析器既能用于本地文件，也能用于 WASM
+内存资源：
+
+```cpp
+#include <ArtRobot/Json/Template.hpp>
+
+auto document = ArtRobot::Json::parseTemplate(
+    jsonBytes,
+    [](const std::string &source) {
+        return readFile(source);
+    });
+
+ArtRobot::Renderer renderer(
+    ArtRobot::OutputType::Png,
+    document.width,
+    document.height,
+    document.unit,
+    document.ppi);
+renderer.render(document.body->getSurface());
+```
+
+当前解析组件包括 `rectangle`、`rectangleRound`、`circle`、`image`、
+`mask`、`group`、`repeat`，以及功能启用时的 `text`、`textArea` 和 `svg`。
+未知或不可用组件会抛出带字段路径的异常。资源在一次模板解析中按 `src`
+缓存，同一素材只调用一次加载器。
 
 ## 测试
 
