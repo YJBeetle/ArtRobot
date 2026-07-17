@@ -31,7 +31,8 @@ jobs:
             librsvg2-dev \
             libjpeg-dev \
             libwebp-dev \
-            fonts-noto-cjk
+            fonts-noto-cjk \
+            file
 
       - name: Configure
         run: >-
@@ -39,6 +40,7 @@ jobs:
           -DCMAKE_BUILD_TYPE=Release
           -DBuildTest=ON
           -DUseJsonTemplate=ON
+          -DBuildArtRobotRender=ON
           -DUseOpenCV=OFF
 
       - name: Build
@@ -47,11 +49,19 @@ jobs:
       - name: Test
         run: ctest --test-dir build-ci --output-on-failure --no-tests=error
 
+      - name: Render template
+        working-directory: build-ci/tools/ArtRobotRender
+        run: |
+          ./ArtRobotRender -t png ThrowIt.json ThrowIt-output.png
+          file ThrowIt-output.png | grep --quiet "PNG image data"
+
       - name: Upload test log
         if: always()
         uses: actions/upload-artifact@v7
         with:
-          name: ctest-log
-          path: build-ci/Testing/Temporary/LastTest.log
+          name: ci-output
+          path: |
+            build-ci/Testing/Temporary/LastTest.log
+            build-ci/tools/ArtRobotRender/ThrowIt-output.png
           if-no-files-found: ignore
           retention-days: 7

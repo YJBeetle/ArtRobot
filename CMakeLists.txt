@@ -10,7 +10,12 @@ option(UseJpeg "Use Jpeg" ON)
 option(UseOpenCV "Use OpenCV" ON)
 option(UseWebP "Use WebP" ON)
 option(UseJsonTemplate "Build the optional ArtRobotJson template parser" OFF)
+option(BuildArtRobotRender "Build the ArtRobotRender command-line tool" OFF)
 option(BuildTest "Build Test" ON)
+
+if (BuildArtRobotRender)
+    set(UseJsonTemplate ON CACHE BOOL "" FORCE)
+endif ()
 
 if (CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
     if (NOT DEFINED ENV{EMSDK})
@@ -86,6 +91,10 @@ if (UseJsonTemplate)
     target_link_libraries(ArtRobotJson PUBLIC ${PROJECT_NAME})
     target_link_libraries(ArtRobotJson PRIVATE nlohmann_json::nlohmann_json)
     target_include_directories(ArtRobotJson PUBLIC "${CMAKE_CURRENT_BINARY_DIR}/include/")
+endif ()
+
+if (BuildArtRobotRender)
+    add_subdirectory(tools/ArtRobotRender)
 endif ()
 
 # install
