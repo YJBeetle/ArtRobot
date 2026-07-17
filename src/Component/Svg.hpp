@@ -32,7 +32,7 @@ namespace ArtRobot {
 
             Svg(std::string name, Transform transform,
                 double width, double height,
-                unsigned char *data, size_t len);
+                const unsigned char *data, size_t len);
 
             ~Svg();
         };

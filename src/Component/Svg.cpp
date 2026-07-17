@@ -65,7 +65,7 @@ namespace ArtRobot {
         }
 
         Svg::Svg(std::string name, Transform transform, double width, double height,
-                 unsigned char *data, size_t len)
+                 const unsigned char *data, size_t len)
                 : Base({name, width, height}, transform) {
             GError *error = nullptr;
             RsvgHandlePtr svg(rsvg_handle_new_from_data(data, len, &error), &g_object_unref);
