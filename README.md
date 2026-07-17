@@ -8,7 +8,12 @@ ArtRobot 是一个面向简易绘图与排版场景的 C++17 静态库，在 Cai
 - 组合组件：Group、Mask 和 Repeat 平铺
 - 变换：位置、旋转、缩放和九宫格锚点
 - 输出格式：SVG、PDF、原始像素、PNG、JPEG 和 WebP
-- 图片输入：PNG、JPEG、WebP、BGRA 原始数据，可选 OpenCV `cv::Mat`
+- 图片输入：PNG、JPEG、WebP、DDS、BGRA 原始数据，可选 OpenCV `cv::Mat`
+
+DDS 输入用于跳过运行时图片解码。当前接受 DDS DX10 的严格子集：2D、单层、
+无 mipmap、`DXGI_FORMAT_B8G8R8A8_UNORM`，并且 alpha mode 必须是
+premultiplied 或 opaque。像素数据会按 DDS pitch 复制到 Cairo 自有的
+`CAIRO_FORMAT_ARGB32` surface，因此不会引用调用者的临时缓冲区。
 - 可选 `ArtRobotJson`：将 JSON 模板解析为同一套组件树
 - 可选 `ArtRobotRender`：直接从命令行渲染 JSON 模板
 

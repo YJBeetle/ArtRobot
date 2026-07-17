@@ -78,6 +78,10 @@ namespace ArtRobot {
 
             static cairo_surface_t *surfaceFromPng(const std::string &filename);
 
+            static cairo_surface_t *surfaceFromDds(const std::vector<uint8_t> &data);
+
+            static cairo_surface_t *surfaceFromDds(const std::string &filename);
+
 #ifdef WEBP_FOUND
 
             static cairo_surface_t *surfaceFromWebp(const std::vector<uint8_t> &data);

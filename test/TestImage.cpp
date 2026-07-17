@@ -4,6 +4,46 @@
 #include <string>
 #include <vector>
 
+namespace {
+
+void appendLittleEndian32(std::vector<uint8_t> &data, uint32_t value) {
+    data.push_back(static_cast<uint8_t>(value));
+    data.push_back(static_cast<uint8_t>(value >> 8));
+    data.push_back(static_cast<uint8_t>(value >> 16));
+    data.push_back(static_cast<uint8_t>(value >> 24));
+}
+
+std::vector<uint8_t> makeDds(uint32_t width, uint32_t height,
+                             const std::vector<uint8_t> &bgra) {
+    std::vector<uint8_t> data{'D', 'D', 'S', ' '};
+    appendLittleEndian32(data, 124);
+    appendLittleEndian32(data, 0x100f);
+    appendLittleEndian32(data, height);
+    appendLittleEndian32(data, width);
+    appendLittleEndian32(data, width * 4);
+    appendLittleEndian32(data, 0);
+    appendLittleEndian32(data, 0);
+    for (int index = 0; index < 11; ++index)
+        appendLittleEndian32(data, 0);
+    appendLittleEndian32(data, 32);
+    appendLittleEndian32(data, 0x4);
+    data.insert(data.end(), {'D', 'X', '1', '0'});
+    for (int index = 0; index < 5; ++index)
+        appendLittleEndian32(data, 0);
+    appendLittleEndian32(data, 0x1000);
+    for (int index = 0; index < 4; ++index)
+        appendLittleEndian32(data, 0);
+    appendLittleEndian32(data, 87);
+    appendLittleEndian32(data, 3);
+    appendLittleEndian32(data, 0);
+    appendLittleEndian32(data, 1);
+    appendLittleEndian32(data, 2);
+    data.insert(data.end(), bgra.begin(), bgra.end());
+    return data;
+}
+
+} // namespace
+
 int main() {
     TestSupport::Context test;
 
@@ -22,6 +62,30 @@ int main() {
     expectImageError(std::vector<uint8_t>{0xFF, 0xD8, 0xFF}, "Corrupt JPEG data must fail");
     expectImageError(std::string("missing.png"), "Missing image file must fail");
     expectImageError(std::string("unsupported.webp"), "Missing WebP file must fail");
+
+    {
+        const auto ddsData = makeDds(2, 1, {
+            0, 0, 255, 255,
+            0, 128, 0, 128,
+        });
+        auto image = ArtRobot::Component::Image(
+                "dds-memory", {.anchor=ArtRobot::Transform::LT}, ddsData);
+        const auto pixels = TestSupport::renderPixmap(image, 2, 1);
+        const auto red = TestSupport::pixelAt(pixels, 2, 0, 0);
+        const auto green = TestSupport::pixelAt(pixels, 2, 1, 0);
+        test.expect(TestSupport::alpha(red) == 255 && TestSupport::red(red) == 255,
+                    "DDS BGRA opaque pixel");
+        test.expect(TestSupport::alpha(green) == 128 && TestSupport::green(green) == 128,
+                    "DDS premultiplied alpha pixel");
+
+        auto truncated = ddsData;
+        truncated.pop_back();
+        expectImageError(truncated, "Truncated DDS payload must fail");
+
+        auto straightAlpha = ddsData;
+        straightAlpha[144] = 1;
+        expectImageError(straightAlpha, "Straight-alpha DDS must fail");
+    }
 
     std::vector<uint8_t> pngData;
     test.expect(TestSupport::readBinaryFile("img.png", pngData), "Read PNG fixture");

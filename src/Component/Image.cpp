@@ -16,6 +16,7 @@
 #include <filesystem>
 #include <fstream>
 #include <iostream>
+#include <limits>
 #include <stdexcept>
 
 #ifdef JPEG_FOUND
@@ -32,6 +33,40 @@
 
 namespace ArtRobot {
     namespace Component {
+
+        namespace {
+            constexpr size_t DdsHeaderSize = 148;
+            constexpr uint32_t DdsHeaderFlags = 0x100f;
+            constexpr uint32_t DdsPixelFormatFourCc = 0x4;
+            constexpr uint32_t DdsCapsTexture = 0x1000;
+            constexpr uint32_t DxgiFormatB8G8R8A8Unorm = 87;
+            constexpr uint32_t DdsDimensionTexture2d = 3;
+            constexpr uint32_t DdsAlphaModePremultiplied = 2;
+            constexpr uint32_t DdsAlphaModeOpaque = 3;
+
+            uint32_t readLittleEndian32(const std::vector<uint8_t> &data, size_t offset) {
+                if (offset > data.size() || data.size() - offset < sizeof(uint32_t))
+                    throw std::invalid_argument("Truncated DDS header");
+                return static_cast<uint32_t>(data[offset]) |
+                       (static_cast<uint32_t>(data[offset + 1]) << 8) |
+                       (static_cast<uint32_t>(data[offset + 2]) << 16) |
+                       (static_cast<uint32_t>(data[offset + 3]) << 24);
+            }
+
+            std::vector<uint8_t> readBinaryFile(const std::string &filename) {
+                std::ifstream input(filename, std::ios::binary | std::ios::ate);
+                if (!input)
+                    return {};
+                const auto size = input.tellg();
+                if (size <= 0)
+                    return {};
+                std::vector<uint8_t> data(static_cast<size_t>(size));
+                input.seekg(0);
+                if (!input.read(reinterpret_cast<char *>(data.data()), size))
+                    return {};
+                return data;
+            }
+        }
 
         Image::Image(std::string name)
                 : Base({name}, {}) {
@@ -151,6 +186,74 @@ namespace ArtRobot {
             if (std::filesystem::exists(filename))
                 return cairo_image_surface_create_from_png(filename.c_str());
             return nullptr;
+        }
+
+        cairo_surface_t *Image::surfaceFromDds(const std::vector<uint8_t> &data) {
+            static const uint8_t ddsSignature[] = {'D', 'D', 'S', ' '};
+            static const uint8_t dx10FourCc[] = {'D', 'X', '1', '0'};
+            if (data.size() < DdsHeaderSize ||
+                memcmp(data.data(), ddsSignature, sizeof(ddsSignature)) != 0)
+                return nullptr;
+
+            if (readLittleEndian32(data, 4) != 124 ||
+                readLittleEndian32(data, 76) != 32)
+                throw std::invalid_argument("Invalid DDS header size");
+            if ((readLittleEndian32(data, 8) & DdsHeaderFlags) != DdsHeaderFlags ||
+                (readLittleEndian32(data, 80) & DdsPixelFormatFourCc) == 0 ||
+                memcmp(data.data() + 84, dx10FourCc, sizeof(dx10FourCc)) != 0 ||
+                (readLittleEndian32(data, 108) & DdsCapsTexture) == 0)
+                throw std::invalid_argument("Unsupported DDS header flags");
+
+            const auto height = readLittleEndian32(data, 12);
+            const auto width = readLittleEndian32(data, 16);
+            const auto pitch = readLittleEndian32(data, 20);
+            const auto depth = readLittleEndian32(data, 24);
+            const auto mipmapCount = readLittleEndian32(data, 28);
+            const auto caps2 = readLittleEndian32(data, 112);
+            const auto dxgiFormat = readLittleEndian32(data, 128);
+            const auto resourceDimension = readLittleEndian32(data, 132);
+            const auto miscFlag = readLittleEndian32(data, 136);
+            const auto arraySize = readLittleEndian32(data, 140);
+            const auto alphaMode = readLittleEndian32(data, 144) & 0x7;
+
+            if (width == 0 || height == 0 ||
+                width > static_cast<uint32_t>(std::numeric_limits<int>::max()) ||
+                height > static_cast<uint32_t>(std::numeric_limits<int>::max()))
+                throw std::invalid_argument("Invalid DDS dimensions");
+            if (depth != 0 || mipmapCount > 1 || caps2 != 0 || miscFlag != 0 ||
+                arraySize != 1 || resourceDimension != DdsDimensionTexture2d ||
+                dxgiFormat != DxgiFormatB8G8R8A8Unorm ||
+                (alphaMode != DdsAlphaModePremultiplied && alphaMode != DdsAlphaModeOpaque))
+                throw std::invalid_argument("Unsupported DDS texture layout");
+
+            const auto cairoStride = cairo_format_stride_for_width(
+                    CAIRO_FORMAT_ARGB32, static_cast<int>(width));
+            if (cairoStride < 0 || pitch < static_cast<uint32_t>(cairoStride) ||
+                pitch > static_cast<uint32_t>(std::numeric_limits<int>::max()))
+                throw std::invalid_argument("Invalid DDS row pitch");
+            if (height > (std::numeric_limits<size_t>::max() - DdsHeaderSize) / pitch)
+                throw std::invalid_argument("DDS payload size overflows");
+            const auto payloadSize = static_cast<size_t>(pitch) * height;
+            if (data.size() != DdsHeaderSize + payloadSize)
+                throw std::invalid_argument("Invalid DDS payload size");
+
+            auto *surface = cairo_image_surface_create(
+                    CAIRO_FORMAT_ARGB32, static_cast<int>(width), static_cast<int>(height));
+            if (cairo_surface_status(surface) != CAIRO_STATUS_SUCCESS)
+                return surface;
+            auto *destination = cairo_image_surface_get_data(surface);
+            for (uint32_t row = 0; row < height; ++row) {
+                memcpy(destination + static_cast<size_t>(row) * cairoStride,
+                       data.data() + DdsHeaderSize + static_cast<size_t>(row) * pitch,
+                       static_cast<size_t>(cairoStride));
+            }
+            cairo_surface_mark_dirty(surface);
+            return surface;
+        }
+
+        cairo_surface_t *Image::surfaceFromDds(const std::string &filename) {
+            const auto data = readBinaryFile(filename);
+            return data.empty() ? nullptr : surfaceFromDds(data);
         }
 
 #ifdef WEBP_FOUND
@@ -295,10 +398,13 @@ namespace ArtRobot {
         cairo_surface_t *Image::surfaceFromFile(const std::vector<uint8_t> &data) {
             static const uint8_t pngSignature[] = {0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A};
             static const uint8_t jpegSignature[] = {0xFF, 0xD8, 0xFF};
+            static const uint8_t ddsSignature[] = {'D', 'D', 'S', ' '};
             static const uint8_t riffSignature[] = {'R', 'I', 'F', 'F'};
             static const uint8_t webpSignature[] = {'W', 'E', 'B', 'P'};
             if (data.size() >= sizeof(pngSignature) && memcmp(data.data(), pngSignature, sizeof(pngSignature)) == 0)
                 return surfaceFromPng(data);
+            else if (data.size() >= sizeof(ddsSignature) && memcmp(data.data(), ddsSignature, sizeof(ddsSignature)) == 0)
+                return surfaceFromDds(data);
 #ifdef WEBP_FOUND
             else if (data.size() >= 12 &&
                      memcmp(data.data(), riffSignature, sizeof(riffSignature)) == 0 &&
@@ -316,6 +422,8 @@ namespace ArtRobot {
             const auto extension = std::filesystem::path(filename).extension().string();
             if (!strcasecmp(extension.c_str(), ".png"))
                 return surfaceFromPng(filename);
+            else if (!strcasecmp(extension.c_str(), ".dds"))
+                return surfaceFromDds(filename);
 #ifdef WEBP_FOUND
             else if (!strcasecmp(extension.c_str(), ".webp"))
                 return surfaceFromWebp(filename);
