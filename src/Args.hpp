@@ -17,8 +17,8 @@ private:
 public:
     Args(int argc, char *argv[]);
 
-    string output;
-    string jsonfile;
+    std::string output;
+    std::string jsonfile;
     OutputType type = OutputType::Svg;
 };
 
