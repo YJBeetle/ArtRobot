@@ -10,12 +10,14 @@ ArtRobot 是一个面向简易绘图与排版场景的 C++17 静态库，在 Cai
 - 输出格式：SVG、PDF、原始像素、PNG、JPEG 和 WebP
 - 图片输入：PNG、JPEG、WebP、BGRA 原始数据，可选 OpenCV `cv::Mat`
 - 可选 `ArtRobotJson`：将 JSON 模板解析为同一套组件树
+- 可选 `ArtRobotRender`：直接从命令行渲染 JSON 模板
 
 组件的 `Transform` 在构造时应用。图片或 SVG 数据无法载入时，构造函数会抛出 `std::invalid_argument` 或 `std::runtime_error`。
 
 ## 依赖项
 
-Pixman 和 Cairo 是必需依赖。以下功能默认启用，可以通过对应的 CMake 选项关闭：
+Pixman 和 Cairo 是必需依赖。以下功能通过对应 CMake 选项控制；JSON 模板
+默认关闭，其余功能默认启用：
 
 | 功能 | 依赖 | CMake 选项 |
 | --- | --- | --- |
@@ -48,6 +50,19 @@ cmake -S . -B build -DUseJsonTemplate=ON
 
 启用后会额外提供 `ArtRobotJson` target 和 `ArtRobot::Json` alias；核心
 `ArtRobot` target 不会强制链接 JSON 依赖。
+
+构建随仓库提供的命令行工具：
+
+```sh
+cmake -S . -B build \
+  -DBuildArtRobotRender=ON \
+  -DUseOpenCV=OFF
+cmake --build build --parallel 8
+```
+
+可执行文件和示例模板位于 `build/tools/ArtRobotRender/`。原
+ArtRobotRender 仓库的历史已经通过双 parent merge commit 保留在本仓库，
+工具源码位于 [`tools/ArtRobotRender/`](tools/ArtRobotRender/)。
 
 ## JSON 模板
 
@@ -86,7 +101,9 @@ renderer.render(document.body->getSurface());
 ctest --test-dir build --output-on-failure
 ```
 
-当前回归覆盖基础组件、分组、蒙版、Repeat、变换、PNG/JPEG/WebP 图片输入、SVG 解析，以及 PNG、JPEG、PDF、WebP 输出。
+当前回归覆盖基础组件、分组、蒙版、Repeat、变换、JSON 模板解析、资源
+加载与缓存、PNG/JPEG/WebP 图片输入、SVG 解析，以及 PNG、JPEG、PDF、
+WebP 输出。
 
 ## 示例
 

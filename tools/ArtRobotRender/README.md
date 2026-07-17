@@ -15,11 +15,12 @@ ArtRobotRender 是基于 [ArtRobot](https://github.com/YJBeetle/ArtRobot) 和
 
 ## 获取源码
 
-ArtRobot 以 Git submodule 的形式放在 `ArtRobot/`，克隆时需要一并初始化：
+ArtRobotRender 已作为可选 executable target 合并进 ArtRobot。JSON 依赖以
+嵌套 submodule 固定版本，因此克隆时需要递归初始化：
 
 ```sh
-git clone --recurse-submodules https://github.com/YJBeetle/ArtRobotRender.git
-cd ArtRobotRender
+git clone --recurse-submodules https://github.com/YJBeetle/ArtRobot.git
+cd ArtRobot
 ```
 
 已有仓库可以执行：
@@ -55,7 +56,7 @@ macOS（Homebrew）：
 brew install cmake pkg-config pixman cairo pango librsvg jpeg-turbo webp
 ```
 
-`nlohmann/json` 由 ArtRobot 的嵌套 submodule 固定版本。ArtRobot 支持可选
+`nlohmann/json` 由 `3rdParty/json` submodule 固定版本。ArtRobot 支持可选
 OpenCV 输入，但 ArtRobotRender 本身不使用 OpenCV，因此下面的构建命令
 将其关闭。
 
@@ -64,17 +65,19 @@ OpenCV 输入，但 ArtRobotRender 本身不使用 OpenCV，因此下面的构�
 ```sh
 cmake -S . -B build \
   -DCMAKE_BUILD_TYPE=Release \
+  -DBuildArtRobotRender=ON \
   -DUseOpenCV=OFF
 cmake --build build --parallel 8
 ```
 
 ## 使用
 
-JSON 中的图片和 SVG 相对路径以 JSON 文件所在目录为基准解析，因此可以从
-任意工作目录执行：
+可执行文件和随构建复制的模板位于 `build/tools/ArtRobotRender/`。JSON 中的
+图片和 SVG 相对路径以 JSON 文件所在目录为基准解析，因此可以从任意工作
+目录执行：
 
 ```sh
-cd build
+cd build/tools/ArtRobotRender
 ./ArtRobotRender -t png demo.json demo-output.png
 ```
 
@@ -184,7 +187,7 @@ ArtRobotRender 命令行工具目前忽略 `inputs` 和 `bindings`，使用组�
 ArtRobot 的测试默认随主项目一起构建：
 
 ```sh
-ctest --test-dir build/ArtRobot --output-on-failure --no-tests=error
+ctest --test-dir build --output-on-failure --no-tests=error
 ```
 
 测试覆盖组件组合、蒙版、Repeat、变换、JSON 模板解析、资源加载与缓存、
@@ -193,8 +196,10 @@ PNG/JPEG/WebP 图片输入、SVG 解析，以及 PNG、JPEG、PDF 和 WebP 输�
 
 ## CI
 
-GitHub Actions 会在 Ubuntu 24.04 上递归检出 submodule，安装依赖，执行 Release 构建和全部测试，并实际渲染 `demo.json` 验证 PNG 输出。测试日志和示例图片会作为 CI artifact 保留 7 天。
+ArtRobot 的 GitHub Actions 会在 Ubuntu 24.04 上递归检出 submodule，安装
+依赖，执行 Release 构建和全部测试，并实际渲染 ThrowIt 模板验证 PNG 输出。
+测试日志和示例图片会作为 CI artifact 保留 7 天。
 
 ## License
 
-本项目使用 [GNU General Public License v3.0](ArtRobot/LICENSE)。
+本项目使用 [GNU General Public License v3.0](../../LICENSE)。
