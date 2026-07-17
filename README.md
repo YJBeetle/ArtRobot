@@ -1,6 +1,8 @@
 # ArtRobotRender
 
-ArtRobotRender 是基于 [ArtRobot](https://github.com/YJBeetle/ArtRobot) 的 JSON 图形渲染命令行工具。它读取组件树描述，组合图形、文字、图片和 SVG，并输出 SVG、PDF、PNG、JPEG 或 WebP 文件。
+ArtRobotRender 是基于 [ArtRobot](https://github.com/YJBeetle/ArtRobot) 和
+可选 `ArtRobotJson` 模块的 JSON 图形渲染命令行工具。它读取组件树描述，
+组合图形、文字、图片和 SVG，并输出 SVG、PDF、PNG、JPEG 或 WebP 文件。
 
 ## 功能
 
@@ -53,23 +55,23 @@ macOS（Homebrew）：
 brew install cmake pkg-config pixman cairo pango librsvg jpeg-turbo webp
 ```
 
-`nlohmann/json` 由 CMake 在首次配置时自动下载。ArtRobot 支持可选 OpenCV 输入，但 ArtRobotRender 本身不使用 OpenCV，因此下面的构建命令将其关闭。
+`nlohmann/json` 由 ArtRobot 的嵌套 submodule 固定版本。ArtRobot 支持可选
+OpenCV 输入，但 ArtRobotRender 本身不使用 OpenCV，因此下面的构建命令
+将其关闭。
 
 ## 构建
 
 ```sh
 cmake -S . -B build \
   -DCMAKE_BUILD_TYPE=Release \
-  -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
   -DUseOpenCV=OFF
 cmake --build build --parallel 8
 ```
 
-`CMAKE_POLICY_VERSION_MINIMUM` 用于兼容当前 JSON 依赖的旧 CMake 声明，在较旧的 CMake 版本上保留该参数也不会影响构建。
-
 ## 使用
 
-推荐从 `build` 目录运行随项目复制的示例，因为 JSON 中的图片和 SVG 路径相对程序的当前工作目录解析：
+JSON 中的图片和 SVG 相对路径以 JSON 文件所在目录为基准解析，因此可以从
+任意工作目录执行：
 
 ```sh
 cd build
@@ -127,7 +129,7 @@ ArtRobotRender [选项] <JSON 文件> [输出文件]
 | `w`、`h` | 画布宽度和高度 | `200` |
 | `unit` | `px`、`pt`、`in`、`inch`、`mm` 或 `cm` | `px` |
 | `ppi` | 非像素单位使用的每英寸像素数 | `72` |
-| `body` | 根组件对象 | 空组件 |
+| `body` | 根组件对象 | 必填 |
 
 所有组件都可以使用 `name`、`x`、`y`、`w`、`h`、`r`、`anchor`、`scaleX` 和 `scaleY`。`r` 为旋转角度；`anchor` 取值从 `0` 到 `8`，依次对应左上、中上、右上、左中、中心、右中、左下、中下和右下。
 
@@ -143,10 +145,13 @@ ArtRobotRender [选项] <JSON 文件> [输出文件]
 | `text` | `content`、`color`、`fontFamily`、`fontWeight`、`fontSize`、对齐和间距字段 |
 | `textArea` | 文字字段及区域宽高 |
 | `mask` | `mask` 和 `child` 两个子组件 |
-| `repeat` | 区域宽高 |
+| `repeat` | 区域宽高及 `child` 对象或数组 |
 | `group` | `child` 组件数组 |
 
 完整示例参见 [`template/`](template/) 目录。
+
+组件字段由 `ArtRobotJson` 严格校验。未知组件、错误字段类型、无效画布尺寸
+或无法加载的资源会输出包含组件路径的错误并以非零状态退出。
 
 ### StickerGenerator 输入扩展
 
@@ -182,7 +187,9 @@ ArtRobot 的测试默认随主项目一起构建：
 ctest --test-dir build/ArtRobot --output-on-failure --no-tests=error
 ```
 
-测试覆盖组件组合、蒙版、Repeat、变换、PNG/JPEG/WebP 图片输入、SVG 解析，以及 PNG、JPEG、PDF 和 WebP 输出。若只需要构建命令行程序，可以在配置时添加 `-DBuildTest=OFF`。
+测试覆盖组件组合、蒙版、Repeat、变换、JSON 模板解析、资源加载与缓存、
+PNG/JPEG/WebP 图片输入、SVG 解析，以及 PNG、JPEG、PDF 和 WebP 输出。
+若只需要构建命令行程序，可以在配置时添加 `-DBuildTest=OFF`。
 
 ## CI
 
