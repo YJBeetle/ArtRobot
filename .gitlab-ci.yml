@@ -1,0 +1,33 @@
+stages:
+  - test
+
+default:
+  image: rust:1.88-bookworm
+  timeout: 20 minutes
+  cache:
+    key: cargo-${CI_COMMIT_REF_SLUG}
+    paths:
+      - .cargo/registry/
+      - .cargo/git/
+      - target/
+
+variables:
+  CARGO_HOME: ${CI_PROJECT_DIR}/.cargo
+  CARGO_TERM_COLOR: always
+
+test:
+  stage: test
+  before_script:
+    - apt-get update
+    - >-
+      DEBIAN_FRONTEND=noninteractive apt-get install --yes --no-install-recommends
+      pkg-config
+      libcairo2-dev
+      libpango1.0-dev
+      fonts-noto-cjk
+    - rustup component add rustfmt clippy
+  script:
+    - cargo fmt --all -- --check
+    - cargo clippy --all-targets --locked -- -D warnings
+    - cargo test --all-targets --locked
+    - cargo test --doc --locked
