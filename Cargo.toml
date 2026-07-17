@@ -2,9 +2,12 @@
 name = "art-robot"
 version = "0.1.0"
 edition = "2021"
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+rust-version = "1.88"
+description = "Cairo-based drawing and layout components with raster and vector output"
+license = "GPL-3.0-only"
 
 [dependencies]
 cairo-rs = { version = "0.17.0", features = ["v1_16", "png", "pdf", "ps", "svg"] }
 pangocairo = "0.17.0"
+image = { version = "0.25.8", default-features = false, features = ["jpeg", "png", "webp"] }
+resvg = { version = "0.45.1", default-features = true }
