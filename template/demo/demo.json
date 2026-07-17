@@ -3,6 +3,16 @@
   "h": 200,
   "unit": "px",
   "ppi": 72,
+  "inputs": {
+    "title": {
+      "type": "text",
+      "description": "文本内容"
+    },
+    "titleColor": {
+      "type": "color",
+      "description": "文本颜色"
+    }
+  },
   "body": {
     "type": "group",
     "child": [
@@ -50,18 +60,10 @@
         "x": 20,
         "y": 20,
         "anchor": 0,
-        "canedit": [
-          {
-            "attributes": "content",
-            "id": "title",
-            "description": "文本内容"
-          },
-          {
-            "attributes": "color",
-            "id": "tColor",
-            "description": "文本颜色"
-          }
-        ]
+        "bindings": {
+          "content": "title",
+          "color": "titleColor"
+        }
       },
       {
         "type": "textArea",
@@ -74,9 +76,5 @@
         "anchor": 0
       }
     ]
-  },
-  "data": {
-    "title": "汪汪汪",
-    "tColor": "0000FF"
   }
 }

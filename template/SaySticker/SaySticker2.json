@@ -3,6 +3,20 @@
   "h": 512,
   "unit": "px",
   "ppi": 72,
+  "inputs": {
+    "imgUrl": {
+      "type": "image",
+      "description": "头像"
+    },
+    "name": {
+      "type": "text",
+      "description": "发送者名称"
+    },
+    "message": {
+      "type": "text",
+      "description": "消息文字"
+    }
+  },
   "body": {
     "type": "group",
     "name": "body",
@@ -38,7 +52,10 @@
           "src": "pp.jpg",
           "w": 66,
           "h": 66,
-          "anchor": 0
+          "anchor": 0,
+          "bindings": {
+            "src": "imgUrl"
+          }
         }
       },
       {
@@ -102,7 +119,10 @@
         "fontSize": 28,
         "horizontalAlign": 0,
         "verticalAlign": 0,
-        "maxWidth": 346
+        "maxWidth": 346,
+        "bindings": {
+          "content": "name"
+        }
       },
       {
         "type": "TextArea",
@@ -118,7 +138,10 @@
         "fontWeight": 200,
         "fontSize": 28,
         "horizontalAlign": 0,
-        "verticalAlign": 0
+        "verticalAlign": 0,
+        "bindings": {
+          "content": "message"
+        }
       }
     ]
   }

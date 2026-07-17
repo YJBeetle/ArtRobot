@@ -3,6 +3,16 @@
   "h": 512,
   "unit": "px",
   "ppi": 72,
+  "inputs": {
+    "imgUrl": {
+      "type": "image",
+      "description": "头像"
+    },
+    "message": {
+      "type": "text",
+      "description": "消息文字"
+    }
+  },
   "body": {
     "type": "group",
     "name": "body",
@@ -38,7 +48,10 @@
           "src": "pp.jpg",
           "w": 80,
           "h": 80,
-          "anchor": 0
+          "anchor": 0,
+          "bindings": {
+            "src": "imgUrl"
+          }
         }
       },
       {
@@ -77,7 +90,10 @@
         "w": 136,
         "h": 38,
         "r": 0,
-        "anchor": 0
+        "anchor": 0,
+        "bindings": {
+          "content": "message"
+        }
       }
     ]
   }

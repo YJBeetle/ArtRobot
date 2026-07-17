@@ -148,6 +148,32 @@ ArtRobotRender [选项] <JSON 文件> [输出文件]
 
 完整示例参见 [`template/`](template/) 目录。
 
+### StickerGenerator 输入扩展
+
+模板可以通过顶层 `inputs` 声明允许调用方覆盖的参数，并在组件的
+`bindings` 中将组件属性绑定到输入名称：
+
+```json
+{
+  "inputs": {
+    "avatar": {
+      "type": "image",
+      "description": "头像"
+    }
+  },
+  "body": {
+    "type": "image",
+    "src": "default-avatar.jpg",
+    "bindings": {
+      "src": "avatar"
+    }
+  }
+}
+```
+
+ArtRobotRender 命令行工具目前忽略 `inputs` 和 `bindings`，使用组件原始
+字段渲染默认结果。Workers-StickerGenerator 会在渲染前验证输入并应用覆盖。
+
 ## 测试
 
 ArtRobot 的测试默认随主项目一起构建：
