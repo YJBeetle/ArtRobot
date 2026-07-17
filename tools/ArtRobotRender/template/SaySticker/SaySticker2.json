@@ -1,0 +1,148 @@
+{
+  "w": 512,
+  "h": 512,
+  "unit": "px",
+  "ppi": 72,
+  "inputs": {
+    "imgUrl": {
+      "type": "image",
+      "description": "头像"
+    },
+    "name": {
+      "type": "text",
+      "description": "发送者名称"
+    },
+    "message": {
+      "type": "text",
+      "description": "消息文字"
+    }
+  },
+  "body": {
+    "type": "group",
+    "name": "body",
+    "child": [
+      {
+        "type": "rectangle",
+        "name": "bg",
+        "x": 0,
+        "y": 0,
+        "w": 512,
+        "h": 512,
+        "anchor": 0,
+        "color": "#79B3E2"
+      },
+      {
+        "type": "mask",
+        "name": "userPhotoMask",
+        "x": 16,
+        "y": 430,
+        "w": 66,
+        "h": 66,
+        "anchor": 0,
+        "mask": {
+          "type": "circle",
+          "name": "mask",
+          "w": 66,
+          "h": 66,
+          "anchor": 0
+        },
+        "child": {
+          "type": "image",
+          "name": "userPhoto",
+          "src": "pp.jpg",
+          "w": 66,
+          "h": 66,
+          "anchor": 0,
+          "bindings": {
+            "src": "imgUrl"
+          }
+        }
+      },
+      {
+        "type": "rectangle",
+        "name": "messageShadow",
+        "x": 88,
+        "y": 496,
+        "w": 398,
+        "h": 4,
+        "anchor": 0,
+        "color": "#00000010"
+      },
+      {
+        "type": "rectangleRound",
+        "name": "messageShadow2",
+        "x": 486,
+        "y": 486,
+        "w": 10,
+        "h": 14,
+        "anchor": 0,
+        "angleTL": 0,
+        "angleTR": 0,
+        "angleBR": 10,
+        "angleBL": 0,
+        "color": "#00000010"
+      },
+      {
+        "type": "image",
+        "name": "messageX",
+        "src": "SaySticker2_messageX.png",
+        "x": 88,
+        "y": 474,
+        "w": 12,
+        "h": 22,
+        "anchor": 0
+      },
+      {
+        "type": "rectangleRound",
+        "name": "messageBG",
+        "x": 100,
+        "y": 16,
+        "w": 396,
+        "h": 480,
+        "anchor": 0,
+        "angleTL": 10,
+        "angleTR": 10,
+        "angleBR": 10,
+        "angleBL": 0,
+        "color": "#FFFFFF"
+      },
+      {
+        "type": "Text",
+        "name": "textName",
+        "x": 125,
+        "y": 59,
+        "anchor": 0,
+        "content": "喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵",
+        "color": "#BD4332",
+        "fontFamily": "Noto Sans CJK SC",
+        "fontWeight": 400,
+        "fontSize": 28,
+        "horizontalAlign": 0,
+        "verticalAlign": 0,
+        "maxWidth": 346,
+        "bindings": {
+          "content": "name"
+        }
+      },
+      {
+        "type": "TextArea",
+        "name": "text",
+        "x": 125,
+        "y": 71,
+        "w": 346,
+        "h": 407,
+        "anchor": 0,
+        "content": "喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵",
+        "color": "#000000",
+        "fontFamily": "Noto Sans CJK SC",
+        "fontWeight": 200,
+        "fontSize": 28,
+        "horizontalAlign": 0,
+        "verticalAlign": 0,
+        "bindings": {
+          "content": "message"
+        }
+      }
+    ]
+  }
+}

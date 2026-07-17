@@ -1,0 +1,19 @@
+#pragma once
+
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <memory>
+#include <cstdint>
+#include <cstdio>
+#include <cmath>
+#include <cstring>
+#include <algorithm>
+
+#ifdef TIMER
+
+#include <sys/time.h>
+
+#endif // TIMER
+
+using namespace std;

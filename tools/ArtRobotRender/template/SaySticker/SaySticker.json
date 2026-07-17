@@ -1,0 +1,100 @@
+{
+  "w": 512,
+  "h": 512,
+  "unit": "px",
+  "ppi": 72,
+  "inputs": {
+    "imgUrl": {
+      "type": "image",
+      "description": "头像"
+    },
+    "message": {
+      "type": "text",
+      "description": "消息文字"
+    }
+  },
+  "body": {
+    "type": "group",
+    "name": "body",
+    "child": [
+      {
+        "type": "rectangle",
+        "name": "bg",
+        "x": 0,
+        "y": 0,
+        "w": 323,
+        "h": 147,
+        "anchor": 0,
+        "color": "#F1F2F6"
+      },
+      {
+        "type": "mask",
+        "name": "userPhotoMask",
+        "x": 20,
+        "y": 30,
+        "w": 80,
+        "h": 80,
+        "anchor": 0,
+        "mask": {
+          "type": "circle",
+          "name": "mask",
+          "w": 80,
+          "h": 80,
+          "anchor": 0
+        },
+        "child": {
+          "type": "image",
+          "name": "userPhoto",
+          "src": "pp.jpg",
+          "w": 80,
+          "h": 80,
+          "anchor": 0,
+          "bindings": {
+            "src": "imgUrl"
+          }
+        }
+      },
+      {
+        "type": "image",
+        "name": "messageX",
+        "src": "SaySticker_messageX.png",
+        "x": 115,
+        "y": 40,
+        "w": 19,
+        "h": 19,
+        "anchor": 0
+      },
+      {
+        "type": "rectangleRound",
+        "name": "message",
+        "x": 131,
+        "y": 30,
+        "w": 172,
+        "h": 87,
+        "angle": 18,
+        "color": "#FFFFFF",
+        "anchor": 0
+      },
+      {
+        "type": "TextArea",
+        "name": "text",
+        "content": "喵喵喵喵",
+        "color": "#000000",
+        "fontFamily": "Noto Sans CJK SC",
+        "fontWeight": 400,
+        "fontSize": 34,
+        "horizontalAlign": 0,
+        "verticalAlign": 0,
+        "x": 149,
+        "y": 56,
+        "w": 136,
+        "h": 38,
+        "r": 0,
+        "anchor": 0,
+        "bindings": {
+          "content": "message"
+        }
+      }
+    ]
+  }
+}
