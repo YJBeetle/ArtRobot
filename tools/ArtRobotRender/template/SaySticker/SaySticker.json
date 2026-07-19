@@ -1,6 +1,9 @@
 {
   "w": 512,
-  "h": 512,
+  "h": {
+    "op": "sub",
+    "args": [512, {"var": "hs"}]
+  },
   "unit": "px",
   "ppi": 72,
   "inputs": {
@@ -17,6 +20,39 @@
       "description": "消息文字"
     }
   },
+  "layout": {
+    "variables": {
+      "ws": {
+        "op": "max",
+        "args": [
+          0,
+          {
+            "op": "sub",
+            "args": [
+              346,
+              {
+                "op": "max",
+                "args": [
+                  {"measure": "text.realW"},
+                  {"measure": "textName.realW"}
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "hs": {
+        "op": "max",
+        "args": [
+          0,
+          {
+            "op": "sub",
+            "args": [407, {"measure": "text.realH"}]
+          }
+        ]
+      }
+    }
+  },
   "body": {
     "type": "group",
     "name": "body",
@@ -26,8 +62,14 @@
         "name": "bg",
         "x": 0,
         "y": 0,
-        "w": 512,
-        "h": 512,
+        "w": {
+          "op": "sub",
+          "args": [512, {"var": "ws"}]
+        },
+        "h": {
+          "op": "sub",
+          "args": [512, {"var": "hs"}]
+        },
         "anchor": 0,
         "color": "#79B3E2"
       },
@@ -35,7 +77,10 @@
         "type": "mask",
         "name": "userPhotoMask",
         "x": 16,
-        "y": 430,
+        "y": {
+          "op": "sub",
+          "args": [430, {"var": "hs"}]
+        },
         "w": 66,
         "h": 66,
         "anchor": 0,
@@ -62,8 +107,14 @@
         "type": "rectangle",
         "name": "messageShadow",
         "x": 88,
-        "y": 496,
-        "w": 398,
+        "y": {
+          "op": "sub",
+          "args": [496, {"var": "hs"}]
+        },
+        "w": {
+          "op": "sub",
+          "args": [398, {"var": "ws"}]
+        },
         "h": 4,
         "anchor": 0,
         "color": "#00000010"
@@ -71,8 +122,14 @@
       {
         "type": "rectangleRound",
         "name": "messageShadow2",
-        "x": 486,
-        "y": 486,
+        "x": {
+          "op": "sub",
+          "args": [486, {"var": "ws"}]
+        },
+        "y": {
+          "op": "sub",
+          "args": [486, {"var": "hs"}]
+        },
         "w": 10,
         "h": 14,
         "anchor": 0,
@@ -85,9 +142,12 @@
       {
         "type": "image",
         "name": "messageX",
-        "src": "SaySticker2_messageX.png",
+        "src": "SaySticker_messageX.png",
         "x": 88,
-        "y": 474,
+        "y": {
+          "op": "sub",
+          "args": [474, {"var": "hs"}]
+        },
         "w": 12,
         "h": 22,
         "anchor": 0
@@ -97,8 +157,14 @@
         "name": "messageBG",
         "x": 100,
         "y": 16,
-        "w": 396,
-        "h": 480,
+        "w": {
+          "op": "sub",
+          "args": [396, {"var": "ws"}]
+        },
+        "h": {
+          "op": "sub",
+          "args": [480, {"var": "hs"}]
+        },
         "anchor": 0,
         "angleTL": 10,
         "angleTR": 10,
@@ -115,7 +181,7 @@
         "content": "喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵",
         "color": "#BD4332",
         "fontFamily": "Noto Sans CJK SC",
-        "fontWeight": 400,
+        "fontWeight": 600,
         "fontSize": 28,
         "horizontalAlign": 0,
         "verticalAlign": 0,
@@ -130,13 +196,14 @@
         "x": 125,
         "y": 71,
         "w": 346,
-        "h": 407,
+        "h": 417,
         "anchor": 0,
         "content": "喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵",
         "color": "#000000",
         "fontFamily": "Noto Sans CJK SC",
-        "fontWeight": 200,
+        "fontWeight": 400,
         "fontSize": 28,
+        "lineSpacing": -5,
         "horizontalAlign": 0,
         "verticalAlign": 0,
         "bindings": {

@@ -156,6 +156,49 @@ ArtRobotRender [选项] <JSON 文件> [输出文件]
 组件字段由 `ArtRobotJson` 严格校验。未知组件、错误字段类型、无效画布尺寸
 或无法加载的资源会输出包含组件路径的错误并以非零状态退出。
 
+### 文字测量布局
+
+顶层 `layout.variables` 可以先测量具名 `text` 或 `textArea`，再计算画布及
+组件的数值字段。例如按实际文字高度缩短画布：
+
+```json
+{
+  "h": {"op": "sub", "args": [512, {"var": "unusedHeight"}]},
+  "layout": {
+    "variables": {
+      "unusedHeight": {
+        "op": "max",
+        "args": [
+          0,
+          {
+            "op": "sub",
+            "args": [407, {"measure": "message.realH"}]
+          }
+        ]
+      }
+    }
+  },
+  "body": {
+    "type": "textArea",
+    "name": "message",
+    "content": "动态文字",
+    "w": 346,
+    "h": 417
+  }
+}
+```
+
+数值表达式有三种形式：
+
+- `{"var": "name"}`：引用 `layout.variables`。
+- `{"measure": "component.realW"}` 或 `realH`：引用文字实际尺寸。
+- `{"op": "sub", "args": [...]}`：执行 `add`、`sub`、`mul`、`div`、
+  `min`、`max` 或 `clamp`。
+
+表达式可用于顶层 `w`、`h`、`ppi` 及组件的浮点数值字段。变量会检测未知
+引用和循环；除 `var` 外，所有结果都必须为有限数。被测量文字组件本身的
+宽高、字号、最大宽度和间距必须是普通数值，不能反向依赖测量结果。
+
 ### StickerGenerator 输入扩展
 
 模板可以通过顶层 `inputs` 声明允许调用方覆盖的参数，并在组件的

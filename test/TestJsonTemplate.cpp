@@ -81,6 +81,102 @@ int main() {
                     TestSupport::renderPixmap(*imageDocument.body, 64, 48), 64, 48) > 100,
                 "Parsed image produces pixels");
 
+#ifdef PANGO_FOUND
+    const std::string measuredLayout = R"({
+        "w": {"op": "sub", "args": [120, {"var": "unusedWidth"}]},
+        "h": {"op": "sub", "args": [220, {"var": "unusedHeight"}]},
+        "layout": {
+            "variables": {
+                "unusedWidth": {
+                    "op": "max",
+                    "args": [
+                        0,
+                        {
+                            "op": "sub",
+                            "args": [
+                                100,
+                                {
+                                    "op": "max",
+                                    "args": [
+                                        {"measure": "message.realW"},
+                                        {"measure": "sender.realW"}
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                },
+                "unusedHeight": {
+                    "op": "max",
+                    "args": [
+                        0,
+                        {
+                            "op": "sub",
+                            "args": [200, {"measure": "message.realH"}]
+                        }
+                    ]
+                }
+            }
+        },
+        "body": {
+            "type": "group",
+            "child": [
+                {
+                    "type": "rectangle",
+                    "w": {"op": "sub", "args": [120, {"var": "unusedWidth"}]},
+                    "h": {"op": "sub", "args": [220, {"var": "unusedHeight"}]},
+                    "anchor": 0,
+                    "color": "#00ff00"
+                },
+                {
+                    "type": "text",
+                    "name": "sender",
+                    "content": "Sender",
+                    "fontFamily": "sans",
+                    "fontSize": 20,
+                    "maxWidth": 100,
+                    "anchor": 0
+                },
+                {
+                    "type": "textArea",
+                    "name": "message",
+                    "content": "Measured text",
+                    "fontFamily": "sans",
+                    "fontSize": 20,
+                    "w": 100,
+                    "h": 200,
+                    "anchor": 0
+                }
+            ]
+        }
+    })";
+    const auto measuredDocument = ArtRobot::Json::parseTemplate(measuredLayout);
+    test.expect(measuredDocument.width > 20 && measuredDocument.width <= 120,
+                "Measured layout width");
+    test.expect(measuredDocument.height > 20 && measuredDocument.height < 220,
+                "Measured layout height");
+    const auto measuredPixels = TestSupport::renderPixmap(
+        *measuredDocument.body,
+        static_cast<int>(std::ceil(measuredDocument.width)),
+        static_cast<int>(std::ceil(measuredDocument.height)));
+    test.expect(TestSupport::opaquePixelCount(
+                    measuredPixels,
+                    static_cast<int>(std::ceil(measuredDocument.width)),
+                    static_cast<int>(std::ceil(measuredDocument.height))) > 100,
+                "Measured layout renders");
+
+    expectThrows(test, R"({
+        "layout":{"variables":{"a":{"var":"b"},"b":{"var":"a"}}},
+        "w":{"var":"a"},
+        "body":{"type":"rectangle"}
+    })", "Layout variable cycles must fail");
+    expectThrows(test, R"({
+        "layout":{},
+        "w":{"measure":"missing.realW"},
+        "body":{"type":"rectangle"}
+    })", "Unknown measurements must fail");
+#endif
+
     expectThrows(test, R"({"body":{"type":"unknown"}})",
                  "Unknown component must fail");
     expectThrows(test, R"({"w":0,"body":{"type":"rectangle"}})",

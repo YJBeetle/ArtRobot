@@ -98,6 +98,12 @@ renderer.render(document.body->getSurface());
 未知或不可用组件会抛出带字段路径的异常。资源在一次模板解析中按 `src`
 缓存，同一素材只调用一次加载器。
 
+顶层可选 `layout.variables` 支持在正式渲染前测量具名 `text`/`textArea`
+组件的 `realW`、`realH`，再把计算结果用于画布和组件数值字段。数值表达式
+支持 `var`、`measure`，以及 `add`、`sub`、`mul`、`div`、`min`、`max`、
+`clamp` 运算；变量按需计算并检测循环引用。需要测量的文字组件自身宽高和
+排版参数必须是普通数值，以避免布局循环。
+
 ## 测试
 
 测试默认随项目构建，通过 `BuildTest=OFF` 可以关闭：
